@@ -1,0 +1,22 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+    "guid": "2bd94e20-d106-44bb-a28e-5741e244ec8b",
+    "filename": "Linux_Zabbix_Install.py",
+    "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+    "name": "Zabbix - Install agent/proxy",
+    "description": "Install Zabbix agent as either client or proxy using sys_info_api",
+    "syntax": "",
+    "env": [
+      "SERVER={{client.zabbix_hostname}}",
+      "HOSTNAME={{agent.fqdn}}",
+      "ROLE={{agent.zabbix_role}}"
+    ],
+    "default_timeout": "600",
+    "shell": "python",
+    "supported_platforms": [
+      "linux"
+    ],
+    "category": "TRMM (Linux):3rd Party Software"
+  }
+]

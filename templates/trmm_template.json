@@ -1,0 +1,17 @@
+[
+  {
+    "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+    "guid": "some-guid, (use `uuidgen` to generate)",
+    "filename": "script_filename.ext",
+    "submittedBy": "Your Name, email, or other contact information",
+    "name": "Short name about this script",
+    "description": "Some full description of this script",
+    "syntax": "",
+    "default_timeout": "90",
+    "shell": "shell",
+    "supported_platforms": [
+      "linux"
+    ],
+    "category": "Some Category"
+  }
+]
