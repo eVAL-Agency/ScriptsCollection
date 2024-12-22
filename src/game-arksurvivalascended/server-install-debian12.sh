@@ -19,16 +19,18 @@
 # https://github.com/GloriousEggroll/proton-ge-custom
 PROTON_VERSION="9-20"
 GAME="ArkSurvivalAscended"
-GAMEDIR="/home/steam/$GAME"
+GAME_USER="steam"
+GAME_DIR="/home/$GAME_USER/$GAME"
 # Force installation directory for game
 # steam produces varying results, sometimes in ~/.local/share/Steam, other times in ~/Steam
-STEAMDIR="/home/steam/.local/share/Steam"
+STEAM_DIR="/home/$GAME_USER/.local/share/Steam"
 # Specific "filesystem" directory for installed version of Proton
-GAMECOMPATDIR="/opt/script-collection/GE-Proton${PROTON_VERSION}/files/share/default_pfx"
+GAME_COMPAT_DIR="/opt/script-collection/GE-Proton${PROTON_VERSION}/files/share/default_pfx"
 # Binary path for Proton
-PROTONBIN="/opt/script-collection/GE-Proton${PROTON_VERSION}/proton"
+PROTON_BIN="/opt/script-collection/GE-Proton${PROTON_VERSION}/proton"
 # List of game maps currently available
-GAMEMAPS="ark-island ark-aberration ark-club ark-scorched ark-thecenter ark-extinction"
+GAME_MAPS="ark-island ark-aberration ark-club ark-scorched ark-thecenter ark-extinction"
+# Range of game ports to enable in the firewall
 PORT_GAME_START=7701
 PORT_GAME_END=7706
 PORT_RCON_START=27001
@@ -92,6 +94,13 @@ fi
 ## Dependency Installation and Setup
 ############################################
 
+# Create a "steam" user account
+# This will create the account with no password, so if you need to log in with this user,
+# run `sudo passwd steam` to set a password.
+if [ -z "$(getent passwd $GAME_USER)" ]; then
+	useradd -m -U $GAME_USER
+fi
+
 # Preliminary requirements
 apt install -y curl wget sudo
 
@@ -111,7 +120,7 @@ install_proton "$PROTON_VERSION"
 ## Upgrade Checks
 ############################################
 
-for MAP in $GAMEMAPS; do
+for MAP in $GAME_MAPS; do
 	# Ensure the override directory exists for the admin modifications to the CLI arguments.
 	[ -e /etc/systemd/system/${MAP}.service.d ] || mkdir -p /etc/systemd/system/${MAP}.service.d
 
@@ -139,17 +148,17 @@ done
 ############################################
 
 # Install ARK Survival Ascended Dedicated
-sudo -u steam /usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+sudo -u $GAME_USER /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
 # STAGING / TESTING - skip ark because it's huge; AppID 90 is Team Fortress 1 (a tiny server useful for testing)
-#sudo -u steam /usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 90 validate +quit
+#sudo -u steam /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 90 validate +quit
 if [ $? -ne 0 ]; then
-	echo "Could not install ARK Survival Ascended Dedicated Server, exiting"
+	echo "Could not install ARK Survival Ascended Dedicated Server, exiting" >&2
 	exit 1
 fi
 
 
 # Install the systemd service files for ARK Survival Ascended Dedicated Server
-for MAP in $GAMEMAPS; do
+for MAP in $GAME_MAPS; do
 	# Different maps will have different settings, (to allow them to coexist on the same server)
 	if [ "$MAP" == "ark-island" ]; then
 		DESC="Island"
@@ -193,19 +202,21 @@ for MAP in $GAMEMAPS; do
 	# Install system service file to be loaded by systemd
 	cat > /etc/systemd/system/${MAP}.service <<EOF
 [Unit]
+# DYNAMICALLY GENERATED FILE! Edit at your own risk
 Description=ARK Survival Ascended Dedicated Server (${DESC})
 After=network.target
+After=ark-updater.service
 
 [Service]
 Type=simple
 LimitNOFILE=10000
-User=steam
-Group=steam
-WorkingDirectory=$GAMEDIR/AppFiles/ShooterGame/Binaries/Win64
+User=$GAME_USER
+Group=$GAME_USER
+WorkingDirectory=$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64
 Environment=XDG_RUNTIME_DIR=/run/user/$(id -u)
-Environment="STEAM_COMPAT_CLIENT_INSTALL_PATH=$STEAMDIR"
-Environment="STEAM_COMPAT_DATA_PATH=$GAMEDIR/prefixes/$MAP"
-# Check $GAMEDIR/services to adjust the CLI arguments
+Environment="STEAM_COMPAT_CLIENT_INSTALL_PATH=$STEAM_DIR"
+Environment="STEAM_COMPAT_DATA_PATH=$GAME_DIR/prefixes/$MAP"
+# Check $GAME_DIR/services to adjust the CLI arguments
 Restart=on-failure
 RestartSec=20s
 
@@ -221,18 +232,18 @@ EOF
 [Service]
 # Edit this line to adjust start parameters of the server
 # After modifying, please remember to run `sudo systemctl daemon-reload` to apply changes to the system.
-ExecStart=$PROTONBIN run ArkAscendedServer.exe ${NAME}?listen?SessionName="${COMMUNITYNAME} (${DESC})"?RCONPort=${RCONPORT} -port=${GAMEPORT} -servergamelog -mods=$MODS
+ExecStart=$PROTON_BIN run ArkAscendedServer.exe ${NAME}?listen?SessionName="${COMMUNITYNAME} (${DESC})"?RCONPort=${RCONPORT} -port=${GAMEPORT} -servergamelog -mods=$MODS
 EOF
     fi
 
     # Set the owner of the override to steam so that user account can modify it.
-    chown steam:steam /etc/systemd/system/${MAP}.service.d/override.conf
+    chown $GAME_USER:$GAME_USER /etc/systemd/system/${MAP}.service.d/override.conf
 
-    if [ ! -e $GAMEDIR/prefixes/$MAP ]; then
+    if [ ! -e $GAME_DIR/prefixes/$MAP ]; then
     	# Install a new prefix for this specific map
     	# Proton 9 seems to have issues with launching multiple binaries in the same prefix.
-    	[ -d $GAMEDIR/prefixes ] || sudo -u steam mkdir -p $GAMEDIR/prefixes
-		sudo -u steam cp $GAMECOMPATDIR $GAMEDIR/prefixes/$MAP -r
+    	[ -d $GAME_DIR/prefixes ] || sudo -u $GAME_USER mkdir -p $GAME_DIR/prefixes
+		sudo -u $GAME_USER cp $GAME_COMPAT_DIR $GAME_DIR/prefixes/$MAP -r
 	fi
 done
 
@@ -240,39 +251,46 @@ done
 # Install system service file to be loaded by systemd
 cat > /etc/systemd/system/ark-updater.service <<EOF
 [Unit]
+# DYNAMICALLY GENERATED FILE! Edit at your own risk
 Description=ARK Survival Ascended Dedicated Server Updater
 After=network.target
 
 [Service]
 Type=oneshot
-User=steam
-Group=steam
-WorkingDirectory=$GAMEDIR/AppFiles/ShooterGame/Binaries/Win64
+User=$GAME_USER
+Group=$GAME_USER
+WorkingDirectory=$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64
 Environment=XDG_RUNTIME_DIR=/run/user/$(id -u)
-ExecStart=$GAMEDIR/update.sh
+ExecStart=$GAME_DIR/update.sh
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-cat > $GAMEDIR/update.sh <<EOF
+cat > $GAME_DIR/update.sh <<EOF
 #!/bin/bash
 #
 # Update ARK Survival Ascended Dedicated Server
-GAMEMAPS="$GAMEMAPS"
+#
+# DYNAMICALLY GENERATED FILE! Edit at your own risk
 
-if [ "\$LOGNAME" != "steam" ]; then
-	SUDO_NEEDED=1
-else
+# List of all maps available on this platform
+GAME_MAPS="$GAME_MAPS"
+
+# This script is expected to be run as the steam user, (as that is the owner of the game files).
+# If another user calls this script, sudo will be used to switch to the steam user.
+if [ "\$(whoami)" == "$GAME_USER" ]; then
 	SUDO_NEEDED=0
+else
+	SUDO_NEEDED=1
 fi
 
 function update_game {
 	echo "Running game update"
 	if [ "\$SUDO_NEEDED" -eq 1 ]; then
-		sudo -u steam /usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+		sudo -u $GAME_USER /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
 	else
-		/usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+		/usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
 	fi
 
 	if [ \$? -ne 0 ]; then
@@ -283,7 +301,7 @@ function update_game {
 
 # Check if any maps are running; do not update an actively running server.
 RUNNING=0
-for MAP in \$GAMEMAPS; do
+for MAP in \$GAME_MAPS; do
 	if [ "\$(systemctl is-active $MAP)" == "active" ]; then
 		RUNNING=1
 	fi
@@ -294,16 +312,21 @@ else
 	echo "Game server is already running, not updating"
 fi
 EOF
-chown steam:steam $GAMEDIR/update.sh
-chmod +x $GAMEDIR/update.sh
+chown $GAME_USER:$GAME_USER $GAME_DIR/update.sh
+chmod +x $GAME_DIR/update.sh
+systemctl daemon-reload
+systemctl enable ark-updater
 
 
 # Create start/stop helpers for all maps
-cat > $GAMEDIR/start_all.sh <<EOF
+cat > $GAME_DIR/start_all.sh <<EOF
 #!/bin/bash
 #
 # Start all ARK server maps that are enabled
-GAMEMAPS="$GAMEMAPS"
+# DYNAMICALLY GENERATED FILE! Edit at your own risk
+
+# List of all maps available on this platform
+GAME_MAPS="$GAME_MAPS"
 
 function start_game {
 	echo "Starting game instance \$1..."
@@ -319,7 +342,7 @@ function start_game {
 
 function update_game {
 	echo "Running game update"
-	sudo -u steam /usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+	sudo -u $GAME_USER /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
 	if [ \$? -ne 0 ]; then
 		echo "Game update failed, not starting"
 		exit 1
@@ -327,7 +350,7 @@ function update_game {
 }
 
 RUNNING=0
-for MAP in \$GAMEMAPS; do
+for MAP in \$GAME_MAPS; do
 	if [ "\$(systemctl is-active $MAP)" == "active" ]; then
 		RUNNING=1
 	fi
@@ -338,21 +361,24 @@ else
 	echo "Game server is already running, not updating"
 fi
 
-for MAP in \$GAMEMAPS; do
+for MAP in \$GAME_MAPS; do
 	if [ "\$(systemctl is-enabled \$MAP)" == "enabled" -a "\$(systemctl is-active \$MAP)" == "inactive" ]; then
 		start_game \$MAP
 	fi
 done
 EOF
-chown steam:steam $GAMEDIR/start_all.sh
-chmod +x $GAMEDIR/start_all.sh
+chown $GAME_USER:$GAME_USER $GAME_DIR/start_all.sh
+chmod +x $GAME_DIR/start_all.sh
 
 
-cat > $GAMEDIR/stop_all.sh <<EOF
+cat > $GAME_DIR/stop_all.sh <<EOF
 #!/bin/bash
 #
 # Stop all ARK server maps that are enabled
-GAMEMAPS="$GAMEMAPS"
+# DYNAMICALLY GENERATED FILE! Edit at your own risk
+
+# List of all maps available on this platform
+GAME_MAPS="$GAME_MAPS"
 
 function stop_game {
 	echo "Stopping game instance \$1..."
@@ -366,14 +392,14 @@ function stop_game {
 	sudo systemctl status \$1 | grep Active
 }
 
-for MAP in \$GAMEMAPS; do
+for MAP in \$GAME_MAPS; do
 	if [ "\$(systemctl is-enabled \$MAP)" == "enabled" -a "\$(systemctl is-active \$MAP)" == "active" ]; then
 		stop_game \$MAP
 	fi
 done
 EOF
-chown steam:steam $GAMEDIR/stop_all.sh
-chmod +x $GAMEDIR/stop_all.sh
+chown $GAME_USER:$GAME_USER $GAME_DIR/stop_all.sh
+chmod +x $GAME_DIR/stop_all.sh
 
 
 # Reload systemd to pick up the new service files
@@ -410,19 +436,19 @@ fi
 ############################################
 
 # Create some helpful links for the user.
-[ -e "$GAMEDIR/services" ] || sudo -u steam mkdir -p "$GAMEDIR/services"
-for MAP in $GAMEMAPS; do
-	[ -h "$GAMEDIR/services/${MAP}.conf" ] || sudo -u steam ln -s /etc/systemd/system/${MAP}.service.d/override.conf "$GAMEDIR/services/${MAP}.conf"
+[ -e "$GAME_DIR/services" ] || sudo -u steam mkdir -p "$GAME_DIR/services"
+for MAP in $GAME_MAPS; do
+	[ -h "$GAME_DIR/services/${MAP}.conf" ] || sudo -u steam ln -s /etc/systemd/system/${MAP}.service.d/override.conf "$GAME_DIR/services/${MAP}.conf"
 done
-[ -h "$GAMEDIR/GameUserSettings.ini" ] || sudo -u steam ln -s $GAMEDIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini "$GAMEDIR/GameUserSettings.ini"
-[ -h "$GAMEDIR/Game.ini" ] || sudo -u steam ln -s $GAMEDIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/Game.ini "$GAMEDIR/Game.ini"
-[ -h "$GAMEDIR/ShooterGame.log" ] || sudo -u steam ln -s $GAMEDIR/AppFiles/ShooterGame/Saved/Logs/ShooterGame.log "$GAMEDIR/ShooterGame.log"
+[ -h "$GAME_DIR/GameUserSettings.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini "$GAME_DIR/GameUserSettings.ini"
+[ -h "$GAME_DIR/Game.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/Game.ini "$GAME_DIR/Game.ini"
+[ -h "$GAME_DIR/ShooterGame.log" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Logs/ShooterGame.log "$GAME_DIR/ShooterGame.log"
 
 
 echo "================================================================================"
 echo "If everything went well, ARK Survival Ascended should be installed!"
 echo ""
-for MAP in $GAMEMAPS; do
+for MAP in $GAME_MAPS; do
 	echo "? Enable game map ${MAP}? (y/N)"
 	echo -n "> "
 	read OPT
@@ -437,9 +463,9 @@ echo ""
 echo "To restart a map:      sudo systemctl restart NAME-OF-MAP"
 echo "To start a map:        sudo systemctl start NAME-OF-MAP"
 echo "To stop a map:         sudo systemctl stop NAME-OF-MAP"
-echo "Game files:            $GAMEDIR/AppFiles/"
-echo "Runtime configuration: $GAMEDIR/services/"
-echo "Game log:              $GAMEDIR/ShooterGame.log"
-echo "Game user settings:    $GAMEDIR/GameUserSettings.ini"
-echo "To start all maps:     $GAMEDIR/start_all.sh"
-echo "To stop all maps:      $GAMEDIR/stop_all.sh"
+echo "Game files:            $GAME_DIR/AppFiles/"
+echo "Runtime configuration: $GAME_DIR/services/"
+echo "Game log:              $GAME_DIR/ShooterGame.log"
+echo "Game user settings:    $GAME_DIR/GameUserSettings.ini"
+echo "To start all maps:     $GAME_DIR/start_all.sh"
+echo "To stop all maps:      $GAME_DIR/stop_all.sh"
