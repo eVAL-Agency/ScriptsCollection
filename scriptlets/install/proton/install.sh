@@ -25,4 +25,3 @@ function install_proton() {
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$PROTON_TGZ"
 	fi
 }
-# scriptlet: install/steam/install.sh

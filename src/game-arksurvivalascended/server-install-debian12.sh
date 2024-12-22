@@ -37,7 +37,7 @@ PORT_RCON_END=27006
 
 # scriptlet:install/proton/install.sh
 # scriptlet:checks/firewall/get_firewall.sh
-# scriptlet:install/steam/install.sh
+# scriptlet:install/steam/install-steamcmd.sh
 # scriptlet:install/firewalld/install.sh
 
 
