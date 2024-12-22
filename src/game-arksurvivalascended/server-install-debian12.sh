@@ -449,13 +449,17 @@ echo "==========================================================================
 echo "If everything went well, ARK Survival Ascended should be installed!"
 echo ""
 for MAP in $GAME_MAPS; do
-	echo "? Enable game map ${MAP}? (y/N)"
-	echo -n "> "
-	read OPT
-	if [ "$OPT" == "y" -o "$OPT" == "Y" ]; then
-		systemctl enable $MAP
+	if [ "$(systemctl is-enabled $MAP)" == "enabled" ]; then
+		echo "Game map ${MAP} is already enabled"
 	else
-		echo "Not enabling ${MAP}, you can always enable it in the future with 'sudo systemctl enable $MAP'"
+		echo "? Enable game map ${MAP}? (y/N)"
+		echo -n "> "
+		read OPT
+		if [ "$OPT" == "y" -o "$OPT" == "Y" ]; then
+			systemctl enable $MAP
+		else
+			echo "Not enabling ${MAP}, you can always enable it in the future with 'sudo systemctl enable $MAP'"
+		fi
 	fi
 	echo ""
 done
