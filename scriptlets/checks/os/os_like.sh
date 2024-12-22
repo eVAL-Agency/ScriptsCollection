@@ -7,15 +7,13 @@ function os_like_debian() {
 		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
 		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
-		if [[ "$LIKE" =~ 'debian' ]]; then echo 1; fi
-		if [[ "$LIKE" =~ 'ubuntu' ]]; then echo 1; fi
-		if [ "$ID" == 'debian' ]; then echo 1; fi
-		if [ "$ID" == 'ubuntu' ]; then echo 1; fi
-
-		echo 0
-	else
-		echo 0
+		if [[ "$LIKE" =~ 'debian' ]]; then echo 1; return; fi
+		if [[ "$LIKE" =~ 'ubuntu' ]]; then echo 1; return; fi
+		if [ "$ID" == 'debian' ]; then echo 1; return; fi
+		if [ "$ID" == 'ubuntu' ]; then echo 1; return; fi
 	fi
+
+	echo 0
 }
 
 ##
@@ -27,13 +25,11 @@ function os_like_ubuntu() {
 		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
 		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
-		if [[ "$LIKE" =~ 'ubuntu' ]]; then echo 1; fi
-		if [ "$ID" == 'ubuntu' ]; then echo 1; fi
-
-		echo 0
-	else
-		echo 0
+		if [[ "$LIKE" =~ 'ubuntu' ]]; then echo 1; return; fi
+		if [ "$ID" == 'ubuntu' ]; then echo 1; return; fi
 	fi
+
+	echo 0
 }
 
 ##
@@ -45,17 +41,15 @@ function os_like_rhel() {
 		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
 		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
-		if [[ "$LIKE" =~ 'rhel' ]]; then echo 1; fi
-		if [[ "$LIKE" =~ 'fedora' ]]; then echo 1; fi
-		if [[ "$LIKE" =~ 'centos' ]]; then echo 1; fi
-		if [ "$ID" == 'rhel' ]; then echo 1; fi
-		if [ "$ID" == 'fedora' ]; then echo 1; fi
-		if [ "$ID" == 'centos' ]; then echo 1; fi
-
-		echo 0
-	else
-		echo 0
+		if [[ "$LIKE" =~ 'rhel' ]]; then echo 1; return; fi
+		if [[ "$LIKE" =~ 'fedora' ]]; then echo 1; return; fi
+		if [[ "$LIKE" =~ 'centos' ]]; then echo 1; return; fi
+		if [ "$ID" == 'rhel' ]; then echo 1; return; fi
+		if [ "$ID" == 'fedora' ]; then echo 1; return; fi
+		if [ "$ID" == 'centos' ]; then echo 1; return; fi
 	fi
+
+	echo 0
 }
 
 ##
@@ -67,13 +61,11 @@ function os_like_suse() {
 		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
 		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
-		if [[ "$LIKE" =~ 'suse' ]]; then echo 1; fi
-		if [ "$ID" == 'suse' ]; then echo 1; fi
-
-		echo 0
-	else
-		echo 0
+		if [[ "$LIKE" =~ 'suse' ]]; then echo 1; return; fi
+		if [ "$ID" == 'suse' ]; then echo 1; return; fi
 	fi
+
+	echo 0
 }
 
 ##
@@ -85,11 +77,9 @@ function os_like_arch() {
 		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
 		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
-		if [[ "$LIKE" =~ 'arch' ]]; then echo 1; fi
-		if [ "$ID" == 'arch' ]; then echo 1; fi
-
-		echo 0
-	else
-		echo 0
+		if [[ "$LIKE" =~ 'arch' ]]; then echo 1; return; fi
+		if [ "$ID" == 'arch' ]; then echo 1; return; fi
 	fi
+
+	echo 0
 }
