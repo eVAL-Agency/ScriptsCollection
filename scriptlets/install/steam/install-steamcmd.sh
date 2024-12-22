@@ -3,6 +3,8 @@
 ##
 # Install SteamCMD
 function install_steamcmd() {
+	echo "Installing SteamCMD..."
+
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_UBUNTU="$(os_like_ubuntu)"
 

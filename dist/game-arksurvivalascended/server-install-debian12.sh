@@ -47,6 +47,9 @@ PORT_RCON_END=27006
 # @arg $1 string Proton version to install
 function install_proton() {
 	VERSION="${1:-9-21}"
+
+	echo "Installing Glorious Eggroll's Proton $VERSION..."
+
 	PROTON_URL="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton${VERSION}/GE-Proton${VERSION}.tar.gz"
 	PROTON_TGZ="$(basename "$PROTON_URL")"
 	PROTON_NAME="$(basename "$PROTON_TGZ" ".tar.gz")"
@@ -185,6 +188,8 @@ function os_like_arch() {
 ##
 # Install SteamCMD
 function install_steamcmd() {
+	echo "Installing SteamCMD..."
+
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_UBUNTU="$(os_like_ubuntu)"
 
@@ -230,6 +235,8 @@ function install_steamcmd() {
 # Install firewalld
 #
 function install_firewalld() {
+	echo "Installing firewalld..."
+
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_RHEL="$(os_like_rhel)"
 	TYPE_ARCH="$(os_like_arch)"

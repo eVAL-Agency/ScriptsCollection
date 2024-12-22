@@ -4,6 +4,8 @@
 # Install firewalld
 #
 function install_firewalld() {
+	echo "Installing firewalld..."
+
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_RHEL="$(os_like_rhel)"
 	TYPE_ARCH="$(os_like_arch)"
