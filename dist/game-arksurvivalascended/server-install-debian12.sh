@@ -204,10 +204,20 @@ function install_steamcmd() {
 		# Enable "non-free" repos for Debian (for steamcmd)
 		# https://stackoverflow.com/questions/76688863/apt-add-repository-doesnt-work-on-debian-12
 		add-apt-repository -y -U http://deb.debian.org/debian -c non-free-firmware -c non-free
+		if [ $? -ne 0 ]; then
+			echo "Workaround failed to add non-free repos, trying new method instead"
+			apt-add-repository -y non-free
+		fi
 
 		# Install steam repo
 		curl -s http://repo.steampowered.com/steam/archive/stable/steam.gpg > /usr/share/keyrings/steam.gpg
 		echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] http://repo.steampowered.com/steam/ stable steam" > /etc/apt/sources.list.d/steam.list
+
+		# By using this script, you agree to the Steam license agreement at https://store.steampowered.com/subscriber_agreement/
+		# and the Steam privacy policy at https://store.steampowered.com/privacy_agreement/
+		# Since this is meant to support unattended installs, we will forward your acceptance of their license.
+		echo steam steam/question select "I AGREE" | debconf-set-selections
+		echo steam steam/license note '' | debconf-set-selections
 
 		# Install steam binary and steamcmd
 		apt update
@@ -446,6 +456,67 @@ EOF
 	fi
 done
 
+# Create update helper and service
+# Install system service file to be loaded by systemd
+cat > /etc/systemd/system/ark-updater.service <<EOF
+[Unit]
+Description=ARK Survival Ascended Dedicated Server Updater
+After=network.target
+
+[Service]
+Type=oneshot
+User=steam
+Group=steam
+WorkingDirectory=$GAMEDIR/AppFiles/ShooterGame/Binaries/Win64
+Environment=XDG_RUNTIME_DIR=/run/user/$(id -u)
+ExecStart=$GAMEDIR/update.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > $GAMEDIR/update.sh <<EOF
+#!/bin/bash
+#
+# Update ARK Survival Ascended Dedicated Server
+GAMEMAPS="$GAMEMAPS"
+
+if [ "\$LOGNAME" != "steam" ]; then
+	SUDO_NEEDED=1
+else
+	SUDO_NEEDED=0
+fi
+
+function update_game {
+	echo "Running game update"
+	if [ "\$SUDO_NEEDED" -eq 1 ]; then
+		sudo -u steam /usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+	else
+		/usr/games/steamcmd +force_install_dir $GAMEDIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+	fi
+
+	if [ \$? -ne 0 ]; then
+		echo "Game update failed!" >&2
+		exit 1
+	fi
+}
+
+# Check if any maps are running; do not update an actively running server.
+RUNNING=0
+for MAP in \$GAMEMAPS; do
+	if [ "\$(systemctl is-active $MAP)" == "active" ]; then
+		RUNNING=1
+	fi
+done
+if [ \$RUNNING -eq 0 ]; then
+	update_game
+else
+	echo "Game server is already running, not updating"
+fi
+EOF
+chown steam:steam $GAMEDIR/update.sh
+chmod +x $GAMEDIR/update.sh
+
 
 # Create start/stop helpers for all maps
 cat > $GAMEDIR/start_all.sh <<EOF
@@ -549,6 +620,7 @@ elif [ "$FIREWALL" == "firewalld" ]; then
   <port port="${PORT_RCON_START}-${PORT_RCON_END}" protocol="tcp"/>
 </service>
 EOF
+	systemctl restart firewalld
     firewall-cmd --permanent --zone=public --add-service=ark-survival
 fi
 
