@@ -8,13 +8,6 @@ function install_steamcmd() {
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_UBUNTU="$(os_like_ubuntu)"
 
-	# Create a "steam" user account
-	# This will create the account with no password, so if you need to log in with this user,
-	# run `sudo passwd steam` to set a password.
-	if [ -z "$(getent passwd steam)" ]; then
-		useradd -m -U steam
-	fi
-
 	# Preliminary requirements
 	if [ "$TYPE_UBUNTU" == 1 ]; then
 		add-apt-repository multiverse
