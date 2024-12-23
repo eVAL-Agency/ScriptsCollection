@@ -10,9 +10,16 @@ function install_steamcmd() {
 
 	# Preliminary requirements
 	if [ "$TYPE_UBUNTU" == 1 ]; then
-		add-apt-repository multiverse
+		add-apt-repository -y multiverse
 		dpkg --add-architecture i386
 		apt update
+
+		# By using this script, you agree to the Steam license agreement at https://store.steampowered.com/subscriber_agreement/
+		# and the Steam privacy policy at https://store.steampowered.com/privacy_agreement/
+		# Since this is meant to support unattended installs, we will forward your acceptance of their license.
+		echo steam steam/question select "I AGREE" | debconf-set-selections
+		echo steam steam/license note '' | debconf-set-selections
+
 		apt install -y steamcmd
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
 		dpkg --add-architecture i386
