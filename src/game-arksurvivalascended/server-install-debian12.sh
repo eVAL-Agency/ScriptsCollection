@@ -550,7 +550,7 @@ if [ "$MULTISERVER" -eq 1 ]; then
 	fi
 else
 	# Disable / ensure disabled shared directory for multi-server support
-	if [ -e /etc/exports -a $(grep -q "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports) ]; then
+	if [ -n "$(grep "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports 2>/dev/null)" ]; then
 		echo "Disabling cluster share"
 		BAK="/etc/exports.bak-$(date +%Y%m%d%H%M%S)"
 		cp /etc/exports $BAK
