@@ -1,5 +1,5 @@
+import shutil
 from glob import glob
-from pprint import pprint
 import os
 
 def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
@@ -32,6 +32,7 @@ def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
 	return dependencies + output
 
 
+# Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):
 	print('Parsing file %s' % file)
 	dest_file = 'dist/' + file[4:]
@@ -51,3 +52,12 @@ for file in glob('src/**/*.sh', recursive=True):
 					dest_f.write(parse_include(file, line_number, include, scriptlets))
 				else:
 					dest_f.write(line)
+
+# Locate and copy any README files
+for file in glob('src/**/README.md', recursive=True):
+	print('Copying README %s' % file)
+	dest_file = 'dist/' + file[4:]
+	if not os.path.exists(os.path.dirname(dest_file)):
+		os.makedirs(os.path.dirname(dest_file))
+
+	shutil.copy(file, dest_file)
