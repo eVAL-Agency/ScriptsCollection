@@ -80,6 +80,24 @@ else
 	INSTALLTYPE="new"
 fi
 
+if [ -e "$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64/PlayersJoinNoCheckList.txt" ]; then
+	WHITELIST=1
+else
+	WHITELIST=0
+fi
+
+if [ -e /etc/exports -a $(grep -q "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports) ]; then
+	MULTISERVER=1
+	ISPRIMARY=1
+elif [ $(egrep -q "^[0-9\.]*:$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/fstab) ]; then
+	MULTISERVER=1
+	ISPRIMARY=0
+	PRIMARYIP="$(grep "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/fstab | sed 's#^\(.*\):.*#\1#')"
+else
+	MULTISERVER=0
+	ISPRIMARY=0
+fi
+
 # Determine if there is a firewall already installed, (to prevent issues)
 # Addresses Issue #19
 FIREWALL=$(get_enabled_firewall)
@@ -100,8 +118,19 @@ if [ "$INSTALLTYPE" == "new" ]; then
 	if [ "$COMMUNITYNAME" == "" ]; then
 		COMMUNITYNAME="My Awesome ARK Server"
 	fi
+fi
 
-	echo ''
+echo ''
+if [ "$WHITELIST" -eq 1 ]; then
+	echo "? DISABLE whitelist for players?"
+	echo -n "> (y/N): "
+	read WHITELIST
+	if [ "$WHITELIST" == "y" -o "$WHITELIST" == "Y" ]; then
+		WHITELIST=0
+	else
+		WHITELIST=1
+	fi
+else
 	echo "? Enable whitelist for players?"
 	echo -n "> (y/N): "
 	read WHITELIST
@@ -110,8 +139,26 @@ if [ "$INSTALLTYPE" == "new" ]; then
 	else
 		WHITELIST=0
 	fi
+fi
 
-	echo ''
+echo ''
+if [ "$MULTISERVER" -eq 1 ]; then
+	echo "? DISABLE multi-server cluster support? (Maps spread across different servers)"
+	echo -n "> (y/N): "
+	read MULTISERVER
+	if [ "$MULTISERVER" == "y" -o "$MULTISERVER" == "Y" ]; then
+		MULTISERVER=0
+	else
+		MULTISERVER=1
+	fi
+
+	if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
+		echo ''
+		echo "? Add more secondary IPs to the cluster? (Separate different IPs with spaces, enter to just skip)"
+		echo -n "> "
+		read SECONDARYIPS
+	fi
+else
 	echo "? Enable multi-server cluster support? (Maps spread across different servers)"
 	echo -n "> (y/N): "
 	read MULTISERVER
@@ -474,7 +521,7 @@ chmod +x $GAME_DIR/stop_all.sh
 # Reload systemd to pick up the new service files
 systemctl daemon-reload
 
-# Ensure cluster directory exists
+# Ensure cluster resources exist
 [ -d "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" ] || sudo -u $GAME_USER mkdir -p "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters"
 
 
@@ -483,6 +530,7 @@ systemctl daemon-reload
 ############################################
 
 if [ "$MULTISERVER" -eq 1 ]; then
+	# Enable / ensure enabled shared directory for multi-server support
 	if [ "$ISPRIMARY" -eq 1 ]; then
 		systemctl enable nfs-server
 		for IP in $SECONDARYIPS; do
@@ -500,7 +548,30 @@ if [ "$MULTISERVER" -eq 1 ]; then
 			mount -a
 		fi
 	fi
+else
+	# Disable / ensure disabled shared directory for multi-server support
+	if [ -e /etc/exports -a $(grep -q "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports) ]; then
+		echo "Disabling cluster share"
+		BAK="/etc/exports.bak-$(date +%Y%m%d%H%M%S)"
+		cp /etc/exports $BAK
+		cat $BAK | grep -v "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" > /etc/exports
+		systemctl restart nfs-server
+	fi
+	if [ -n "$(mount | grep "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" | grep nfs)" ]; then
+		echo "Unmounting cluster share"
+		umount "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters"
+	fi
+	if [ $(egrep -q "^[0-9\.]*:$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/fstab) ]; then
+		echo "Removing NFS mount from fstab"
+		BAK="/etc/fstab.bak-$(date +%Y%m%d%H%M%S)"
+		cp /etc/fstab $BAK
+		cat $BAK | grep -v "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" > /etc/fstab
+	fi
 fi
+
+# Ensure cluster resources exist
+sudo -u $GAME_USER touch "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/PlayersJoinNoCheckList.txt"
+sudo -u $GAME_USER touch "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admins.txt"
 
 ############################################
 ## Security Configuration
@@ -546,47 +617,43 @@ fi
 ############################################
 
 
-# Setup whitelist if requested
-if [ "$WHITELIST" -eq 1 ]; then
-	WL_GAME="$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64/PlayersJoinNoCheckList.txt"
-	WL_SHARED="$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/PlayersJoinNoCheckList.txt"
-
-	if [ "$MULTISERVER" -eq 1 ]; then
-		# Whitelist should be in shared directory
-		if [ -e "$WL_GAME" ]; then
-			# Whitelist already exists, (try not to remove user data)
-			if [ ! -h "$WL_GAME" ]; then
-				# Not currently a symlink, (default), needs moved / linked to the shared directory
-				if [ ! -e "$WL_SHARED" ]; then
-					# Move the existing file to the shared directory
-					sudo -u $GAME_USER mv "$WL_GAME" "$WL_SHARED"
-				else
-					# Shared file already exists, just move this to a backup copy
-					sudo -u $GAME_USER mv "$WL_GAME" "$WL_GAME.bak"
-				fi
-				# Create a symlink to the shared file
-				sudo -u $GAME_USER ln -s "$WL_SHARED" "$WL_GAME"
-			fi
-		else
-			# Whitelist does not exist, create it in the shared directory if necessary
-			[ -e "$WL_SHARED" ] || sudo -u $GAME_USER touch "$WL_SHARED"
-			# Create a symlink to the shared file
-			sudo -u $GAME_USER ln -s "$WL_SHARED" "$WL_GAME"
-		fi
-
-		# Symlink to the root game directory for convenience
-		[ -h "$GAME_DIR/PlayersJoinNoCheckList.txt" ] || sudo -u $GAME_USER ln -s "$WL_SHARED" "$GAME_DIR/PlayersJoinNoCheckList.txt"
+# Setup whitelist
+WL_GAME="$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64/PlayersJoinNoCheckList.txt"
+WL_CLUSTER="$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/PlayersJoinNoCheckList.txt"
+if [ -e "$WL_GAME" -a ! -h "$WL_GAME" ]; then
+	# Whitelist already exists in the game directory, either move it to the cluster directory
+	# or back it up.  This is because this script will manage the whitelist via a symlink.
+	if [ -s "$WL_CLUSTER" ]; then
+		# Cluster whitelist already exists, move the game whitelist to a backup
+		sudo -u $GAME_USER mv "$WL_GAME" "$WL_GAME.bak"
 	else
-		# Whitelist should be in the game directory
-		[ -e "$WL_GAME" ] || sudo -u $GAME_USER touch "$WL_GAME"
-		# Symlink to the root game directory for convenience
-		[ -h "$GAME_DIR/PlayersJoinNoCheckList.txt" ] || sudo -u $GAME_USER ln -s "$WL_GAME" "$GAME_DIR/PlayersJoinNoCheckList.txt"
+		# Cluster whitelist does not exist, move the game whitelist to the cluster directory
+		sudo -u $GAME_USER mv "$WL_GAME" "$WL_CLUSTER"
 	fi
 fi
 
-# Setup admin whitelist
-[ -e "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt" ] || sudo -u $GAME_USER touch "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt"
-[ -h "$GAME_DIR/admin.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt "$GAME_DIR/admin.txt"
+if [ "$WHITELIST" -eq 1 ]; then
+	# User opted to enable (or keep enabled) whitelist
+	if [ -h "$WL_GAME" ]; then
+		# Whitelist is already a symlink, (default), do nothing
+		echo "Whitelist already enabled"
+	else
+		# Whitelist is not a symlink, (default), create one
+		echo "Enabling player whitelist"
+		sudo -u $GAME_USER ln -s "$WL_CLUSTER" "$WL_GAME"
+	fi
+else
+	# User opted to disable whitelist
+	if [ -h "$WL_GAME" ]; then
+		# Whitelist is already a symlink, (default), remove it
+		echo "Disabling player whitelist"
+		sudo -u $GAME_USER unlink "$WL_GAME"
+	else
+		# Whitelist is not a symlink, (default), do nothing
+		echo "Whitelist already disabled"
+	fi
+fi
+
 
 # Create some helpful links for the user.
 [ -e "$GAME_DIR/services" ] || sudo -u steam mkdir -p "$GAME_DIR/services"
@@ -596,6 +663,8 @@ done
 [ -h "$GAME_DIR/GameUserSettings.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/GameUserSettings.ini "$GAME_DIR/GameUserSettings.ini"
 [ -h "$GAME_DIR/Game.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Config/WindowsServer/Game.ini "$GAME_DIR/Game.ini"
 [ -h "$GAME_DIR/ShooterGame.log" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/Logs/ShooterGame.log "$GAME_DIR/ShooterGame.log"
+[ -h "$GAME_DIR/PlayersJoinNoCheckList.txt" ] || sudo -u $GAME_USER ln -s "$WL_CLUSTER" "$GAME_DIR/PlayersJoinNoCheckList.txt"
+[ -h "$GAME_DIR/admins.txt" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admins.txt "$GAME_DIR/admins.txt"
 
 
 echo "================================================================================"
