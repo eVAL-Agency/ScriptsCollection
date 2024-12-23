@@ -306,7 +306,7 @@ else
 	WHITELIST=0
 fi
 
-if [ -e /etc/exports -a $(grep -q "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports) ]; then
+if [ -n "$(grep "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/exports 2>/dev/null)" ]; then
 	MULTISERVER=1
 	ISPRIMARY=1
 elif [ $(egrep -q "^[0-9\.]*:$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/fstab) ]; then
