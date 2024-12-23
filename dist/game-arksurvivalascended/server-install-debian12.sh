@@ -10,7 +10,16 @@
 # @SOURCE  https://github.com/cdp1337/ARKSurvivalAscended-Linux
 #
 # F*** Nitrado
-
+#
+# Supports:
+#   Debian 12
+#   Ubuntu 24.04
+#
+# Requirements:
+#   None
+#
+# TRMM Custom Fields:
+#   None
 
 ############################################
 ## Parameter Configuration
@@ -187,9 +196,16 @@ function install_steamcmd() {
 
 	# Preliminary requirements
 	if [ "$TYPE_UBUNTU" == 1 ]; then
-		add-apt-repository multiverse
+		add-apt-repository -y multiverse
 		dpkg --add-architecture i386
 		apt update
+
+		# By using this script, you agree to the Steam license agreement at https://store.steampowered.com/subscriber_agreement/
+		# and the Steam privacy policy at https://store.steampowered.com/privacy_agreement/
+		# Since this is meant to support unattended installs, we will forward your acceptance of their license.
+		echo steam steam/question select "I AGREE" | debconf-set-selections
+		echo steam steam/license note '' | debconf-set-selections
+
 		apt install -y steamcmd
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
 		dpkg --add-architecture i386
@@ -262,16 +278,20 @@ function install_firewalld() {
 ############################################
 
 # Only allow running as root
+# @todo Check if `su -` is actually required here; will just `sudo` work instead?
 if [ "$LOGNAME" != "root" ]; then
 	echo "Please run this script as root! (If you ran with 'su', use 'su -' instead)" >&2
 	exit 1
 fi
 
-# This script can run on an existing server, but should not run while the game is actively running.
-if [ $(ps aux | grep ArkAscendedServer.exe | wc -l) -gt 1 ]; then
-	echo "It appears that the ARK server is already running, please stop it before running this script."
-	exit 1
-fi
+# This script can run on an existing server, but should not update the game if a map is actively running.
+# Check if any maps are running; do not update an actively running server.
+RUNNING=0
+for MAP in $GAME_MAPS; do
+	if [ "$(systemctl is-active $MAP)" == "active" ]; then
+		RUNNING=1
+	fi
+done
 
 # Determine if this is a new installation or an upgrade (/repair)
 if [ -e /etc/systemd/system/ark-island.service ]; then
@@ -300,6 +320,50 @@ if [ "$INSTALLTYPE" == "new" ]; then
 	if [ "$COMMUNITYNAME" == "" ]; then
 		COMMUNITYNAME="My Awesome ARK Server"
 	fi
+
+	echo ''
+	echo "? Enable whitelist for players?"
+	echo -n "> (y/N): "
+	read WHITELIST
+	if [ "$WHITELIST" == "y" -o "$WHITELIST" == "Y" ]; then
+		WHITELIST=1
+	else
+		WHITELIST=0
+	fi
+
+	echo ''
+	echo "? Enable multi-server cluster support? (Maps spread across different servers)"
+	echo -n "> (y/N): "
+	read MULTISERVER
+	if [ "$MULTISERVER" == "y" -o "$MULTISERVER" == "Y" ]; then
+		MULTISERVER=1
+	else
+		MULTISERVER=0
+	fi
+
+	if [ "$MULTISERVER" -eq 1 ]; then
+		echo ''
+		echo "? Is this the first (primary) server?"
+		echo -n "> (y/N): "
+		read ISPRIMARY
+		if [ "$ISPRIMARY" == "y" -o "$ISPRIMARY" == "Y" ]; then
+			ISPRIMARY=1
+		else
+			ISPRIMARY=0
+		fi
+
+		if [ "$ISPRIMARY" -eq 1 ]; then
+			echo ''
+			echo "? What are the IPs of the secondary servers? (Separate different IPs with spaces)"
+			echo -n "> "
+			read SECONDARYIPS
+		else
+			echo ''
+			echo "? What is the IP of the primary server?"
+			echo -n "> "
+			read PRIMARYIP
+		fi
+	fi
 fi
 
 
@@ -320,6 +384,14 @@ apt install -y curl wget sudo
 if [ "$FIREWALL" == "none" ]; then
 	# No firewall installed, go ahead and install firewalld
 	install_firewalld
+fi
+
+if [ "$MULTISERVER" -eq 1 ]; then
+	if [ "$ISPRIMARY" -eq 1 ]; then
+		apt install -y nfs-kernel-server nfs-common
+	else
+		apt install -y nfs-common
+	fi
 fi
 
 # Install steam binary and steamcmd
@@ -361,14 +433,18 @@ done
 ############################################
 
 # Install ARK Survival Ascended Dedicated
-sudo -u $GAME_USER /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
-# STAGING / TESTING - skip ark because it's huge; AppID 90 is Team Fortress 1 (a tiny server useful for testing)
-#sudo -u steam /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 90 validate +quit
-if [ $? -ne 0 ]; then
-	echo "Could not install ARK Survival Ascended Dedicated Server, exiting" >&2
-	exit 1
+if [ $RUNNING -eq 1 ]; then
+	echo "WARNING - One or more game servers are currently running, this script will not update the game files."
+	echo "Skipping steam update"
+else
+	sudo -u $GAME_USER /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 2430930 validate +quit
+    # STAGING / TESTING - skip ark because it's huge; AppID 90 is Team Fortress 1 (a tiny server useful for testing)
+    #sudo -u steam /usr/games/steamcmd +force_install_dir $GAME_DIR/AppFiles +login anonymous +app_update 90 validate +quit
+    if [ $? -ne 0 ]; then
+    	echo "Could not install ARK Survival Ascended Dedicated Server, exiting" >&2
+    	exit 1
+    fi
 fi
-
 
 # Install the systemd service files for ARK Survival Ascended Dedicated Server
 for MAP in $GAME_MAPS; do
@@ -618,6 +694,33 @@ chmod +x $GAME_DIR/stop_all.sh
 # Reload systemd to pick up the new service files
 systemctl daemon-reload
 
+# Ensure cluster directory exists
+[ -d "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" ] || sudo -u $GAME_USER mkdir -p "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters"
+
+
+############################################
+## NFS Configuration
+############################################
+
+if [ "$MULTISERVER" -eq 1 ]; then
+	if [ "$ISPRIMARY" -eq 1 ]; then
+		systemctl enable nfs-server
+		for IP in $SECONDARYIPS; do
+			# Ensure the cluster folder is shared with the various child servers
+			if [ ! $(grep -q "Saved/clusters $IP" /etc/exports) ]; then
+				echo "Adding $IP to NFS access for $GAME_DIR/AppFiles/ShooterGame/Saved/clusters"
+				echo "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters $IP/32(rw,sync,no_subtree_check)" >> /etc/exports
+			fi
+		done
+		systemctl restart nfs-server
+	else
+		if [ ! $(grep -q "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters" /etc/fstab) ]; then
+			echo "Adding NFS mount to $PRIMARYIP for $GAME_DIR/AppFiles/ShooterGame/Saved/clusters"
+			echo "$PRIMARYIP:$GAME_DIR/AppFiles/ShooterGame/Saved/clusters $GAME_DIR/AppFiles/ShooterGame/Saved/clusters nfs defaults,rw,sync,soft,intr 0 0" >> /etc/fstab
+			mount -a
+		fi
+	fi
+fi
 
 ############################################
 ## Security Configuration
@@ -627,6 +730,12 @@ if [ "$FIREWALL" == "ufw" ]; then
 	# Enable rules for UFW
 	ufw allow ${PORT_GAME_START}:${PORT_GAME_END}/udp
 	ufw allow ${PORT_RCON_START}:${PORT_RCON_END}/tcp
+	if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
+		# Allow NFS access from secondary servers
+		for IP in $SECONDARYIPS; do
+			ufw allow from $IP/32 to any port nfs
+		done
+	fi
 elif [ "$FIREWALL" == "firewalld" ]; then
 	# Install/enable rules for Firewalld
 	[ -d "/etc/firewalld/services" ] || mkdir -p /etc/firewalld/services
@@ -641,12 +750,63 @@ elif [ "$FIREWALL" == "firewalld" ]; then
 EOF
 	systemctl restart firewalld
     firewall-cmd --permanent --zone=public --add-service=ark-survival
+
+    if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
+		# Allow NFS access from secondary servers
+		firewall-cmd --permanent --zone=internal --add-service=nfs
+		for IP in $SECONDARYIPS; do
+			firewall-cmd --permanent --zone=internal --add-source="$IP/32"
+		done
+	fi
 fi
 
 
 ############################################
 ## Post-Install Configuration
 ############################################
+
+
+# Setup whitelist if requested
+if [ "$WHITELIST" -eq 1 ]; then
+	WL_GAME="$GAME_DIR/AppFiles/ShooterGame/Binaries/Win64/PlayersJoinNoCheckList.txt"
+	WL_SHARED="$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/PlayersJoinNoCheckList.txt"
+
+	if [ "$MULTISERVER" -eq 1 ]; then
+		# Whitelist should be in shared directory
+		if [ -e "$WL_GAME" ]; then
+			# Whitelist already exists, (try not to remove user data)
+			if [ ! -h "$WL_GAME" ]; then
+				# Not currently a symlink, (default), needs moved / linked to the shared directory
+				if [ ! -e "$WL_SHARED" ]; then
+					# Move the existing file to the shared directory
+					sudo -u $GAME_USER mv "$WL_GAME" "$WL_SHARED"
+				else
+					# Shared file already exists, just move this to a backup copy
+					sudo -u $GAME_USER mv "$WL_GAME" "$WL_GAME.bak"
+				fi
+				# Create a symlink to the shared file
+				sudo -u $GAME_USER ln -s "$WL_SHARED" "$WL_GAME"
+			fi
+		else
+			# Whitelist does not exist, create it in the shared directory if necessary
+			[ -e "$WL_SHARED" ] || sudo -u $GAME_USER touch "$WL_SHARED"
+			# Create a symlink to the shared file
+			sudo -u $GAME_USER ln -s "$WL_SHARED" "$WL_GAME"
+		fi
+
+		# Symlink to the root game directory for convenience
+		[ -h "$GAME_DIR/PlayersJoinNoCheckList.txt" ] || sudo -u $GAME_USER ln -s "$WL_SHARED" "$GAME_DIR/PlayersJoinNoCheckList.txt"
+	else
+		# Whitelist should be in the game directory
+		[ -e "$WL_GAME" ] || sudo -u $GAME_USER touch "$WL_GAME"
+		# Symlink to the root game directory for convenience
+		[ -h "$GAME_DIR/PlayersJoinNoCheckList.txt" ] || sudo -u $GAME_USER ln -s "$WL_GAME" "$GAME_DIR/PlayersJoinNoCheckList.txt"
+	fi
+fi
+
+# Setup admin whitelist
+[ -e "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt" ] || sudo -u $GAME_USER touch "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt"
+[ -h "$GAME_DIR/admin.ini" ] || sudo -u steam ln -s $GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admin.txt "$GAME_DIR/admin.txt"
 
 # Create some helpful links for the user.
 [ -e "$GAME_DIR/services" ] || sudo -u steam mkdir -p "$GAME_DIR/services"
@@ -684,5 +844,10 @@ echo "Game files:            $GAME_DIR/AppFiles/"
 echo "Runtime configuration: $GAME_DIR/services/"
 echo "Game log:              $GAME_DIR/ShooterGame.log"
 echo "Game user settings:    $GAME_DIR/GameUserSettings.ini"
+if [ "$WHITELIST" -eq 1 ]; then
+	echo "Whitelist:             $GAME_DIR/PlayersJoinNoCheckList.txt"
+fi
+echo "Admin list:            $GAME_DIR/admin.txt"
 echo "To start all maps:     $GAME_DIR/start_all.sh"
 echo "To stop all maps:      $GAME_DIR/stop_all.sh"
+echo "To update game:        $GAME_DIR/update.sh"
