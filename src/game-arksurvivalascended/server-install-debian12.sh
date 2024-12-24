@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Install script for ARK Survival Ascended on Debian 12
+# Install script for ARK Survival Ascended on Debian and Ubuntu
 #
 # Uses Glorious Eggroll's build of Proton
 # Please ensure to run this script as root (or at least with sudo)

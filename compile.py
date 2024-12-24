@@ -1,6 +1,8 @@
 import shutil
 from glob import glob
 import os
+from datetime import datetime
+
 
 def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
 	dependencies = ''
@@ -32,6 +34,17 @@ def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
 	return dependencies + output
 
 
+def get_bash_header():
+	lines = []
+
+	lines.append('#')
+	#lines.append('# Generated on ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+	lines.append('# Collection repository: https://github.com/cdp1337/ScriptsCollection')
+	lines.append('')
+
+	return "\n".join(lines)
+
+
 # Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):
 	print('Parsing file %s' % file)
@@ -41,6 +54,7 @@ for file in glob('src/**/*.sh', recursive=True):
 
 	scriptlets = []
 	line_number = 0
+	in_header = True
 
 	with open(file, 'r') as f:
 		with open(dest_file, 'w') as dest_f:
@@ -48,9 +62,17 @@ for file in glob('src/**/*.sh', recursive=True):
 				line_number += 1
 				# Check for "# scriptlet:..." replacements
 				if line.startswith('# scriptlet:'):
+					if in_header:
+						# Print header before continuing
+						in_header = False
+						dest_f.write(get_bash_header())
 					include = line[12:].strip()
 					dest_f.write(parse_include(file, line_number, include, scriptlets))
 				else:
+					if in_header and not line.startswith('#'):
+						# Print header before continuing
+						in_header = False
+						dest_f.write(get_bash_header())
 					dest_f.write(line)
 
 # Locate and copy any README files
