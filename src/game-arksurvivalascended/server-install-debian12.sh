@@ -46,10 +46,10 @@ PORT_RCON_START=27001
 PORT_RCON_END=27006
 
 
-# scriptlet:install/proton/install.sh
-# scriptlet:checks/firewall/get_firewall.sh
-# scriptlet:install/steam/install-steamcmd.sh
-# scriptlet:install/firewalld/install.sh
+# scriptlet:proton/install.sh
+# scriptlet:_common/get_firewall.sh
+# scriptlet:steam/install-steamcmd.sh
+# scriptlet:firewalld/install.sh
 
 
 
@@ -211,6 +211,7 @@ apt install -y curl wget sudo
 if [ "$FIREWALL" == "none" ]; then
 	# No firewall installed, go ahead and install firewalld
 	install_firewalld
+	FIREWALL="firewalld"
 fi
 
 if [ "$MULTISERVER" -eq 1 ]; then
