@@ -1,7 +1,7 @@
 import shutil
 from glob import glob
 import os
-from datetime import datetime
+import stat
 
 
 def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
@@ -74,6 +74,9 @@ for file in glob('src/**/*.sh', recursive=True):
 						in_header = False
 						dest_f.write(get_bash_header())
 					dest_f.write(line)
+
+	# Ensure new file is executable
+	os.chmod(dest_file, 0o775)
 
 # Locate and copy any README files
 for file in glob('src/**/README.md', recursive=True):
