@@ -83,3 +83,27 @@ function os_like_arch() {
 
 	echo 0
 }
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+function os_like_bsd() {
+	if [ "$(uname -s)" == 'FreeBSD' ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+function os_like_macos() {
+	if [ "$(uname -s)" == 'Darwin' ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
