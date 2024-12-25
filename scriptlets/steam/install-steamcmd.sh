@@ -1,4 +1,4 @@
-# scriptlet: checks/os/os_like.sh
+# scriptlet: _common/os_like.sh
 
 ##
 # Install SteamCMD
