@@ -15,7 +15,7 @@
 #        Package, (or packages), to install.  Accepts multiple packages at once.
 #
 function package_install (){
-	echo "Installing $*..."
+	echo "package_install: Installing $*..."
 
 	TYPE_BSD="$(os_like_bsd)"
 	TYPE_DEBIAN="$(os_like_debian)"
@@ -34,7 +34,7 @@ function package_install (){
 	elif [ "$TYPE_SUSE" == 1 ]; then
 		zypper install -y $*
 	else
-		echo 'Unsupported or unknown OS' >&2
+		echo 'package_install: Unsupported or unknown OS' >&2
 		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
 		exit 1
 	fi

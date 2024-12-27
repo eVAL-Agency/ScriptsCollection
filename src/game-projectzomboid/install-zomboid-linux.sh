@@ -29,6 +29,8 @@ STEAM_DIR="/home/$GAME_USER/.local/share/Steam"
 # scriptlet:steam/install-steamcmd.sh
 # scriptlet:_common/print_header.sh
 # scriptlet:_common/get_firewall.sh
+# scriptlet:_common/firewall_allow.sh
+# scriptlet:ufw/install.sh
 
 if [ "$(whoami)" != "root" ]; then
 	echo "Please run this script as root!" >&2
@@ -41,7 +43,9 @@ if [ -z "$(getent passwd $GAME_USER)" ]; then
 	useradd -m -U $GAME_USER
 fi
 
-FIREWALL=$(get_enabled_firewall)
+if [ "$(get_enabled_firewall)" == "none" ]; then
+	install_ufw
+fi
 
 # Install steam binary and steamcmd
 install_steamcmd
@@ -76,6 +80,7 @@ RestartSec=20s
 WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
+systemctl enable zomboid
 
 
 if [ ! -e "$GAME_DIR/Server/servertest.ini" ]; then
@@ -91,8 +96,15 @@ if [ ! -e "$GAME_DIR/Server/servertest.ini" ]; then
 fi
 
 
+firewall_allow --port "16261:16262" --udp
 
 
-
-udp        0      0 0.0.0.0:16261           0.0.0.0:*                           48429/./ProjectZomb
-udp        0      0 0.0.0.0:16262           0.0.0.0:*                           48429/./ProjectZomb
+print_header 'Project Zomboid Installation Complete'
+echo 'Game server will auto-update on restarts and will auto-start on server boot.'
+echo ''
+echo "To restart:     sudo systemctl restart zomboid"
+echo "To start:       sudo systemctl start zomboid"
+echo "To stop:        sudo systemctl stop zomboid"
+echo "Game files:     $GAME_DIR/AppFiles/"
+echo "Game log:       $GAME_DIR/server-console.txt"
+echo "Game settings:  $GAME_DIR/Server/servertest.ini"

@@ -48,7 +48,7 @@ PORT_RCON_START=27001
 PORT_RCON_END=27006
 
 
-# scriptlet: install/proton/install.sh
+# scriptlet: proton/install.sh
 ##
 # Install Glorious Eggroll's Proton fork on a requested version
 #
@@ -79,9 +79,9 @@ function install_proton() {
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$PROTON_TGZ"
 	fi
 }
-# end-scriptlet: install/proton/install.sh
+# end-scriptlet: proton/install.sh
 
-# scriptlet: checks/firewall/get_firewall.sh
+# scriptlet: _common/get_firewall.sh
 ##
 # Get which firewall is enabled,
 # or "none" if none located
@@ -96,9 +96,9 @@ function get_enabled_firewall() {
 		echo "none"
 	fi
 }
-# end-scriptlet: checks/firewall/get_firewall.sh
+# end-scriptlet: _common/get_firewall.sh
 
-# scriptlet: checks/os/os_like.sh
+# scriptlet: _common/os_like.sh
 ##
 # Check if the OS is "like" a certain type
 #
@@ -184,9 +184,33 @@ function os_like_arch() {
 
 	echo 0
 }
-# end-scriptlet: checks/os/os_like.sh
 
-# scriptlet: install/steam/install-steamcmd.sh
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+function os_like_bsd() {
+	if [ "$(uname -s)" == 'FreeBSD' ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+function os_like_macos() {
+	if [ "$(uname -s)" == 'Darwin' ]; then
+		echo 1
+	else
+		echo 0
+	fi
+}
+# end-scriptlet: _common/os_like.sh
+
+# scriptlet: steam/install-steamcmd.sh
 
 ##
 # Install SteamCMD
@@ -240,37 +264,60 @@ function install_steamcmd() {
 		exit 1
 	fi
 }
-# end-scriptlet: install/steam/install-steamcmd.sh
+# end-scriptlet: steam/install-steamcmd.sh
 
-# scriptlet: install/firewalld/install.sh
+# scriptlet: _common/package_install.sh
 
 ##
-# Install firewalld
+# Install a package with the system's package manager.
 #
-function install_firewalld() {
-	echo "Installing firewalld..."
+# Uses Redhat's yum, Debian's apt-get, and SuSE's zypper.
+#
+# Usage:
+#
+# ```syntax-shell
+# package_install apache2 php7.0 mariadb-server
+# ```
+#
+# @param $1..$N string
+#        Package, (or packages), to install.  Accepts multiple packages at once.
+#
+function package_install (){
+	echo "package_install: Installing $*..."
 
+	TYPE_BSD="$(os_like_bsd)"
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_RHEL="$(os_like_rhel)"
 	TYPE_ARCH="$(os_like_arch)"
 	TYPE_SUSE="$(os_like_suse)"
 
-	if [ "$TYPE_DEBIAN" == 1 ]; then
-		apt update
-		apt install -y firewalld
+	if [ "$TYPE_BSD" == 1 ]; then
+		pkg install -y $*
+	elif [ "$TYPE_DEBIAN" == 1 ]; then
+		apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
 	elif [ "$TYPE_RHEL" == 1 ]; then
-		dnf install -y firewalld
+		yum install -y $*
 	elif [ "$TYPE_ARCH" == 1 ]; then
-		pacman -Syu --noconfirm firewalld
+		pacman -Syu --noconfirm $*
 	elif [ "$TYPE_SUSE" == 1 ]; then
-		zypper ref
-		zypper install -y firewalld
+		zypper install -y $*
 	else
-		echo 'Unsupported or unknown OS' >&2
+		echo 'package_install: Unsupported or unknown OS' >&2
+		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
 		exit 1
 	fi
 }
-# end-scriptlet: install/firewalld/install.sh
+# end-scriptlet: _common/package_install.sh
+
+# scriptlet: firewalld/install.sh
+
+##
+# Install firewalld
+#
+function install_firewalld() {
+	package_install firewalld
+}
+# end-scriptlet: firewalld/install.sh
 
 
 
@@ -433,6 +480,7 @@ apt install -y curl wget sudo
 if [ "$FIREWALL" == "none" ]; then
 	# No firewall installed, go ahead and install firewalld
 	install_firewalld
+	FIREWALL="firewalld"
 fi
 
 if [ "$MULTISERVER" -eq 1 ]; then
