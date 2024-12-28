@@ -49,7 +49,8 @@ PORT_RCON_END=27006
 # scriptlet:proton/install.sh
 # scriptlet:_common/get_firewall.sh
 # scriptlet:steam/install-steamcmd.sh
-# scriptlet:firewalld/install.sh
+# scriptlet:ufw/install.sh
+# scriptlet:_common/firewall_allow.sh
 
 
 
@@ -209,9 +210,9 @@ fi
 apt install -y curl wget sudo
 
 if [ "$FIREWALL" == "none" ]; then
-	# No firewall installed, go ahead and install firewalld
-	install_firewalld
-	FIREWALL="firewalld"
+	# No firewall installed, go ahead and install UFW
+	install_ufw
+	FIREWALL="ufw"
 fi
 
 if [ "$MULTISERVER" -eq 1 ]; then
@@ -578,38 +579,14 @@ sudo -u $GAME_USER touch "$GAME_DIR/AppFiles/ShooterGame/Saved/clusters/admins.t
 ## Security Configuration
 ############################################
 
-if [ "$FIREWALL" == "ufw" ]; then
-	# Enable rules for UFW
-	ufw allow ${PORT_GAME_START}:${PORT_GAME_END}/udp
-	ufw allow ${PORT_RCON_START}:${PORT_RCON_END}/tcp
-	if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
-		# Allow NFS access from secondary servers
-		for IP in $SECONDARYIPS; do
-			ufw allow from $IP/32 to any port nfs
-		done
-	fi
-elif [ "$FIREWALL" == "firewalld" ]; then
-	# Install/enable rules for Firewalld
-	[ -d "/etc/firewalld/services" ] || mkdir -p /etc/firewalld/services
-    cat > /etc/firewalld/services/ark-survival.xml <<EOF
-<?xml version="1.0" encoding="utf-8"?>
-<service>
-  <short>ARK Survival Ascended</short>
-  <description>ARK Survival Ascended game server</description>
-  <port port="${PORT_GAME_START}-${PORT_GAME_END}" protocol="udp"/>
-  <port port="${PORT_RCON_START}-${PORT_RCON_END}" protocol="tcp"/>
-</service>
-EOF
-	systemctl restart firewalld
-    firewall-cmd --permanent --zone=public --add-service=ark-survival
-
-    if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
-		# Allow NFS access from secondary servers
-		firewall-cmd --permanent --zone=internal --add-service=nfs
-		for IP in $SECONDARYIPS; do
-			firewall-cmd --permanent --zone=internal --add-source="$IP/32"
-		done
-	fi
+firewall_allow --port "${PORT_GAME_START}:${PORT_GAME_END}" --udp
+firewall_allow --port "${PORT_RCON_START}:${PORT_RCON_END}" --tcp
+if [ "$MULTISERVER" -eq 1 -a "$ISPRIMARY" -eq 1 ]; then
+	# Allow NFS access from secondary servers
+	for IP in $SECONDARYIPS; do
+		firewall_allow --port "111,2049" --tcp --zone internal --source $IP/32
+		firewall_allow --port "111,2049" --udp --zone internal --source $IP/32
+	done
 fi
 
 
