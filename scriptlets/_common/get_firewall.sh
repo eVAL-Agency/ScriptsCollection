@@ -12,3 +12,18 @@ function get_enabled_firewall() {
 		echo "none"
 	fi
 }
+
+##
+# Get which firewall is available on the local system,
+# or "none" if none located
+function get_available_firewall() {
+	if systemctl list-unit-files firewalld.service &>/dev/null; then
+		echo "firewalld"
+	elif systemctl list-unit-files ufw.service &>/dev/null; then
+		echo "ufw"
+	elif systemctl list-unit-files iptables.service &>/dev/null; then
+		echo "iptables"
+	else
+		echo "none"
+	fi
+}

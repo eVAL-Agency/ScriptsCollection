@@ -17,6 +17,21 @@ function get_enabled_firewall() {
 		echo "none"
 	fi
 }
+
+##
+# Get which firewall is available on the local system,
+# or "none" if none located
+function get_available_firewall() {
+	if systemctl list-unit-files firewalld.service &>/dev/null; then
+		echo "firewalld"
+	elif systemctl list-unit-files ufw.service &>/dev/null; then
+		echo "ufw"
+	elif systemctl list-unit-files iptables.service &>/dev/null; then
+		echo "iptables"
+	else
+		echo "none"
+	fi
+}
 # end-scriptlet: _common/get_firewall.sh
 
 # scriptlet: _common/os_like.sh
@@ -205,7 +220,7 @@ function firewall_allow() {
 	local PORT=""
 	local PROTO="tcp"
 	local SOURCE="any"
-	local FIREWALL=$(get_enabled_firewall)
+	local FIREWALL=$(get_available_firewall)
 	local ZONE="public"
 	while [ $# -ge 1 ]; do
 		case $1 in
@@ -231,28 +246,57 @@ function firewall_allow() {
 		shift
 	done
 
-	if [ "$PORT" == "" ]; then
+	if [ "$PORT" == "" -a "$ZONE" != "trusted" ]; then
 		echo "firewall_allow: No port specified!" >&2
+		exit 1
+	fi
+
+	if [ "$PORT" != "" -a "$ZONE" == "trusted" ]; then
+		echo "firewall_allow: Trusted zones do not use ports!" >&2
+		exit 1
+	fi
+
+	if [ "$ZONE" == "trusted" -a "$SOURCE" == "any" ]; then
+		echo "firewall_allow: Trusted zones require a source!" >&2
 		exit 1
 	fi
 
 	if [ "$FIREWALL" == "ufw" ]; then
 		if [ "$SOURCE" == "any" ]; then
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from any..."
-			ufw allow proto $PROTO $PORT
+			ufw allow proto $PROTO to any port $PORT
+		elif [ "$ZONE" == "trusted" ]; then
+			echo "firewall_allow/UFW: Allowing all connections from $SOURCE..."
+			ufw allow from $SOURCE
 		else
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
 			ufw allow from $SOURCE proto $PROTO to any port $PORT
 		fi
 	elif [ "$FIREWALL" == "firewalld" ]; then
-		if [ "$SOURCE" == "any" ]; then
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO from any in zone $ZONE..."
-			firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
-		else
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO from $SOURCE in zone $ZONE..."
+		if [ "$SOURCE" != "any" ]; then
+			# Firewalld uses Zones to specify sources
+			echo "firewall_allow/firewalld: Adding $SOURCE to zone $ZONE..."
 			firewall-cmd --zone=$ZONE --add-source=$SOURCE --permanent
-			firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
 		fi
+
+		if [ "$PORT" != "" ]; then
+			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in zone $ZONE..."
+			if [[ "$PORT" =~ ":" ]]; then
+				# firewalld expects port ranges to be in the format of "#-#" vs "#:#"
+				local DPORTS="${PORT/:/-}"
+				firewall-cmd --zone=$ZONE --add-port=$DPORTS/$PROTO --permanent
+			elif [[ "$PORT" =~ "," ]]; then
+				# Firewalld cannot handle multiple ports all that well, so split them by the comma
+				# and run the add command separately for each port
+				local DPORTS="$(echo $PORT | sed 's:,: :g')"
+				for P in $DPORTS; do
+					firewall-cmd --zone=$ZONE --add-port=$P/$PROTO --permanent
+				done
+			else
+				firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
+			fi
+		fi
+
 		firewall-cmd --reload
 	elif [ "$FIREWALL" == "iptables" ]; then
 		# iptables doesn't natively support multiple ports, so we have to get creative
@@ -284,11 +328,24 @@ function firewall_allow() {
 # end-scriptlet: _common/firewall_allow.sh
 
 
-echo "Firewall: $(get_enabled_firewall)"
-if [ "$(get_enabled_firewall)" == "none" ]; then
+echo "Firewall: $(get_available_firewall)"
+if [ "$(get_available_firewall)" == "none" ]; then
 	install_ufw
 fi
 
 firewall_allow --port "16261:16262" --udp
 firewall_allow --port "1234" --tcp
 firewall_allow --port "111,2049" --tcp --zone internal --source 1.2.3.4/32
+firewall_allow --zone trusted --source 6.7.8.9/32
+
+# Status print (debugging)
+FIREWALL="$(get_available_firewall)"
+if [ "$FIREWALL" == "ufw" ]; then
+	ufw status verbose
+elif [ "$FIREWALL" == "firewalld" ]; then
+	firewall-cmd --list-all --zone=public
+	firewall-cmd --list-all --zone=internal
+	firewall-cmd --list-all --zone=trusted
+elif [ "$FIREWALL" == "iptables" ]; then
+	iptables -L -v
+fi
