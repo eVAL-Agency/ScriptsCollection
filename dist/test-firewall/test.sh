@@ -204,6 +204,16 @@ function install_ufw() {
 }
 # end-scriptlet: ufw/install.sh
 
+# scriptlet: firewalld/install.sh
+
+##
+# Install firewalld
+#
+function install_firewalld() {
+	package_install firewalld
+}
+# end-scriptlet: firewalld/install.sh
+
 # scriptlet: _common/firewall_allow.sh
 ##
 # Add an "allow" rule to the firewall in the INPUT chain
@@ -275,12 +285,12 @@ function firewall_allow() {
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
 			# Firewalld uses Zones to specify sources
-			echo "firewall_allow/firewalld: Adding $SOURCE to zone $ZONE..."
+			echo "firewall_allow/firewalld: Adding $SOURCE to $ZONE zone..."
 			firewall-cmd --zone=$ZONE --add-source=$SOURCE --permanent
 		fi
 
 		if [ "$PORT" != "" ]; then
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in zone $ZONE..."
+			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in $ZONE zone..."
 			if [[ "$PORT" =~ ":" ]]; then
 				# firewalld expects port ranges to be in the format of "#-#" vs "#:#"
 				local DPORTS="${PORT/:/-}"
@@ -327,11 +337,74 @@ function firewall_allow() {
 }
 # end-scriptlet: _common/firewall_allow.sh
 
+# scriptlet: _common/package_remove.sh
+
+##
+# Remove a package with the system's package manager.
+#
+# Uses Redhat's yum, Debian's apt-get, and SuSE's zypper.
+#
+# Usage:
+#
+# ```syntax-shell
+# package_remove apache2
+# ```
+#
+# @param $1..$N string
+#        Package, (or packages), to remove.  Accepts multiple packages at once.
+#
+function package_remove (){
+	echo "package_remove: Removing $*..."
+
+	TYPE_BSD="$(os_like_bsd)"
+	TYPE_DEBIAN="$(os_like_debian)"
+	TYPE_RHEL="$(os_like_rhel)"
+	TYPE_ARCH="$(os_like_arch)"
+	TYPE_SUSE="$(os_like_suse)"
+
+	if [ "$TYPE_BSD" == 1 ]; then
+		pkg remove -y $*
+	elif [ "$TYPE_DEBIAN" == 1 ]; then
+		apt-get remove -y $*
+	elif [ "$TYPE_RHEL" == 1 ]; then
+		yum remove -y $*
+	elif [ "$TYPE_ARCH" == 1 ]; then
+		pacman -Rns --noconfirm $*
+	elif [ "$TYPE_SUSE" == 1 ]; then
+		zypper remove -y $*
+	else
+		echo 'package_remove: Unsupported or unknown OS' >&2
+		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
+		exit 1
+	fi
+}
+# end-scriptlet: _common/package_remove.sh
+
 
 echo "Firewall: $(get_available_firewall)"
-if [ "$(get_available_firewall)" == "none" ]; then
-	install_ufw
+
+if [ "$(get_available_firewall)" == "ufw" ]; then
+	package_remove ufw
 fi
+if [ "$(get_available_firewall)" == "firewalld" ]; then
+	package_remove firewalld
+fi
+if [ "$(get_available_firewall)" == "iptables" ]; then
+	package_remove iptables
+fi
+
+if [ "$1" == "ufw" ]; then
+	install_ufw
+elif [ "$1" == "firewalld" ]; then
+	install_firewalld
+elif [ "$1" == "iptables" ]; then
+	package_install iptables
+else
+	echo "Unknown firewall: $1" >&2
+	exit 1
+fi
+
+echo "Firewall: $(get_available_firewall)"
 
 firewall_allow --port "16261:16262" --udp
 firewall_allow --port "1234" --tcp

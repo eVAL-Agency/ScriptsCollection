@@ -69,12 +69,12 @@ function firewall_allow() {
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
 			# Firewalld uses Zones to specify sources
-			echo "firewall_allow/firewalld: Adding $SOURCE to zone $ZONE..."
+			echo "firewall_allow/firewalld: Adding $SOURCE to $ZONE zone..."
 			firewall-cmd --zone=$ZONE --add-source=$SOURCE --permanent
 		fi
 
 		if [ "$PORT" != "" ]; then
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in zone $ZONE..."
+			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in $ZONE zone..."
 			if [[ "$PORT" =~ ":" ]]; then
 				# firewalld expects port ranges to be in the format of "#-#" vs "#:#"
 				local DPORTS="${PORT/:/-}"
