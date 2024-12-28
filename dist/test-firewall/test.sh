@@ -309,6 +309,7 @@ function firewall_allow() {
 
 		firewall-cmd --reload
 	elif [ "$FIREWALL" == "iptables" ]; then
+		echo "firewall_allow/iptables: WARNING - iptables is untested"
 		# iptables doesn't natively support multiple ports, so we have to get creative
 		if [[ "$PORT" =~ ":" ]]; then
 			local DPORTS="-m multiport --dports $PORT"
@@ -389,16 +390,16 @@ fi
 if [ "$(get_available_firewall)" == "firewalld" ]; then
 	package_remove firewalld
 fi
-if [ "$(get_available_firewall)" == "iptables" ]; then
-	package_remove iptables
-fi
+#if [ "$(get_available_firewall)" == "iptables" ]; then
+#	package_remove iptables
+#fi
 
 if [ "$1" == "ufw" ]; then
 	install_ufw
 elif [ "$1" == "firewalld" ]; then
 	install_firewalld
-elif [ "$1" == "iptables" ]; then
-	package_install iptables
+#elif [ "$1" == "iptables" ]; then
+#	package_install iptables
 else
 	echo "Unknown firewall: $1" >&2
 	exit 1
@@ -419,6 +420,6 @@ elif [ "$FIREWALL" == "firewalld" ]; then
 	firewall-cmd --list-all --zone=public
 	firewall-cmd --list-all --zone=internal
 	firewall-cmd --list-all --zone=trusted
-elif [ "$FIREWALL" == "iptables" ]; then
-	iptables -L -v
+#elif [ "$FIREWALL" == "iptables" ]; then
+#	iptables -L -v
 fi

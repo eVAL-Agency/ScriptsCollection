@@ -11,4 +11,11 @@ function install_ufw() {
 	fi
 
 	package_install ufw
+
+	# Auto-enable a newly installed firewall
+	ufw --force enable
+
+	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
+	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
+	ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
 }

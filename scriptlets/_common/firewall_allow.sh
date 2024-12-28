@@ -93,6 +93,7 @@ function firewall_allow() {
 
 		firewall-cmd --reload
 	elif [ "$FIREWALL" == "iptables" ]; then
+		echo "firewall_allow/iptables: WARNING - iptables is untested"
 		# iptables doesn't natively support multiple ports, so we have to get creative
 		if [[ "$PORT" =~ ":" ]]; then
 			local DPORTS="-m multiport --dports $PORT"
