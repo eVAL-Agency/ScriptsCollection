@@ -48,10 +48,10 @@ function firewall_allow() {
 	if [ "$FIREWALL" == "ufw" ]; then
 		if [ "$SOURCE" == "any" ]; then
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from any..."
-			ufw allow $PORT/$PROTO
+			ufw allow proto $PROTO $PORT
 		else
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
-			ufw allow from $SOURCE to any port $PORT/$PROTO
+			ufw allow from $SOURCE proto $PROTO to any port $PORT
 		fi
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" == "any" ]; then
