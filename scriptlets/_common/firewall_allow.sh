@@ -3,10 +3,11 @@
 # Add an "allow" rule to the firewall in the INPUT chain
 #
 # Arguments:
-#   --port <port>      Port(s) to allow
-#   --source <source>  Source IP to allow (default: any)
-#   --zone <zone>      (only with firewalld) Zone to allow (default: public)
-#   --tcp|--udp        Protocol to allow (default: tcp)
+#   --port <port>       Port(s) to allow
+#   --source <source>   Source IP to allow (default: any)
+#   --zone <zone>       Zone to allow (default: public)
+#   --tcp|--udp         Protocol to allow (default: tcp)
+#   --comment <comment> (only UFW) Comment for the rule
 #
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
 function firewall_allow() {
@@ -16,6 +17,7 @@ function firewall_allow() {
 	local SOURCE="any"
 	local FIREWALL=$(get_available_firewall)
 	local ZONE="public"
+	local COMMENT=""
 	while [ $# -ge 1 ]; do
 		case $1 in
 			--port)
@@ -32,6 +34,10 @@ function firewall_allow() {
 			--zone)
 				shift
 				ZONE=$1
+				;;
+			--comment)
+				shift
+				COMMENT=$1
 				;;
 			*)
 				PORT=$1
@@ -58,13 +64,13 @@ function firewall_allow() {
 	if [ "$FIREWALL" == "ufw" ]; then
 		if [ "$SOURCE" == "any" ]; then
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from any..."
-			ufw allow proto $PROTO to any port $PORT
+			ufw allow proto $PROTO to any port $PORT comment "$COMMENT"
 		elif [ "$ZONE" == "trusted" ]; then
 			echo "firewall_allow/UFW: Allowing all connections from $SOURCE..."
-			ufw allow from $SOURCE
+			ufw allow from $SOURCE comment "$COMMENT"
 		else
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
-			ufw allow from $SOURCE proto $PROTO to any port $PORT
+			ufw allow from $SOURCE proto $PROTO to any port $PORT comment "$COMMENT"
 		fi
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
