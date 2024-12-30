@@ -6,6 +6,6 @@ A collection of useful scripts for various Linux distributions
 
 | Script | Supports |
 |--------|----------|
-| [Install script for Project Zomboid](src/game-projectzomboid/install-zomboid-linux.sh) |  |
-| [Install script for ARK Survival Ascended on Debian and Ubuntu](src/game-arksurvivalascended/README.md) | ![debian](docs/images/icons/debian.svg) ![ubuntu](docs/images/icons/ubuntu.svg) |
+| [Install Project Zomboid](src/game-projectzomboid/linux_install_game_zomboid.sh) |  |
+| [Install ARK Survival Ascended Dedicated Server](src/game-arksurvivalascended/README.md) | ![debian](docs/images/icons/debian.svg) ![ubuntu](docs/images/icons/ubuntu.svg) |
 | [src/test-firewall/test.sh](src/test-firewall/test.sh) |  |

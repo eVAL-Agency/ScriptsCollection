@@ -1,0 +1,17 @@
+[
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "2b565553-5d9f-d003-55bf-b11102223287",
+        "filename": "test.sh",
+        "submittedBy": "",
+        "name": null,
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux"
+            ]
+        ],
+        "category": null
+    }
+]

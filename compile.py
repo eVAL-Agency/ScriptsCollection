@@ -1,8 +1,10 @@
 import shutil
+import uuid
 from glob import glob
 import os
 import stat
 from pprint import pprint
+import json
 
 
 def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
@@ -55,6 +57,9 @@ class Script:
 		self.title = None
 		self.readme = None
 		self.author = None
+		self.guid = None
+		self.category = None
+		self.trmm_timeout = 60
 		self.supports = []
 		self.scriptlets = []
 
@@ -67,6 +72,8 @@ class Script:
 		scriptlets = []
 		line_number = 0
 		in_header = True
+
+		self._parse_guid()
 
 		if os.path.exists(os.path.join(os.path.dirname(self.file), 'README.md')):
 			self.readme = os.path.join(os.path.dirname(self.file), 'README.md')
@@ -97,11 +104,51 @@ class Script:
 								self._parse_author(line)
 							elif '@SUPPORTS' in line:
 								self._parse_supports(line)
+							elif '@CATEGORY' in line:
+								self.category = line[11:].strip()
+							elif '@TRMM-TIMEOUT' in line:
+								self.trmm_timeout = int(line[15:].strip())
 
 						dest_f.write(line)
 
 		# Ensure new file is executable
 		os.chmod(dest_file, 0o775)
+
+		# Store the TRMM metafile
+		with open(os.path.join(os.path.dirname(dest_file), 'trmm.json'), 'w') as dest_f:
+			dest_f.write(json.dumps([self.as_trmm_meta()], indent=4))
+
+
+	def _parse_guid(self):
+		hashedValueEven = hashedValueOdd = 3074457345618258791
+		KnuthMultiValue = 3074457345618258799
+		i = 1
+		for char in self.file:
+			i += 1
+			if i % 2 == 0:
+				hashedValueEven = (hashedValueEven + ord(char)) * KnuthMultiValue
+			else:
+				hashedValueOdd = (hashedValueOdd + ord(char)) * KnuthMultiValue
+
+		frame = bytearray()
+		frame.append(0xff & hashedValueEven)
+		frame.append(0xff & hashedValueEven >> 8)
+		frame.append(0xff & hashedValueEven >> 16)
+		frame.append(0xff & hashedValueEven >> 24)
+		frame.append(0xff & hashedValueEven >> 32)
+		frame.append(0xff & hashedValueEven >> 40)
+		frame.append(0xff & hashedValueEven >> 48)
+		frame.append(0xff & hashedValueEven >> 56)
+		frame.append(0xff & hashedValueOdd)
+		frame.append(0xff & hashedValueOdd >> 8)
+		frame.append(0xff & hashedValueOdd >> 16)
+		frame.append(0xff & hashedValueOdd >> 24)
+		frame.append(0xff & hashedValueOdd >> 32)
+		frame.append(0xff & hashedValueOdd >> 40)
+		frame.append(0xff & hashedValueOdd >> 48)
+		frame.append(0xff & hashedValueOdd >> 56)
+		self.guid = uuid.UUID(bytes=bytes(frame)).__str__()
+
 
 	def _parse_author(self, line):
 		a = line[9:].strip()
@@ -132,6 +179,14 @@ class Script:
 	def __str__(self):
 		return 'Script: %s' % self.file
 
+	def get_full_author(self) -> str:
+		if self.author is None:
+			return ''
+		elif self.author['email']:
+			return '%s <%s>' % (self.author['name'], self.author['email'])
+		else:
+			return self.author['name']
+
 	def asdict(self):
 		return {
 			'file': self.file,
@@ -139,7 +194,25 @@ class Script:
 			'readme': self.readme,
 			'author': self.author,
 			'supports': self.supports,
+			'category': self.category,
+			'trmm_timeout': self.trmm_timeout,
+			'guid': self.guid,
 		}
+
+	def as_trmm_meta(self):
+		return {
+			'$schema': 'https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json',
+			'guid': self.guid,
+			'filename': os.path.basename(self.file),
+			'submittedBy': self.get_full_author(),
+			'name': self.title,
+			# 'syntax': '', # @todo
+			'default_timeout': str(self.trmm_timeout),
+			'shell': 'shell',
+			'supported_platforms': [['linux'] + self.supports],
+			'category': self.category,
+		}
+
 
 # Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):

@@ -1,11 +1,13 @@
 #!/bin/bash
 #
-# Install script for Project Zomboid
+# Install Project Zomboid
 #
 # Please ensure to run this script as root (or at least with sudo)
 #
 # @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell - cdp1337@veraciousnetwork.com
+# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
+# @CATEGORY Game Server
+# @TRMM-TIMEOUT 600
 #
 # Supports:
 #   Debian 12
