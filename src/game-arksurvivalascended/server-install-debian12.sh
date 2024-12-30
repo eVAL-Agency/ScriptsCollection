@@ -6,8 +6,10 @@
 # Please ensure to run this script as root (or at least with sudo)
 #
 # @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell - cdp1337@veraciousnetwork.com
+# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @SOURCE  https://github.com/cdp1337/ARKSurvivalAscended-Linux
+# @SUPPORTS Debian 12
+# @SUPPORTS Ubuntu 24.04
 #
 # F*** Nitrado
 #

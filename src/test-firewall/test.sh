@@ -32,6 +32,7 @@ fi
 
 echo "Firewall: $(get_available_firewall)"
 
+firewall_allow --port 80 --tcp # testing simple rule with no comment
 firewall_allow --port "16261:16263" --udp --comment 'UDP multiport specification'
 firewall_allow --port "1234" --tcp --comment 'TCP single port specification'
 firewall_allow --port "111,2049" --tcp --zone internal --source 1.2.3.4/32 --comment 'Two-port specification with source'

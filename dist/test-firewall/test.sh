@@ -201,6 +201,15 @@ function install_ufw() {
 	fi
 
 	package_install ufw
+
+	# Auto-enable a newly installed firewall
+	ufw --force enable
+
+	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
+	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
+	if [ -n "$TTY_IP" ]; then
+		ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
+	fi
 }
 # end-scriptlet: ufw/install.sh
 
@@ -211,6 +220,13 @@ function install_ufw() {
 #
 function install_firewalld() {
 	package_install firewalld
+
+	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
+	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
+	if [ -n "$TTY_IP" ]; then
+		# Anti-lockout rule based on first install of firewalld
+		firewall-cmd --zone=trusted --add-source=$TTY_IP --permanent
+	fi
 }
 # end-scriptlet: firewalld/install.sh
 
@@ -219,10 +235,11 @@ function install_firewalld() {
 # Add an "allow" rule to the firewall in the INPUT chain
 #
 # Arguments:
-#   --port <port>      Port(s) to allow
-#   --source <source>  Source IP to allow (default: any)
-#   --zone <zone>      (only with firewalld) Zone to allow (default: public)
-#   --tcp|--udp        Protocol to allow (default: tcp)
+#   --port <port>       Port(s) to allow
+#   --source <source>   Source IP to allow (default: any)
+#   --zone <zone>       Zone to allow (default: public)
+#   --tcp|--udp         Protocol to allow (default: tcp)
+#   --comment <comment> (only UFW) Comment for the rule
 #
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
 function firewall_allow() {
@@ -232,6 +249,7 @@ function firewall_allow() {
 	local SOURCE="any"
 	local FIREWALL=$(get_available_firewall)
 	local ZONE="public"
+	local COMMENT=""
 	while [ $# -ge 1 ]; do
 		case $1 in
 			--port)
@@ -248,6 +266,10 @@ function firewall_allow() {
 			--zone)
 				shift
 				ZONE=$1
+				;;
+			--comment)
+				shift
+				COMMENT=$1
 				;;
 			*)
 				PORT=$1
@@ -274,13 +296,13 @@ function firewall_allow() {
 	if [ "$FIREWALL" == "ufw" ]; then
 		if [ "$SOURCE" == "any" ]; then
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from any..."
-			ufw allow proto $PROTO to any port $PORT
+			ufw allow proto $PROTO to any port $PORT comment "$COMMENT"
 		elif [ "$ZONE" == "trusted" ]; then
 			echo "firewall_allow/UFW: Allowing all connections from $SOURCE..."
-			ufw allow from $SOURCE
+			ufw allow from $SOURCE comment "$COMMENT"
 		else
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
-			ufw allow from $SOURCE proto $PROTO to any port $PORT
+			ufw allow from $SOURCE proto $PROTO to any port $PORT comment "$COMMENT"
 		fi
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
@@ -407,10 +429,11 @@ fi
 
 echo "Firewall: $(get_available_firewall)"
 
-firewall_allow --port "16261:16262" --udp
-firewall_allow --port "1234" --tcp
-firewall_allow --port "111,2049" --tcp --zone internal --source 1.2.3.4/32
-firewall_allow --zone trusted --source 6.7.8.9/32
+firewall_allow --port 80 --tcp # testing simple rule with no comment
+firewall_allow --port "16261:16263" --udp --comment 'UDP multiport specification'
+firewall_allow --port "1234" --tcp --comment 'TCP single port specification'
+firewall_allow --port "111,2049" --tcp --zone internal --source 1.2.3.4/32 --comment 'Two-port specification with source'
+firewall_allow --zone trusted --source 6.7.8.9/32 --comment 'Single host added to trusted zone'
 
 # Status print (debugging)
 FIREWALL="$(get_available_firewall)"

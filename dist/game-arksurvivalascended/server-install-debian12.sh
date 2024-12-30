@@ -6,8 +6,10 @@
 # Please ensure to run this script as root (or at least with sudo)
 #
 # @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell - cdp1337@veraciousnetwork.com
+# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @SOURCE  https://github.com/cdp1337/ARKSurvivalAscended-Linux
+# @SUPPORTS Debian 12
+# @SUPPORTS Ubuntu 24.04
 #
 # F*** Nitrado
 #
@@ -91,6 +93,21 @@ function get_enabled_firewall() {
 	elif [ "$(systemctl is-active ufw)" == "active" ]; then
 		echo "ufw"
 	elif [ "$(systemctl is-active iptables)" == "active" ]; then
+		echo "iptables"
+	else
+		echo "none"
+	fi
+}
+
+##
+# Get which firewall is available on the local system,
+# or "none" if none located
+function get_available_firewall() {
+	if systemctl list-unit-files firewalld.service &>/dev/null; then
+		echo "firewalld"
+	elif systemctl list-unit-files ufw.service &>/dev/null; then
+		echo "ufw"
+	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"
 	else
 		echo "none"
@@ -321,6 +338,15 @@ function install_ufw() {
 	fi
 
 	package_install ufw
+
+	# Auto-enable a newly installed firewall
+	ufw --force enable
+
+	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
+	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
+	if [ -n "$TTY_IP" ]; then
+		ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
+	fi
 }
 # end-scriptlet: ufw/install.sh
 
@@ -329,10 +355,11 @@ function install_ufw() {
 # Add an "allow" rule to the firewall in the INPUT chain
 #
 # Arguments:
-#   --port <port>      Port(s) to allow
-#   --source <source>  Source IP to allow (default: any)
-#   --zone <zone>      (only with firewalld) Zone to allow (default: public)
-#   --tcp|--udp        Protocol to allow (default: tcp)
+#   --port <port>       Port(s) to allow
+#   --source <source>   Source IP to allow (default: any)
+#   --zone <zone>       Zone to allow (default: public)
+#   --tcp|--udp         Protocol to allow (default: tcp)
+#   --comment <comment> (only UFW) Comment for the rule
 #
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
 function firewall_allow() {
@@ -340,8 +367,9 @@ function firewall_allow() {
 	local PORT=""
 	local PROTO="tcp"
 	local SOURCE="any"
-	local FIREWALL=$(get_enabled_firewall)
+	local FIREWALL=$(get_available_firewall)
 	local ZONE="public"
+	local COMMENT=""
 	while [ $# -ge 1 ]; do
 		case $1 in
 			--port)
@@ -359,6 +387,10 @@ function firewall_allow() {
 				shift
 				ZONE=$1
 				;;
+			--comment)
+				shift
+				COMMENT=$1
+				;;
 			*)
 				PORT=$1
 				;;
@@ -366,30 +398,60 @@ function firewall_allow() {
 		shift
 	done
 
-	if [ "$PORT" == "" ]; then
+	if [ "$PORT" == "" -a "$ZONE" != "trusted" ]; then
 		echo "firewall_allow: No port specified!" >&2
+		exit 1
+	fi
+
+	if [ "$PORT" != "" -a "$ZONE" == "trusted" ]; then
+		echo "firewall_allow: Trusted zones do not use ports!" >&2
+		exit 1
+	fi
+
+	if [ "$ZONE" == "trusted" -a "$SOURCE" == "any" ]; then
+		echo "firewall_allow: Trusted zones require a source!" >&2
 		exit 1
 	fi
 
 	if [ "$FIREWALL" == "ufw" ]; then
 		if [ "$SOURCE" == "any" ]; then
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from any..."
-			ufw allow $PORT/$PROTO
+			ufw allow proto $PROTO to any port $PORT comment "$COMMENT"
+		elif [ "$ZONE" == "trusted" ]; then
+			echo "firewall_allow/UFW: Allowing all connections from $SOURCE..."
+			ufw allow from $SOURCE comment "$COMMENT"
 		else
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
-			ufw allow from $SOURCE to any port $PORT/$PROTO
+			ufw allow from $SOURCE proto $PROTO to any port $PORT comment "$COMMENT"
 		fi
 	elif [ "$FIREWALL" == "firewalld" ]; then
-		if [ "$SOURCE" == "any" ]; then
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO from any in zone $ZONE..."
-			firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
-		else
-			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO from $SOURCE in zone $ZONE..."
+		if [ "$SOURCE" != "any" ]; then
+			# Firewalld uses Zones to specify sources
+			echo "firewall_allow/firewalld: Adding $SOURCE to $ZONE zone..."
 			firewall-cmd --zone=$ZONE --add-source=$SOURCE --permanent
-			firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
 		fi
+
+		if [ "$PORT" != "" ]; then
+			echo "firewall_allow/firewalld: Allowing $PORT/$PROTO in $ZONE zone..."
+			if [[ "$PORT" =~ ":" ]]; then
+				# firewalld expects port ranges to be in the format of "#-#" vs "#:#"
+				local DPORTS="${PORT/:/-}"
+				firewall-cmd --zone=$ZONE --add-port=$DPORTS/$PROTO --permanent
+			elif [[ "$PORT" =~ "," ]]; then
+				# Firewalld cannot handle multiple ports all that well, so split them by the comma
+				# and run the add command separately for each port
+				local DPORTS="$(echo $PORT | sed 's:,: :g')"
+				for P in $DPORTS; do
+					firewall-cmd --zone=$ZONE --add-port=$P/$PROTO --permanent
+				done
+			else
+				firewall-cmd --zone=$ZONE --add-port=$PORT/$PROTO --permanent
+			fi
+		fi
+
 		firewall-cmd --reload
 	elif [ "$FIREWALL" == "iptables" ]; then
+		echo "firewall_allow/iptables: WARNING - iptables is untested"
 		# iptables doesn't natively support multiple ports, so we have to get creative
 		if [[ "$PORT" =~ ":" ]]; then
 			local DPORTS="-m multiport --dports $PORT"
