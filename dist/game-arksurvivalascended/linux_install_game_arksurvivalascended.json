@@ -3,6 +3,8 @@
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
         "filename": "linux_install_game_arksurvivalascended.sh",
+        "args": [],
+        "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Install ARK Survival Ascended Dedicated Server",
         "default_timeout": "600",

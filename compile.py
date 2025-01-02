@@ -1,3 +1,4 @@
+import re
 import shutil
 import uuid
 from glob import glob
@@ -62,6 +63,8 @@ class Script:
 		self.trmm_timeout = 60
 		self.supports = []
 		self.scriptlets = []
+		self.args = []
+		self.env = []
 
 	def parse(self):
 		print('Parsing file %s' % self.file)
@@ -72,6 +75,9 @@ class Script:
 		scriptlets = []
 		line_number = 0
 		in_header = True
+		header_section = None
+		# Base script name without the extension or path
+		script_name = os.path.basename(self.file)[:-3]
 
 		self._parse_guid()
 
@@ -108,6 +114,16 @@ class Script:
 								self.category = line[11:].strip()
 							elif '@TRMM-TIMEOUT' in line:
 								self.trmm_timeout = int(line[15:].strip())
+							elif 'arguments:' in line.lower():
+								header_section = 'args'
+							elif 'environmental variables:' in line.lower():
+								header_section = 'env'
+							elif line[0:3] == '#  ' and header_section == 'args':
+								self._parse_arg(line)
+							elif line[0:3] == '#  ' and header_section == 'env':
+								self._parse_env(line)
+							elif line.strip() == '#' and header_section is not None:
+								header_section = None
 
 						dest_f.write(line)
 
@@ -115,9 +131,23 @@ class Script:
 		os.chmod(dest_file, 0o775)
 
 		# Store the TRMM metafile
-		with open(os.path.join(os.path.dirname(dest_file), 'trmm.json'), 'w') as dest_f:
+		with open(os.path.join(os.path.dirname(dest_file), script_name + '.json'), 'w') as dest_f:
 			dest_f.write(json.dumps([self.as_trmm_meta()], indent=4))
 
+
+	def _parse_arg(self, line: str):
+		#   -n - Run in non-interactive mode, (will not ask for prompts)
+		line = line[1:].strip()
+		arg = re.match(r'^([a-zA-Z0-9\-]*)[\s=]+(.*)$', line)
+		if arg:
+			self.args.append(arg.group(1))
+
+	def _parse_env(self, line: str):
+		#   ZABBIX_SERVER - Hostname or IP of Zabbix server
+		line = line[1:].strip()
+		env = re.match(r'^([A-Z0-9_]+)\s+(.*)$', line)
+		if env:
+			self.env.append(env.group(1))
 
 	def _parse_guid(self):
 		hashedValueEven = hashedValueOdd = 3074457345618258791
@@ -204,6 +234,8 @@ class Script:
 			'$schema': 'https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json',
 			'guid': self.guid,
 			'filename': os.path.basename(self.file),
+			'args': self.args,
+			'env': self.env,
 			'submittedBy': self.get_full_author(),
 			'name': self.title,
 			# 'syntax': '', # @todo
@@ -213,6 +245,10 @@ class Script:
 			'category': self.category,
 		}
 
+
+# Clean the dist directory
+if os.path.exists('dist'):
+	shutil.rmtree('dist')
 
 # Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):

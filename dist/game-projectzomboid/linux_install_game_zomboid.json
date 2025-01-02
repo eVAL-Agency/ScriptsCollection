@@ -3,6 +3,8 @@
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "4391efbe-101d-75a5-6464-c832456cbaa4",
         "filename": "linux_install_game_zomboid.sh",
+        "args": [],
+        "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Install Project Zomboid",
         "default_timeout": "600",
