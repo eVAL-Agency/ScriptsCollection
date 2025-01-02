@@ -1,0 +1,30 @@
+[
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
+        "filename": "linux_install_zabbix_proxy.sh",
+        "args": [
+            "--noninteractive",
+            "--version"
+        ],
+        "env": [
+            "ZABBIX_SERVER",
+            "ZABBIX_AGENT_HOSTNAME"
+        ],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Zabbix Proxy",
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "debian",
+                "ubuntu",
+                "rocky",
+                "centos",
+                "redhat"
+            ]
+        ],
+        "category": "System Monitoring"
+    }
+]
