@@ -62,6 +62,7 @@ class Script:
 		self.category = None
 		self.trmm_timeout = 60
 		self.supports = []
+		self.supports_detailed = []
 		self.scriptlets = []
 		self.args = []
 		self.env = []
@@ -191,20 +192,23 @@ class Script:
 
 	def _parse_supports(self, line):
 		# @SUPPORTS: ubuntu, debian, centos
-		s = line[11:].strip().lower()
+		line = line[11:].strip()
+		s = line.lower()
 		maps = [
 			('debian', ('debian',)),
-			('ubuntu', ('ubuntu',)),
 			('centos', ('centos',)),
-			('redhat', ('redhat', 'rhel')),
 			('fedora', ('fedora',)),
-			('suse', ('suse', 'opensuse')),
 			('linuxmint', ('linuxmint',)),
+			('redhat', ('redhat', 'rhel')),
+			('rocky', ('rocky', 'rockylinux')),
+			('suse', ('suse', 'opensuse')),
+			('ubuntu', ('ubuntu',)),
 		]
 		for os_key, lookups in maps:
 			for lookup in lookups:
 				if lookup in s and os_key not in self.supports:
 					self.supports.append(os_key)
+					self.supports_detailed.append((os_key, line))
 
 	def __str__(self):
 		return 'Script: %s' % self.file
@@ -279,7 +283,7 @@ for s in scripts:
 			title = script.title if script.title else script.file
 			href = script.readme if script.readme else script.file
 			os_support = []
-			for support in script.supports:
-				os_support.append('![%s](docs/images/icons/%s.svg)' % (support, support))
+			for support in script.supports_detailed:
+				os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
 			f.write('| [%s](%s) | %s |\n' % (title, href, ' '.join(os_support)))
 	pprint(s.asdict())
