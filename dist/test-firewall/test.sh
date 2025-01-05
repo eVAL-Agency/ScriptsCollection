@@ -1,8 +1,5 @@
 #!/bin/bash
-#
-# Collection repository: https://github.com/cdp1337/ScriptsCollection
 
-# scriptlet: _common/get_firewall.sh
 ##
 # Get which firewall is enabled,
 # or "none" if none located
@@ -32,9 +29,6 @@ function get_available_firewall() {
 		echo "none"
 	fi
 }
-# end-scriptlet: _common/get_firewall.sh
-
-# scriptlet: _common/os_like.sh
 ##
 # Check if the OS is "like" a certain type
 #
@@ -144,9 +138,6 @@ function os_like_macos() {
 		echo 0
 	fi
 }
-# end-scriptlet: _common/os_like.sh
-
-# scriptlet: _common/package_install.sh
 
 ##
 # Install a package with the system's package manager.
@@ -187,9 +178,6 @@ function package_install (){
 		exit 1
 	fi
 }
-# end-scriptlet: _common/package_install.sh
-
-# scriptlet: ufw/install.sh
 
 ##
 # Install UFW
@@ -211,9 +199,6 @@ function install_ufw() {
 		ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
 	fi
 }
-# end-scriptlet: ufw/install.sh
-
-# scriptlet: firewalld/install.sh
 
 ##
 # Install firewalld
@@ -228,9 +213,6 @@ function install_firewalld() {
 		firewall-cmd --zone=trusted --add-source=$TTY_IP --permanent
 	fi
 }
-# end-scriptlet: firewalld/install.sh
-
-# scriptlet: _common/firewall_allow.sh
 ##
 # Add an "allow" rule to the firewall in the INPUT chain
 #
@@ -358,9 +340,6 @@ function firewall_allow() {
 		exit 1
 	fi
 }
-# end-scriptlet: _common/firewall_allow.sh
-
-# scriptlet: _common/package_remove.sh
 
 ##
 # Remove a package with the system's package manager.
@@ -401,8 +380,6 @@ function package_remove (){
 		exit 1
 	fi
 }
-# end-scriptlet: _common/package_remove.sh
-
 
 echo "Firewall: $(get_available_firewall)"
 
