@@ -4,14 +4,7 @@ A collection of useful scripts for various Linux distributions
 
 ## Scripts
 
-| Script | Type | Supports |
-|--------|------|----------|
-| [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install ARK Survival Ascended Dedicated Server](dist/game-arksurvivalascended/README.md) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install Zabbix Agent2](dist/zabbix/linux_install_zabbix_agent2.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install Zabbix Proxy](dist/zabbix/linux_install_zabbix_proxy.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [src/test-firewall/test.sh](dist/test-firewall/test.sh) | Shell |  |
-| [Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py) | Python | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+%%SCRIPTS_TABLE%%
 
 ## Compile all scripts
 

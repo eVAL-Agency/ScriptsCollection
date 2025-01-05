@@ -84,18 +84,22 @@ class Script:
 						self.category = line[11:].strip()
 					elif '@TRMM-TIMEOUT' in line:
 						self.trmm_timeout = int(line[15:].strip())
-					elif 'arguments:' in line.lower():
-						header_section = 'args'
-					elif 'environmental variables:' in line.lower():
-						header_section = 'env'
-					elif 'syntax:' in line.lower():
+					elif '# trmm arguments:' == line.lower().strip():
+						header_section = 'trmm_args'
+					elif '# trmm environment:' == line.lower().strip():
+						header_section = 'trmm_env'
+					elif '# syntax:' == line.lower().strip():
 						header_section = 'syntax'
-					elif line[0:3] == '#  ' and header_section == 'args':
+					elif '# supports:' == line.lower().strip():
+						header_section = 'supports'
+					elif line[0:3] == '#  ' and header_section == 'trmm_args':
 						self._parse_arg(line)
-					elif line[0:3] == '#  ' and header_section == 'env':
+					elif line[0:3] == '#  ' and header_section == 'trmm_env':
 						self._parse_env(line)
 					elif line[0:3] == '#  ' and header_section == 'syntax':
 						self._parse_syntax(line)
+					elif line[0:3] == '#  ' and header_section == 'supports':
+						self._parse_supports(line)
 					elif line.strip() == '#' and header_section is not None:
 						header_section = None
 
@@ -164,16 +168,12 @@ class Script:
 	def _parse_arg(self, line: str):
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
 		line = line[1:].strip()
-		arg = re.match(r'^([a-zA-Z0-9\-]*)[\s=:]+(.*)$', line)
-		if arg:
-			self.args.append(arg.group(1))
+		self.args.append(line)
 
 	def _parse_env(self, line: str):
 		#   ZABBIX_SERVER - Hostname or IP of Zabbix server
 		line = line[1:].strip()
-		env = re.match(r'^([A-Z0-9_]+)\s+(.*)$', line)
-		if env:
-			self.env.append(env.group(1))
+		self.env.append(line)
 
 	def _parse_guid(self):
 		hashedValueEven = hashedValueOdd = 3074457345618258791
@@ -216,18 +216,22 @@ class Script:
 			self.author = {'name': a, 'email': None}
 
 	def _parse_supports(self, line):
-		# @SUPPORTS: ubuntu, debian, centos
-		line = line[11:].strip()
+		if line.lower().startswith('# @supports'):
+			# @SUPPORTS ubuntu, debian, centos
+			line = line[11:].strip()
+		else:
+			# Supports:\n#  Distro Name\n...
+			line = line[1:].strip()
 		s = line.lower()
 		maps = [
-			('debian', ('debian',)),
-			('centos', ('centos',)),
-			('fedora', ('fedora',)),
-			('linuxmint', ('linuxmint',)),
-			('redhat', ('redhat', 'rhel')),
-			('rocky', ('rocky', 'rockylinux')),
-			('suse', ('suse', 'opensuse')),
-			('ubuntu', ('ubuntu',)),
+			('centos', ('linux-all', 'centos')),
+			('debian', ('linux-all', 'debian')),
+			('fedora', ('linux-all', 'fedora')),
+			('linuxmint', ('linux-all', 'linuxmint')),
+			('redhat', ('linux-all', 'redhat', 'rhel')),
+			('rocky', ('linux-all', 'rocky', 'rockylinux')),
+			('suse', ('linux-all', 'suse', 'opensuse')),
+			('ubuntu', ('linux-all', 'ubuntu')),
 		]
 		for os_key, lookups in maps:
 			for lookup in lookups:
@@ -308,22 +312,31 @@ for file in glob('src/**/README.md', recursive=True):
 
 	shutil.copy(file, dest_file)
 
-# Update project README
+# Generate project README
+scripts_table = []
+scripts_table.append('| Script | Type | Supports |')
+scripts_table.append('|--------|------|----------|')
+for script in scripts:
+	title = script.title if script.title else script.file
+	href = script.readme.replace('src/', 'dist/') if script.readme else script.file.replace('src/', 'dist/')
+	type = script.type[0].upper() + script.type[1:]
+	os_support = []
+	supported = script.supports_detailed
+	supported.sort(key = lambda x: x[0])
+	for support in supported:
+		os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
+	scripts_table.append('| [%s](%s) | %s | %s |' % (title, href, type, ' '.join(os_support)))
+
+replacements = {
+	'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),
+}
+with open('.supplemental/README-template.md', 'r') as f:
+	template = f.read()
+	for key, value in replacements.items():
+		template = template.replace(key, value)
+
 with open('README.md', 'w') as f:
-	f.write('# Scripts Collection\n\n')
-	f.write('A collection of useful scripts for various Linux distributions\n\n')
-	f.write('## Scripts\n\n')
-	f.write('| Script | Type | Supports |\n')
-	f.write('|--------|------|----------|\n')
-	for script in scripts:
-		title = script.title if script.title else script.file
-		href = script.readme if script.readme else script.file
-		type = script.type[0].upper() + script.type[1:]
-		os_support = []
-		for support in script.supports_detailed:
-			os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
-		f.write('| [%s](%s) | %s | %s |\n' % (title, href, type, ' '.join(os_support)))
-	#pprint(s.asdict())
+	f.write(template)
 
 # Generate TRMM metafile
 with open('dist/community_scripts.json', 'w') as f:
