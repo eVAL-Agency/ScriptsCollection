@@ -1,0 +1,156 @@
+[
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "4391efbe-101d-75a5-6464-c832456cbaa4",
+        "filename": "game-projectzomboid/linux_install_game_zomboid.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Project Zomboid",
+        "syntax": [],
+        "default_timeout": "600",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "debian",
+                "ubuntu"
+            ]
+        ],
+        "category": "Game Server"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
+        "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install ARK Survival Ascended Dedicated Server",
+        "syntax": [],
+        "default_timeout": "600",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "debian",
+                "ubuntu"
+            ]
+        ],
+        "category": "Game Server"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
+        "filename": "zabbix/linux_install_zabbix_agent2.sh",
+        "args": [
+            "--noninteractive",
+            "--version=7.0",
+            "--server={{client.zabbix_hostname}}",
+            "--hostname={{agent.fqdn}}"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Zabbix Agent2",
+        "syntax": [
+            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=... - Version of Zabbix to install (default: 7.0)",
+            "--server=... - Hostname or IP of Zabbix server",
+            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "debian",
+                "ubuntu",
+                "rocky",
+                "centos",
+                "redhat"
+            ]
+        ],
+        "category": "System Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
+        "filename": "zabbix/linux_install_zabbix_proxy.sh",
+        "args": [
+            "--noninteractive",
+            "--version=7.0",
+            "--server={{client.zabbix_hostname}}",
+            "--hostname={{agent.fqdn}}"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Zabbix Proxy",
+        "syntax": [
+            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=... - Version of Zabbix to install (default: 7.0)",
+            "--server=... - Hostname or IP of Zabbix server",
+            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "debian",
+                "ubuntu",
+                "rocky",
+                "centos",
+                "redhat"
+            ]
+        ],
+        "category": "System Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "2b565553-5d9f-d003-55bf-b11102223287",
+        "filename": "test-firewall/test.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": null,
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux"
+            ]
+        ],
+        "category": null
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "6b4b5647-2e43-682f-aa87-fd717d00108e",
+        "filename": "ssh/linux_util_ssh_authorize.py",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Authorize SSH key for a user",
+        "syntax": [
+            "--user=<username>  - The user account to authorize the SSH key for",
+            "--key=<public key> - The SSH key to authorize",
+            "--comment=[optional comment] - Optional comment to attribute with this key"
+        ],
+        "default_timeout": "60",
+        "shell": "python",
+        "supported_platforms": [
+            [
+                "linux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
+                "ubuntu"
+            ]
+        ],
+        "category": null
+    }
+]
