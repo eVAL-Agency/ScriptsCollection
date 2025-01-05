@@ -8,24 +8,29 @@
 # https://www.zabbix.com/download?zabbix=7.0&os_distribution=debian&os_version=12&components=agent_2&db=&ws=
 #
 #
-# Arguments:
+# Syntax:
 #   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
 #   --version=... - Version of Zabbix to install (default: 7.0)
+#   --server=... - Hostname or IP of Zabbix server
+#   --hostname=... - Hostname of local device for matching with a Zabbix host entry
 #
-# Environmental Variables:
-#   ZABBIX_SERVER - Hostname or IP of Zabbix server
-#   ZABBIX_AGENT_HOSTNAME - Hostname of local device for matching with a Zabbix host entry
+# TRMM Arguments:
+#   --noninteractive
+#   --version=7.0
+#   --server={{client.zabbix_hostname}}
+#   --hostname={{agent.fqdn}}
 #
+# Supports:
+#   Debian 12
+#   Ubuntu 24.04
+#   Rocky 8, 9
+#   CentOS 8, 9
+#   RHEL 8, 9
 #
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @CATEGORY System Monitoring
 # @TRMM-TIMEOUT 120
-# @SUPPORTS Debian 12
-# @SUPPORTS Ubuntu 24.04
-# @SUPPORTS Rocky 8, 9
-# @SUPPORTS CentOS 8, 9
-# @SUPPORTS RHEL 8, 9
 
 # scriptlet:_common/require_root.sh
 # scriptlet:zabbix/repo-setup.sh
@@ -46,6 +51,8 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--noninteractive) NONINTERACTIVE=1; shift 1;;
 		--version=*) VERSION="${1#*=}"; shift 1;;
+		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
+		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
 		#-p) pidfile="$2"; shift 2;;
 		#-*) echo "unknown option: $1" >&2; exit 1;;
 		#*) handle_argument "$1"; shift 1;;
@@ -58,8 +65,12 @@ fi
 
 # User prompts (if not in non-interactive mode)
 if [ $NONINTERACTIVE -eq 0 ]; then
-	ZABBIX_SERVER="$(prompt_text "Hostname or IP of Zabbix server")"
-	ZABBIX_AGENT_HOSTNAME="$(prompt_text "Hostname of local device for matching with a Zabbix host entry" --default="$(hostname -f)")"
+	if [ -z "$ZABBIX_SERVER" ]; then
+		ZABBIX_SERVER="$(prompt_text "Hostname or IP of Zabbix server")"
+	fi
+	if [ -z "$ZABBIX_AGENT_HOSTNAME" ]; then
+		ZABBIX_AGENT_HOSTNAME="$(prompt_text "Hostname of local device for matching with a Zabbix host entry" --default="$(hostname -f)")"
+	fi
 fi
 
 # Setup Zabbix repo

@@ -8,37 +8,36 @@
 # https://www.zabbix.com/download?zabbix=7.0&os_distribution=debian&os_version=12&components=agent_2&db=&ws=
 #
 #
-# Arguments:
+# Syntax:
 #   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
 #   --version=... - Version of Zabbix to install (default: 7.0)
+#   --server=... - Hostname or IP of Zabbix server
+#   --hostname=... - Hostname of local device for matching with a Zabbix host entry
 #
-# Environmental Variables:
-#   ZABBIX_SERVER - Hostname or IP of Zabbix server
-#   ZABBIX_AGENT_HOSTNAME - Hostname of local device for matching with a Zabbix host entry
+# TRMM Arguments:
+#   --noninteractive
+#   --version=7.0
+#   --server={{client.zabbix_hostname}}
+#   --hostname={{agent.fqdn}}
 #
+# Supports:
+#   Debian 12
+#   Ubuntu 24.04
+#   Rocky 8, 9
+#   CentOS 8, 9
+#   RHEL 8, 9
 #
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @CATEGORY System Monitoring
 # @TRMM-TIMEOUT 120
-# @SUPPORTS Debian 12
-# @SUPPORTS Ubuntu 24.04
-# @SUPPORTS Rocky 8, 9
-# @SUPPORTS CentOS 8, 9
-# @SUPPORTS RHEL 8, 9
-#
-# Collection repository: https://github.com/cdp1337/ScriptsCollection
 
-# scriptlet: _common/require_root.sh
 ##
-# Simple check to enforce the script to be ran as root
+# Simple check to enforce the script to be run as root
 if [ $(id -u) -ne 0 ]; then
-  echo "This script must be run as root or with sudo!" >&2
-  exit 1
+	echo "This script must be run as root or with sudo!" >&2
+	exit 1
 fi
-# end-scriptlet: _common/require_root.sh
-
-# scriptlet: _common/os.sh
 ##
 # Get the operating system
 #
@@ -89,9 +88,6 @@ function os() {
 		echo 'unknown'
 	fi
 }
-# end-scriptlet: _common/os.sh
-
-# scriptlet: _common/os_version.sh
 ##
 # Get the operating system version
 #
@@ -132,9 +128,6 @@ function os_version() {
 		echo 0
 	fi
 }
-# end-scriptlet: _common/os_version.sh
-
-# scriptlet: _common/os_like.sh
 ##
 # Check if the OS is "like" a certain type
 #
@@ -244,9 +237,6 @@ function os_like_macos() {
 		echo 0
 	fi
 }
-# end-scriptlet: _common/os_like.sh
-
-# scriptlet: yum/repo_excludepkg.sh
 ##
 # Disable a package from a given yum repo
 function yum_repo_excludepkg() {
@@ -316,9 +306,6 @@ function yum_repo_excludepkg() {
 	# Now that all operations are complete, replace the original file with the parsed one.
 	mv $TMP_FILE $REPO_FILE
 }
-# end-scriptlet: yum/repo_excludepkg.sh
-
-# scriptlet: _common/package_install.sh
 
 ##
 # Install a package with the system's package manager.
@@ -359,9 +346,6 @@ function package_install (){
 		exit 1
 	fi
 }
-# end-scriptlet: _common/package_install.sh
-
-# scriptlet: zabbix/repo-setup.sh
 
 ##
 # Setup the Zabbix repo for this OS, shared between agent, agent2, server, and proxy.
@@ -422,9 +406,6 @@ function zabbix_repo_setup() {
 		fi
 	fi
 }
-# end-scriptlet: zabbix/repo-setup.sh
-
-# scriptlet: _common/setconfigfile_orappend.sh
 ##
 # Use sed to set a line in a config file
 #
@@ -456,9 +437,6 @@ function setconfigfile_orappend() {
     echo "$GREP_REPLACE" >> "$FILENAME"
   fi
 }
-# end-scriptlet: _common/setconfigfile_orappend.sh
-
-# scriptlet: _common/prompt_text.sh
 ##
 # Prompt user for a text response
 #
@@ -490,9 +468,6 @@ function prompt_text() {
 		echo "$RESPONSE"
 	fi
 }
-# end-scriptlet: _common/prompt_text.sh
-
-# scriptlet: _common/print_header.sh
 ##
 # Print a header message
 #
@@ -502,17 +477,11 @@ function print_header() {
 	printf "%*s\n" $(((${#header}+80)/2)) "$header"
     echo ""
 }
-# end-scriptlet: _common/print_header.sh
-
-# scriptlet: _common/random_password.sh
 ##
 # Generate a random password, (using characters that are easy to read and type)
 function random_password() {
 	< /dev/urandom tr -dc _cdefhjkmnprtvwxyACDEFGHJKLMNPQRTUVWXY2345689 | head -c${1:-24};echo;
 }
-# end-scriptlet: _common/random_password.sh
-
-
 # Variable setup
 VERSION="7.0"
 ZABBIX_AGENT_CONFIGURATION="/etc/zabbix/zabbix_proxy.conf"
@@ -523,6 +492,8 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--noninteractive) NONINTERACTIVE=1; shift 1;;
 		--version=*) VERSION="${1#*=}"; shift 1;;
+		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
+		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
 		#-p) pidfile="$2"; shift 2;;
 		#-*) echo "unknown option: $1" >&2; exit 1;;
 		#*) handle_argument "$1"; shift 1;;
@@ -535,8 +506,12 @@ fi
 
 # User prompts (if not in non-interactive mode)
 if [ $NONINTERACTIVE -eq 0 ]; then
-	ZABBIX_SERVER="$(prompt_text "Hostname or IP of Zabbix server")"
-	ZABBIX_AGENT_HOSTNAME="$(prompt_text "Hostname of local device for matching with a Zabbix host entry" --default="$(hostname -f)")"
+	if [ -z "$ZABBIX_SERVER" ]; then
+		ZABBIX_SERVER="$(prompt_text "Hostname or IP of Zabbix server")"
+	fi
+	if [ -z "$ZABBIX_AGENT_HOSTNAME" ]; then
+		ZABBIX_AGENT_HOSTNAME="$(prompt_text "Hostname of local device for matching with a Zabbix host entry" --default="$(hostname -f)")"
+	fi
 fi
 
 # Setup Zabbix repo
