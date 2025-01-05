@@ -8,53 +8,10 @@ from pprint import pprint
 import json
 
 
-def parse_include(src_file: str, src_line: int, include: str, scriptlets: list):
-	dependencies = ''
-	output = ''
-
-	if include not in scriptlets:
-		scriptlets.append(include)
-		file = os.path.join('scriptlets', include)
-		if os.path.exists(file):
-			output += '# scriptlet: ' + include + '\n'
-			line_number = 0
-
-			with open(file, 'r') as include_f:
-				for include_line in include_f:
-					line_number += 1
-					if include_line.startswith('# scriptlet:'):
-						sub_include = include_line[12:].strip()
-						dependencies += parse_include(file, line_number, sub_include, scriptlets)
-					else:
-						output += include_line
-			if not output.endswith("\n"):
-				output += "\n"
-			output += '# end-scriptlet: ' + include + '\n\n'
-		else:
-			output += '# ERROR - scriptlet ' + include+ ' not found\n\n'
-			print('ERROR - script %s not found' % include)
-			print('  in file %s at line %d' % (src_file, src_line))
-
-	return dependencies + output
-
-
-def get_bash_header():
-	lines = []
-
-	lines.append('#')
-	#lines.append('# Generated on ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-	lines.append('# Collection repository: https://github.com/cdp1337/ScriptsCollection')
-	lines.append('')
-
-	return "\n".join(lines)
-
-
-scripts = []
-
-
 class Script:
-	def __init__(self, file: str):
+	def __init__(self, file: str, type: str):
 		self.file = file
+		self.type = type
 		self.title = None
 		self.readme = None
 		self.author = None
@@ -64,21 +21,22 @@ class Script:
 		self.supports = []
 		self.supports_detailed = []
 		self.scriptlets = []
+		self.imports = []
 		self.args = []
 		self.env = []
+		self.syntax = []
+		self.content_header = ''
+		self.content_body = ''
 
 	def parse(self):
+		"""
+		Parse a script file to produce a single distributable file with all dependencies included
+		:return:
+		"""
 		print('Parsing file %s' % self.file)
-		dest_file = 'dist/' + self.file[4:]
-		if not os.path.exists(os.path.dirname(dest_file)):
-			os.makedirs(os.path.dirname(dest_file))
-
-		scriptlets = []
 		line_number = 0
 		in_header = True
 		header_section = None
-		# Base script name without the extension or path
-		script_name = os.path.basename(self.file)[:-3]
 
 		self._parse_guid()
 
@@ -86,60 +44,127 @@ class Script:
 			self.readme = os.path.join(os.path.dirname(self.file), 'README.md')
 
 		with open(self.file, 'r') as f:
-			with open(dest_file, 'w') as dest_f:
-				for line in f:
-					line_number += 1
+			for line in f:
+				line_number += 1
+				write = True
+
+				if line.startswith('# scriptlet:'):
 					# Check for "# scriptlet:..." replacements
-					if line.startswith('# scriptlet:'):
-						if in_header:
-							# Print header before continuing
-							in_header = False
-							dest_f.write(get_bash_header())
-						include = line[12:].strip()
-						dest_f.write(parse_include(file, line_number, include, scriptlets))
+					in_header = False
+					include = line[12:].strip()
+					line = self._parse_include(file, line_number, include)
+
+				if line.startswith('import ') and self.type == 'python':
+					in_header = False
+					self._parse_import(line)
+					write = False
+
+				if line.startswith('from scriptlets.') and self.type == 'python':
+					# Treat this as a scriptlet include
+					# Trim "from scriptlets." off the beginning to get the filename
+					line = line[16:].strip()
+					# Trim anything after "import..."; we'll just include the whole file
+					line = line[:line.index(' import')]
+					line = line.replace('.', '/') + '.py'
+					line = self._parse_include(file, line_number, line)
+
+				if in_header and not line.startswith('#'):
+					# End of '#' lines indicate an end of the header
+					in_header = False
+
+				if in_header:
+					# Process header tags
+					if self.title is None and line.strip() != '#' and line_number > 1:
+						self.title = line[1:].strip()
+					elif '@AUTHOR' in line:
+						self._parse_author(line)
+					elif '@SUPPORTS' in line:
+						self._parse_supports(line)
+					elif '@CATEGORY' in line:
+						self.category = line[11:].strip()
+					elif '@TRMM-TIMEOUT' in line:
+						self.trmm_timeout = int(line[15:].strip())
+					elif 'arguments:' in line.lower():
+						header_section = 'args'
+					elif 'environmental variables:' in line.lower():
+						header_section = 'env'
+					elif 'syntax:' in line.lower():
+						header_section = 'syntax'
+					elif line[0:3] == '#  ' and header_section == 'args':
+						self._parse_arg(line)
+					elif line[0:3] == '#  ' and header_section == 'env':
+						self._parse_env(line)
+					elif line[0:3] == '#  ' and header_section == 'syntax':
+						self._parse_syntax(line)
+					elif line.strip() == '#' and header_section is not None:
+						header_section = None
+
+				if write:
+					if in_header:
+						self.content_header += line
 					else:
-						if in_header and not line.startswith('#'):
-							# Print header before continuing
-							in_header = False
-							dest_f.write(get_bash_header())
+						self.content_body += line
 
-						if in_header:
-							# Process header tags
-							if self.title is None and line.strip() != '#' and line_number > 1:
-								self.title = line[1:].strip()
-							elif '@AUTHOR' in line:
-								self._parse_author(line)
-							elif '@SUPPORTS' in line:
-								self._parse_supports(line)
-							elif '@CATEGORY' in line:
-								self.category = line[11:].strip()
-							elif '@TRMM-TIMEOUT' in line:
-								self.trmm_timeout = int(line[15:].strip())
-							elif 'arguments:' in line.lower():
-								header_section = 'args'
-							elif 'environmental variables:' in line.lower():
-								header_section = 'env'
-							elif line[0:3] == '#  ' and header_section == 'args':
-								self._parse_arg(line)
-							elif line[0:3] == '#  ' and header_section == 'env':
-								self._parse_env(line)
-							elif line.strip() == '#' and header_section is not None:
-								header_section = None
+	def write(self):
+		"""
+		Write generated script to the filesystem
+		:return:
+		"""
+		dest_file = 'dist/' + self.file[4:]
+		if not os.path.exists(os.path.dirname(dest_file)):
+			os.makedirs(os.path.dirname(dest_file))
 
-						dest_f.write(line)
-
+		# Generate the compiled file
+		with open(dest_file, 'w') as dest_f:
+			dest_f.write(self.content_header)
+			if self.type == 'python':
+				dest_f.write('\n'.join(self.imports))
+			dest_f.write(self.content_body)
 		# Ensure new file is executable
 		os.chmod(dest_file, 0o775)
 
 		# Store the TRMM metafile
-		with open(os.path.join(os.path.dirname(dest_file), script_name + '.json'), 'w') as dest_f:
-			dest_f.write(json.dumps([self.as_trmm_meta()], indent=4))
+		#script_name = os.path.basename(self.file)[:-3]
+		#with open(os.path.join(os.path.dirname(dest_file), script_name + '.json'), 'w') as dest_f:
+		#	dest_f.write(json.dumps([self.as_trmm_meta()], indent=4))
 
+	def _parse_import(self, line: str):
+		"""
+		Parse Python-style 'import' statements to the parent script
+		:param line:
+		:return:
+		"""
+		# import blah
+		if not line.strip() in self.imports:
+			self.imports.append(line.strip())
+
+	def _parse_include(self, src_file: str, src_line: int, include: str):
+		if include not in self.scriptlets:
+			self.scriptlets.append(include)
+			file = os.path.join('scriptlets', include)
+			if os.path.exists(file):
+				script = Script(file, self.type)
+				script.scriptlets = self.scriptlets
+				script.imports = self.imports
+				# Parse the source
+				script.parse()
+				return script.content_header + script.content_body
+			else:
+				print('ERROR - script %s not found' % include)
+				print('  in file %s at line %d' % (src_file, src_line))
+				return '# ERROR - scriptlet ' + include + ' not found\n\n'
+		else:
+			return ''
+
+	def _parse_syntax(self, line: str):
+		#   -n - Run in non-interactive mode, (will not ask for prompts)
+		line = line[1:].strip()
+		self.syntax.append(line)
 
 	def _parse_arg(self, line: str):
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
 		line = line[1:].strip()
-		arg = re.match(r'^([a-zA-Z0-9\-]*)[\s=]+(.*)$', line)
+		arg = re.match(r'^([a-zA-Z0-9\-]*)[\s=:]+(.*)$', line)
 		if arg:
 			self.args.append(arg.group(1))
 
@@ -242,9 +267,9 @@ class Script:
 			'env': self.env,
 			'submittedBy': self.get_full_author(),
 			'name': self.title,
-			# 'syntax': '', # @todo
+			'syntax': self.syntax,
 			'default_timeout': str(self.trmm_timeout),
-			'shell': 'shell',
+			'shell': self.type,
 			'supported_platforms': [['linux'] + self.supports],
 			'category': self.category,
 		}
@@ -254,11 +279,23 @@ class Script:
 if os.path.exists('dist'):
 	shutil.rmtree('dist')
 
+scripts = []
+
+
 # Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):
-	script = Script(file)
+	script = Script(file, 'shell')
 	# Parse the source
 	script.parse()
+	script.write()
+	# Add to stack to update project docs
+	scripts.append(script)
+
+for file in glob('src/**/*.py', recursive=True):
+	script = Script(file, 'python')
+	# Parse the source
+	script.parse()
+	script.write()
 	# Add to stack to update project docs
 	scripts.append(script)
 
@@ -272,18 +309,27 @@ for file in glob('src/**/README.md', recursive=True):
 	shutil.copy(file, dest_file)
 
 # Update project README
-for s in scripts:
-	with open('README.md', 'w') as f:
-		f.write('# Scripts Collection\n\n')
-		f.write('A collection of useful scripts for various Linux distributions\n\n')
-		f.write('## Scripts\n\n')
-		f.write('| Script | Supports |\n')
-		f.write('|--------|----------|\n')
-		for script in scripts:
-			title = script.title if script.title else script.file
-			href = script.readme if script.readme else script.file
-			os_support = []
-			for support in script.supports_detailed:
-				os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
-			f.write('| [%s](%s) | %s |\n' % (title, href, ' '.join(os_support)))
-	pprint(s.asdict())
+with open('README.md', 'w') as f:
+	f.write('# Scripts Collection\n\n')
+	f.write('A collection of useful scripts for various Linux distributions\n\n')
+	f.write('## Scripts\n\n')
+	f.write('| Script | Type | Supports |\n')
+	f.write('|--------|------|----------|\n')
+	for script in scripts:
+		title = script.title if script.title else script.file
+		href = script.readme if script.readme else script.file
+		type = script.type[0].upper() + script.type[1:]
+		os_support = []
+		for support in script.supports_detailed:
+			os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
+		f.write('| [%s](%s) | %s | %s |\n' % (title, href, type, ' '.join(os_support)))
+	#pprint(s.asdict())
+
+# Generate TRMM metafile
+with open('dist/community_scripts.json', 'w') as f:
+	meta = []
+	for script in scripts:
+		data = script.as_trmm_meta()
+		data['filename'] = script.file[4:]
+		meta.append(data)
+	f.write(json.dumps(meta, indent=4))
