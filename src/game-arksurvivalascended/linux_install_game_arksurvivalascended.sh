@@ -8,8 +8,6 @@
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @SOURCE  https://github.com/cdp1337/ARKSurvivalAscended-Linux
-# @SUPPORTS Debian 12
-# @SUPPORTS Ubuntu 24.04
 # @CATEGORY Game Server
 # @TRMM-TIMEOUT 600
 #

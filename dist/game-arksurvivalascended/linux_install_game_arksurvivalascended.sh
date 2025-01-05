@@ -8,8 +8,6 @@
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @SOURCE  https://github.com/cdp1337/ARKSurvivalAscended-Linux
-# @SUPPORTS Debian 12
-# @SUPPORTS Ubuntu 24.04
 # @CATEGORY Game Server
 # @TRMM-TIMEOUT 600
 #
@@ -24,8 +22,6 @@
 #
 # TRMM Custom Fields:
 #   None
-#
-# Collection repository: https://github.com/cdp1337/ScriptsCollection
 
 ############################################
 ## Parameter Configuration
@@ -52,7 +48,6 @@ PORT_RCON_START=27001
 PORT_RCON_END=27006
 
 
-# scriptlet: proton/install.sh
 ##
 # Install Glorious Eggroll's Proton fork on a requested version
 #
@@ -83,9 +78,6 @@ function install_proton() {
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$PROTON_TGZ"
 	fi
 }
-# end-scriptlet: proton/install.sh
-
-# scriptlet: _common/get_firewall.sh
 ##
 # Get which firewall is enabled,
 # or "none" if none located
@@ -115,9 +107,6 @@ function get_available_firewall() {
 		echo "none"
 	fi
 }
-# end-scriptlet: _common/get_firewall.sh
-
-# scriptlet: _common/os_like.sh
 ##
 # Check if the OS is "like" a certain type
 #
@@ -227,9 +216,6 @@ function os_like_macos() {
 		echo 0
 	fi
 }
-# end-scriptlet: _common/os_like.sh
-
-# scriptlet: steam/install-steamcmd.sh
 
 ##
 # Install SteamCMD
@@ -283,9 +269,6 @@ function install_steamcmd() {
 		exit 1
 	fi
 }
-# end-scriptlet: steam/install-steamcmd.sh
-
-# scriptlet: _common/package_install.sh
 
 ##
 # Install a package with the system's package manager.
@@ -326,9 +309,6 @@ function package_install (){
 		exit 1
 	fi
 }
-# end-scriptlet: _common/package_install.sh
-
-# scriptlet: ufw/install.sh
 
 ##
 # Install UFW
@@ -350,9 +330,6 @@ function install_ufw() {
 		ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
 	fi
 }
-# end-scriptlet: ufw/install.sh
-
-# scriptlet: _common/firewall_allow.sh
 ##
 # Add an "allow" rule to the firewall in the INPUT chain
 #
@@ -480,8 +457,6 @@ function firewall_allow() {
 		exit 1
 	fi
 }
-# end-scriptlet: _common/firewall_allow.sh
-
 
 
 
