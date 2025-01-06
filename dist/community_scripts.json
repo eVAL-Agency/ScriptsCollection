@@ -1,29 +1,23 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
-        "filename": "ufw/linux_install_ufw.sh",
+        "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
+        "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install Firewall (UFW)",
+        "name": "Install ARK Survival Ascended Dedicated Server",
         "syntax": [],
-        "default_timeout": "60",
+        "default_timeout": "600",
         "shell": "shell",
         "supported_platforms": [
             [
                 "linux",
-                "centos",
                 "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
                 "ubuntu"
             ]
         ],
-        "category": "Security"
+        "category": "Game Server"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -47,23 +41,83 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
-        "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
+        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
+        "filename": "disk/linux_check_disk_health.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install ARK Survival Ascended Dedicated Server",
+        "name": "Disk Drive Health Check",
         "syntax": [],
-        "default_timeout": "600",
+        "default_timeout": "120",
         "shell": "shell",
         "supported_platforms": [
             [
                 "linux",
                 "debian",
+                "linuxmint",
+                "ubuntu",
+                "centos",
+                "fedora",
+                "redhat",
+                "rocky",
+                "archlinux"
+            ]
+        ],
+        "category": "Hardware"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
+        "filename": "firewall/linux_check_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Firewall - Check Status",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "archlinux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
                 "ubuntu"
             ]
         ],
-        "category": "Game Server"
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
+        "filename": "ufw/linux_install_ufw.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Firewall (UFW)",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "archlinux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
+                "ubuntu"
+            ]
+        ],
+        "category": "Security"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -133,21 +187,23 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
-        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
+        "guid": "6b4b5647-2e43-682f-aa87-fd717d00108e",
+        "filename": "ssh/linux_util_ssh_authorize.py",
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Linux Firewall - Whitelist IP",
+        "name": "Authorize SSH key for a user",
         "syntax": [
-            "--ip=<ip>             IP address to whitelist (REQUIRED)",
-            "--comment=<comment>  Optional comment for the rule"
+            "--user=<username>  - The user account to authorize the SSH key for",
+            "--key=<public key> - The SSH key to authorize",
+            "--comment=[optional comment] - Optional comment to attribute with this key"
         ],
         "default_timeout": "60",
-        "shell": "shell",
+        "shell": "python",
         "supported_platforms": [
             [
                 "linux",
+                "archlinux",
                 "centos",
                 "debian",
                 "fedora",
@@ -162,18 +218,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
-        "filename": "firewall/linux_check_firewall.sh",
+        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
+        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Linux Firewall - Check Status",
-        "syntax": [],
+        "name": "Firewall - Whitelist IP",
+        "syntax": [
+            "--ip=<ip>             IP address to whitelist (REQUIRED)",
+            "--comment=<comment>  Optional comment for the rule"
+        ],
         "default_timeout": "60",
         "shell": "shell",
         "supported_platforms": [
             [
                 "linux",
+                "archlinux",
                 "centos",
                 "debian",
                 "fedora",
@@ -184,7 +244,7 @@
                 "ubuntu"
             ]
         ],
-        "category": "Security"
+        "category": "User Management"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -203,35 +263,5 @@
             ]
         ],
         "category": null
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "6b4b5647-2e43-682f-aa87-fd717d00108e",
-        "filename": "ssh/linux_util_ssh_authorize.py",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": "Authorize SSH key for a user",
-        "syntax": [
-            "--user=<username>  - The user account to authorize the SSH key for",
-            "--key=<public key> - The SSH key to authorize",
-            "--comment=[optional comment] - Optional comment to attribute with this key"
-        ],
-        "default_timeout": "60",
-        "shell": "python",
-        "supported_platforms": [
-            [
-                "linux",
-                "centos",
-                "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
-                "ubuntu"
-            ]
-        ],
-        "category": "User Management"
     }
 ]

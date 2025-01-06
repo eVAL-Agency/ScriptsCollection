@@ -6,15 +6,16 @@ A collection of useful scripts for various Linux distributions
 
 | Category | Script | Type | Supports |
 |----------|--------|------|----------|
-| Security | [Install Firewall (UFW)](dist/ufw/linux_install_ufw.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
-| Game Server | [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | Game Server | [Install ARK Survival Ascended Dedicated Server](dist/game-arksurvivalascended/README.md) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| Game Server | [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| Hardware | [Disk Drive Health Check](dist/disk/linux_check_disk_health.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Arch") ![centos](.supplemental/images/icons/centos.svg "RHEL-All") ![debian](.supplemental/images/icons/debian.svg "Debian-All") ![fedora](.supplemental/images/icons/fedora.svg "RHEL-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Debian-All") ![redhat](.supplemental/images/icons/redhat.svg "RHEL-All") ![rocky](.supplemental/images/icons/rocky.svg "RHEL-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Debian-All") |
+| Security | [Firewall - Check Status](dist/firewall/linux_check_firewall.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| Security | [Install Firewall (UFW)](dist/ufw/linux_install_ufw.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | System Monitoring | [Install Zabbix Agent2](dist/zabbix/linux_install_zabbix_agent2.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | System Monitoring | [Install Zabbix Proxy](dist/zabbix/linux_install_zabbix_proxy.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| User Management | [Linux Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
-| Security | [Linux Firewall - Check Status](dist/firewall/linux_check_firewall.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| User Management | [Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py) | Python | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| User Management | [Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | Uncategorized | [src/test-firewall/test.sh](dist/test-firewall/test.sh) | Shell |  |
-| User Management | [Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py) | Python | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 
 ## Compile all scripts
 
@@ -116,13 +117,17 @@ Behaves the same as TRMM Arguments, but is used for environment variables.
 
 Lists the OS support for the script.
 
-For scripts that work with any Linux distribution, use `Linux-All`.
-
 ```bash
 # Supports:
 #   Debian 12
 #   Ubuntu 24.04
 ```
+
+Distros can be listed individually, or one of the group declarations for multiple distros.
+
+* Linux-All - All Linux-based distros (completely os-agnostic script)
+* Debian-All - Any Debian-based distro (Debian, Ubuntu, Mint, etc)
+* RHEL-All - Any Red Hat-based distro (RHEL, CentOS, Fedora, etc)
 
 ### Author Tag
 

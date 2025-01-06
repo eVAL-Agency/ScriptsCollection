@@ -126,7 +126,7 @@ class Script:
 					elif line.lower().startswith('# category: '):
 						parse_description = False
 						header_section = None
-						self.category = line[12:].strip
+						self.category = line[12:].strip()
 					elif line.strip() == '#' and header_section is not None:
 						header_section = None
 						parse_description = False
@@ -299,14 +299,15 @@ class Script:
 			line = line[1:].strip()
 		s = line.lower()
 		maps = [
-			('centos', ('linux-all', 'centos')),
-			('debian', ('linux-all', 'debian')),
-			('fedora', ('linux-all', 'fedora')),
-			('linuxmint', ('linux-all', 'linuxmint')),
-			('redhat', ('linux-all', 'redhat', 'rhel')),
-			('rocky', ('linux-all', 'rocky', 'rockylinux')),
+			('archlinux', ('linux-all', 'archlinux', 'arch')),
+			('centos', ('linux-all', 'rhel-all', 'centos')),
+			('debian', ('linux-all', 'debian-all', 'debian')),
+			('fedora', ('linux-all', 'rhel-all', 'fedora')),
+			('linuxmint', ('linux-all', 'debian-all', 'linuxmint')),
+			('redhat', ('linux-all', 'rhel-all', 'redhat', 'rhel')),
+			('rocky', ('linux-all', 'rhel-all', 'rocky', 'rockylinux')),
 			('suse', ('linux-all', 'suse', 'opensuse')),
-			('ubuntu', ('linux-all', 'ubuntu')),
+			('ubuntu', ('linux-all', 'debian-all', 'ubuntu')),
 		]
 		for os_key, lookups in maps:
 			for lookup in lookups:
@@ -438,7 +439,6 @@ for file in glob('src/**/*.sh', recursive=True):
 	script.write()
 	# Add to stack to update project docs
 	scripts.append(script)
-	pprint(script.description)
 
 for file in glob('src/**/*.py', recursive=True):
 	script = Script(file, 'python')
@@ -458,6 +458,7 @@ for file in glob('src/**/README.md', recursive=True):
 	shutil.copy(file, dest_file)
 
 # Generate project README
+scripts.sort(key=lambda x: '-'.join([x.category if x.category else 'ZZZ', x.title if x.title else x.file]))
 scripts_table = []
 scripts_table.append('| Category | Script | Type | Supports |')
 scripts_table.append('|----------|--------|------|----------|')

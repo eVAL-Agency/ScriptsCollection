@@ -106,13 +106,17 @@ Behaves the same as TRMM Arguments, but is used for environment variables.
 
 Lists the OS support for the script.
 
-For scripts that work with any Linux distribution, use `Linux-All`.
-
 ```bash
 # Supports:
 #   Debian 12
 #   Ubuntu 24.04
 ```
+
+Distros can be listed individually, or one of the group declarations for multiple distros.
+
+* Linux-All - All Linux-based distros (completely os-agnostic script)
+* Debian-All - Any Debian-based distro (Debian, Ubuntu, Mint, etc)
+* RHEL-All - Any Red Hat-based distro (RHEL, CentOS, Fedora, etc)
 
 ### Author Tag
 

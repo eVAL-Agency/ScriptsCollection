@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Linux Firewall - Whitelist IP
+# Firewall - Whitelist IP
 #
 # Add an IP address to the firewall whitelist.
 #

@@ -44,11 +44,10 @@
 #   CentOS 8, 9
 #   RHEL 8, 9
 #
-# Category:
+# Category: Some Category
 #
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
-# @CATEGORY System Monitoring
 # @TRMM-TIMEOUT 120
 #
 # Requirements:

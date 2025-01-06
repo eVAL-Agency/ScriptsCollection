@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Linux Firewall - Check Status
+# Firewall - Check Status
 #
 # Check the status of the firewall on a Linux system and print any rules defined.
 #
