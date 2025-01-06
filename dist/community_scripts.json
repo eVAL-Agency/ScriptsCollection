@@ -1,6 +1,32 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
+        "filename": "ufw/linux_install_ufw.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Firewall (UFW)",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
+                "ubuntu"
+            ]
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "4391efbe-101d-75a5-6464-c832456cbaa4",
         "filename": "game-projectzomboid/linux_install_game_zomboid.sh",
         "args": [],
@@ -54,7 +80,7 @@
         "name": "Install Zabbix Agent2",
         "syntax": [
             "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=... - Version of Zabbix to install (default: 7.0)",
+            "--version=... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
             "--server=... - Hostname or IP of Zabbix server",
             "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
         ],
@@ -107,6 +133,61 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
+        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Linux Firewall - Whitelist IP",
+        "syntax": [
+            "--ip=<ip>             IP address to whitelist (REQUIRED)",
+            "--comment=<comment>  Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
+                "ubuntu"
+            ]
+        ],
+        "category": "User Management"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
+        "filename": "firewall/linux_check_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Linux Firewall - Check Status",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            [
+                "linux",
+                "centos",
+                "debian",
+                "fedora",
+                "linuxmint",
+                "redhat",
+                "rocky",
+                "suse",
+                "ubuntu"
+            ]
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "2b565553-5d9f-d003-55bf-b11102223287",
         "filename": "test-firewall/test.sh",
         "args": [],
@@ -151,6 +232,6 @@
                 "ubuntu"
             ]
         ],
-        "category": null
+        "category": "User Management"
     }
 ]
