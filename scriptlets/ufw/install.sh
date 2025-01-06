@@ -14,6 +14,8 @@ function install_ufw() {
 
 	# Auto-enable a newly installed firewall
 	ufw --force enable
+	systemctl enable ufw
+	systemctl start ufw
 
 	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
 	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
