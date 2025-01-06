@@ -483,23 +483,45 @@ function random_password() {
 	< /dev/urandom tr -dc _cdefhjkmnprtvwxyACDEFGHJKLMNPQRTUVWXY2345689 | head -c${1:-24};echo;
 }
 # Variable setup
-VERSION="7.0"
 ZABBIX_AGENT_CONFIGURATION="/etc/zabbix/zabbix_proxy.conf"
-NONINTERACTIVE=0
 
-# Argument parsing
+function usage() {
+  cat >&2 <<EOD
+Usage: $0 [options]
+
+Options:
+    --noninteractive - Run in non-interactive mode, (will not ask for prompts)
+    --version=... - Version of Zabbix to install (default: 7.0)
+    --server=... - Hostname or IP of Zabbix server
+    --hostname=... - Hostname of local device for matching with a Zabbix host entry
+
+Please ensure to run this script as root (or at least with sudo)
+
+Generated with info from
+https://www.zabbix.com/download?zabbix=7.0&os_distribution=debian&os_version=12&components=agent_2&db=&ws=
+EOD
+  exit 1
+}
+
+# Parse arguments
+NONINTERACTIVE=0
+VERSION=""
+ZABBIX_SERVER=""
+ZABBIX_AGENT_HOSTNAME=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--noninteractive) NONINTERACTIVE=1; shift 1;;
 		--version=*) VERSION="${1#*=}"; shift 1;;
 		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
 		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
-		#-p) pidfile="$2"; shift 2;;
-		#-*) echo "unknown option: $1" >&2; exit 1;;
-		#*) handle_argument "$1"; shift 1;;
+		-h|--help) usage;;
 	esac
 done
 
+
+if [ -z "$VERSION" ]; then
+	VERSION="7.0"
+fi
 if [ "$VERSION" == "latest" ]; then
 	VERSION="7.2"
 fi

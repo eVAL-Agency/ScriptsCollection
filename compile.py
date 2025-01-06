@@ -25,8 +25,11 @@ class Script:
 		self.args = []
 		self.env = []
 		self.syntax = []
+		self.syntax_arg_map = []
+		self.description = ''
 		self.content_header = ''
 		self.content_body = ''
+		self._generated_usage = False
 
 	def parse(self):
 		"""
@@ -36,6 +39,7 @@ class Script:
 		print('Parsing file %s' % self.file)
 		line_number = 0
 		in_header = True
+		parse_description = True
 		header_section = None
 
 		self._parse_guid()
@@ -68,6 +72,12 @@ class Script:
 					line = line.replace('.', '/') + '.py'
 					line = self._parse_include(file, line_number, line)
 
+				if line.strip() == '# compile:usage':
+					line = self.generate_usage()
+
+				if line.strip() == '# compile:argparse':
+					line = self.generate_argparse()
+
 				if in_header and not line.startswith('#'):
 					# End of '#' lines indicate an end of the header
 					in_header = False
@@ -77,37 +87,63 @@ class Script:
 					if self.title is None and line.strip() != '#' and line_number > 1:
 						self.title = line[1:].strip()
 					elif '@AUTHOR' in line:
+						parse_description = False
 						self._parse_author(line)
 					elif '@SUPPORTS' in line:
+						parse_description = False
 						self._parse_supports(line)
 					elif '@CATEGORY' in line:
+						parse_description = False
 						self.category = line[11:].strip()
 					elif '@TRMM-TIMEOUT' in line:
+						parse_description = False
 						self.trmm_timeout = int(line[15:].strip())
 					elif '# trmm arguments:' == line.lower().strip():
+						parse_description = False
 						header_section = 'trmm_args'
 					elif '# trmm environment:' == line.lower().strip():
+						parse_description = False
 						header_section = 'trmm_env'
 					elif '# syntax:' == line.lower().strip():
+						parse_description = False
 						header_section = 'syntax'
 					elif '# supports:' == line.lower().strip():
+						parse_description = False
 						header_section = 'supports'
+					elif '# category:' == line.lower().strip():
+						parse_description = False
+						header_section = 'category'
 					elif line[0:3] == '#  ' and header_section == 'trmm_args':
 						self._parse_arg(line)
 					elif line[0:3] == '#  ' and header_section == 'trmm_env':
 						self._parse_env(line)
 					elif line[0:3] == '#  ' and header_section == 'syntax':
-						self._parse_syntax(line)
+						line = self._parse_syntax(line)
 					elif line[0:3] == '#  ' and header_section == 'supports':
 						self._parse_supports(line)
+					elif line[0:3] == '#  ' and header_section == 'category':
+						self.category = line[1:].strip()
+					elif line.lower().startswith('# category: '):
+						parse_description = False
+						header_section = None
+						self.category = line[12:].strip
 					elif line.strip() == '#' and header_section is not None:
 						header_section = None
+						parse_description = False
+					elif parse_description and line_number > 1:
+						if line.strip() == '#':
+							self.description += '\n'
+						else:
+							self.description += line[2:]
 
 				if write:
 					if in_header:
 						self.content_header += line
 					else:
 						self.content_body += line
+
+		# Post-parsing operations
+		self.description = self.description.strip()
 
 	def write(self):
 		"""
@@ -160,10 +196,49 @@ class Script:
 		else:
 			return ''
 
-	def _parse_syntax(self, line: str):
+	def _parse_syntax(self, line: str) -> str:
+		"""
+		Parse a syntax line and extract any arguments
+
+		Supports `SOMEVAR=--some-arg` syntax for generating the usage() and parse argument functionality
+
+		:param line:
+		:return:
+		"""
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
 		line = line[1:].strip()
+		arg_map = re.match(r'^([A-Z][A-Z0-9_]*)=([\-]+[a-z\-]*)([= ])(.*)$', line)
+		if arg_map:
+			arg_var = arg_map.group(1)
+			arg_name = arg_map.group(2)
+			arg_type = arg_map.group(3)
+			arg_default = '0' if arg_type == ' ' else ''
+			line = arg_name + arg_type + arg_map.group(4)
+			arg_required = 'REQUIRED' in line
+			if 'DEFAULT=' in line:
+				arg_default = line[line.find('DEFAULT=')+8:]
+				if arg_default[0] == '"':
+					# Default contains quotes, grab the content between them
+					arg_default = arg_default[1:]
+					arg_default = arg_default[:arg_default.find('"')]
+				elif arg_default[0] == "'":
+					# Default contains single quote, grab the content between them
+					arg_default = arg_default[1:]
+					arg_default = arg_default[:arg_default.find("'")]
+				else:
+					# Default is a value, grab the first word
+					arg_default = arg_default.split(' ')[0]
+
+			self.syntax_arg_map.append({
+				'var': arg_var,
+				'name': arg_name,
+				'type': arg_type,
+				'required': arg_required,
+				'default': arg_default
+			})
 		self.syntax.append(line)
+
+		return '#   ' + line + '\n'
 
 	def _parse_arg(self, line: str):
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
@@ -239,6 +314,75 @@ class Script:
 					self.supports.append(os_key)
 					self.supports_detailed.append((os_key, line))
 
+	def generate_usage(self) -> str:
+		"""
+		Generate a usage function for this file based on inline documentation strings
+		:return:
+		"""
+		self._generated_usage = True
+		code = []
+		code.append('function usage() {')
+		code.append('  cat >&2 <<EOD')
+		if len(self.syntax) > 0:
+			code.append('Usage: $0 [options]')
+		else:
+			code.append('Usage: $0')
+		code.append('')
+		if len(self.syntax) > 0:
+			code.append('Options:')
+			for arg in self.syntax:
+				code.append('    ' + arg.replace('$', '\\$'))
+			code.append('')
+		code.append(self.description.strip().replace('$', '\\$'))
+		code.append('EOD')
+		code.append('  exit 1')
+		code.append('}')
+		code.append('')
+		code.append('')
+		return '\n'.join(code)
+
+	def generate_argparse(self) -> str:
+		code = []
+
+		code.append('# Parse arguments')
+		# Print default arguments to at least have them defined
+		for arg in self.syntax_arg_map:
+			if arg['type'] == '=':
+				code.append('%s="%s"' % (arg['var'], arg['default']))
+			else:
+				code.append('%s=0' % arg['var'])
+
+		# Print primary WHILE loop to iterate over arguments and parse each
+		code.append('while [ "$#" -gt 0 ]; do')
+		code.append('\tcase "$1" in')
+		for arg in self.syntax_arg_map:
+			if arg['type'] == '=':
+				# --version=*) VERSION="${1#*=}"; shift 1;;
+				code.append('\t\t%s=*) %s="${1#*=}"; shift 1;;' % (arg['name'], arg['var']))
+			else:
+				# --noninteractive) NONINTERACTIVE=1; shift 1;;
+				code.append('\t\t%s) %s=1; shift 1;;' % (arg['name'], arg['var']))
+
+		# Include a "help" option if usage() was generated
+		if self._generated_usage:
+			code.append('\t\t-h|--help) usage;;')
+		code.append('\tesac')
+		code.append('done')
+		for arg in self.syntax_arg_map:
+			if arg['required']:
+				code.append('if [ -z "$%s" ]; then' % arg['var'])
+				if self._generated_usage:
+					code.append('\tusage')
+				else:
+					code.append('\techo "ERROR: %s is required" >&2' % arg['name'])
+				code.append('fi')
+		code.append('')
+		code.append('')
+		return '\n'.join(code)
+
+		# @todo Support #-p) pidfile="$2"; shift 2;;
+
+
 	def __str__(self):
 		return 'Script: %s' % self.file
 
@@ -294,6 +438,7 @@ for file in glob('src/**/*.sh', recursive=True):
 	script.write()
 	# Add to stack to update project docs
 	scripts.append(script)
+	pprint(script.description)
 
 for file in glob('src/**/*.py', recursive=True):
 	script = Script(file, 'python')
@@ -314,18 +459,19 @@ for file in glob('src/**/README.md', recursive=True):
 
 # Generate project README
 scripts_table = []
-scripts_table.append('| Script | Type | Supports |')
-scripts_table.append('|--------|------|----------|')
+scripts_table.append('| Category | Script | Type | Supports |')
+scripts_table.append('|----------|--------|------|----------|')
 for script in scripts:
 	title = script.title if script.title else script.file
 	href = script.readme.replace('src/', 'dist/') if script.readme else script.file.replace('src/', 'dist/')
 	type = script.type[0].upper() + script.type[1:]
+	category = script.category if script.category else 'Uncategorized'
 	os_support = []
 	supported = script.supports_detailed
 	supported.sort(key = lambda x: x[0])
 	for support in supported:
 		os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
-	scripts_table.append('| [%s](%s) | %s | %s |' % (title, href, type, ' '.join(os_support)))
+	scripts_table.append('| %s | [%s](%s) | %s | %s |' % (category, title, href, type, ' '.join(os_support)))
 
 replacements = {
 	'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),

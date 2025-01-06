@@ -4,14 +4,17 @@ A collection of useful scripts for various Linux distributions
 
 ## Scripts
 
-| Script | Type | Supports |
-|--------|------|----------|
-| [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install ARK Survival Ascended Dedicated Server](dist/game-arksurvivalascended/README.md) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install Zabbix Agent2](dist/zabbix/linux_install_zabbix_agent2.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [Install Zabbix Proxy](dist/zabbix/linux_install_zabbix_proxy.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
-| [src/test-firewall/test.sh](dist/test-firewall/test.sh) | Shell |  |
-| [Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py) | Python | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| Category | Script | Type | Supports |
+|----------|--------|------|----------|
+| Security | [Install Firewall (UFW)](dist/ufw/linux_install_ufw.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| Game Server | [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| Game Server | [Install ARK Survival Ascended Dedicated Server](dist/game-arksurvivalascended/README.md) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| System Monitoring | [Install Zabbix Agent2](dist/zabbix/linux_install_zabbix_agent2.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| System Monitoring | [Install Zabbix Proxy](dist/zabbix/linux_install_zabbix_proxy.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| User Management | [Linux Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| Security | [Linux Firewall - Check Status](dist/firewall/linux_check_firewall.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| Uncategorized | [src/test-firewall/test.sh](dist/test-firewall/test.sh) | Shell |  |
+| User Management | [Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py) | Python | ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 
 ## Compile all scripts
 
@@ -65,6 +68,27 @@ Lists how to run the application to the end user, and gets saved in the help ico
 #   --option2=... - Short description of option 2
 ```
 
+Optionally, you can include the destination variable name before each argument
+to allow for dynamic generation of the argument parsing via `compile:argparse`.
+
+In this example, passing `--noninteractive` will set the variable `NONINTERACTIVE` to `1`.
+
+(The compiler will filter out the prefix)
+
+```bash
+# Syntax:
+#   NONINTERACTIVE=--noninteractive - Run in non-interactive mode, (will not ask for prompts)
+#   VERSION=--version=... - Version of Zabbix to install (default: 7.0)
+#   ZABBIX_SERVER=--server=... - Hostname or IP of Zabbix server
+#   ZABBIX_AGENT_HOSTNAME=--hostname=... - Hostname of local device for matching with a Zabbix host entry
+```
+
+When called with:
+
+```bash
+# compile:argparse
+```
+
 ### TRMM Arguments
 
 Lists the default arguments and their values to be used when running the script in TRMM.
@@ -116,4 +140,16 @@ For scripts that work with any Linux distribution, use `Linux-All`.
 
 ```bash
 # @TRMM-TIMEOUT  120
+```
+
+## Generative Code
+
+The compiler can generate dynamic code based on script comments, notably for usage and arguments
+
+### Compile usage()
+
+Will generate a "usage()" function with the description and syntax arguments.
+
+```bash
+# compile:usage
 ```

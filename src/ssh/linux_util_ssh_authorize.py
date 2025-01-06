@@ -9,6 +9,9 @@
 #
 # Supports:
 #   Linux-All
+#
+# Category:
+#   User Management
 
 
 import os

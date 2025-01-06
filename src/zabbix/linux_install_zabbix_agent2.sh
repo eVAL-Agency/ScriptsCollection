@@ -9,10 +9,10 @@
 #
 #
 # Syntax:
-#   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   --version=... - Version of Zabbix to install (default: 7.0)
-#   --server=... - Hostname or IP of Zabbix server
-#   --hostname=... - Hostname of local device for matching with a Zabbix host entry
+#   NONINTERACTIVE=--noninteractive - Run in non-interactive mode, (will not ask for prompts)
+#   VERSION=--version=... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0
+#   ZABBIX_SERVER=--server=... - Hostname or IP of Zabbix server
+#   ZABBIX_AGENT_HOSTNAME=--hostname=... - Hostname of local device for matching with a Zabbix host entry
 #
 # TRMM Arguments:
 #   --noninteractive
@@ -40,23 +40,11 @@
 # scriptlet:_common/print_header.sh
 
 # Variable setup
-VERSION="7.0"
 ZABBIX_AGENT_CONFIGURATION="/etc/zabbix/zabbix_agent2.conf"
 ZABBIX_AGENT_CONFIGURATION_EXTRAS="/etc/zabbix/zabbix_agent2.d"
-NONINTERACTIVE=0
 
-# Argument parsing
-while [ "$#" -gt 0 ]; do
-	case "$1" in
-		--noninteractive) NONINTERACTIVE=1; shift 1;;
-		--version=*) VERSION="${1#*=}"; shift 1;;
-		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
-		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
-		#-p) pidfile="$2"; shift 2;;
-		#-*) echo "unknown option: $1" >&2; exit 1;;
-		#*) handle_argument "$1"; shift 1;;
-	esac
-done
+# compile:usage
+# compile:argparse
 
 if [ "$VERSION" == "latest" ]; then
 	VERSION="7.2"
