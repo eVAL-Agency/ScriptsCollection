@@ -1,6 +1,48 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "2ba379c5-eb3f-26c8-85cc-190cf4b26ea4",
+        "filename": "suitecrm/linux_inventory_device_to_suitecrm.py",
+        "args": [],
+        "env": [
+            "CRM_URL={{client.crm_url}}",
+            "CRM_CLIENT_ID={{client.crm_client_id}}",
+            "CRM_CLIENT_SECRET={{client.crm_client_secret}}",
+            "CRM_ID={{agent.crm_id}}"
+        ],
+        "submittedBy": "",
+        "name": "Collect Asset Inventory (SuiteCRM)",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "python",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Asset Tracking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "0efa5650-113c-96fd-68cc-0de3379f320f",
+        "filename": "suitecrm/windows_inventory_device_to_suitecrm.ps1",
+        "args": [],
+        "env": [
+            "CRM_URL={{client.crm_url}}",
+            "CRM_CLIENT_ID={{client.crm_client_id}}",
+            "CRM_CLIENT_SECRET={{client.crm_client_secret}}",
+            "CRM_ID={{agent.crm_id}}"
+        ],
+        "submittedBy": "",
+        "name": "Collect Asset Inventory (SuiteCRM)",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Asset Tracking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
         "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
         "args": [],
@@ -11,11 +53,7 @@
         "default_timeout": "600",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "debian",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "Game Server"
     },
@@ -31,11 +69,7 @@
         "default_timeout": "600",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "debian",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "Game Server"
     },
@@ -51,17 +85,7 @@
         "default_timeout": "120",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "debian",
-                "linuxmint",
-                "ubuntu",
-                "centos",
-                "fedora",
-                "redhat",
-                "rocky",
-                "archlinux"
-            ]
+            "linux"
         ],
         "category": "Hardware"
     },
@@ -77,18 +101,7 @@
         "default_timeout": "60",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "archlinux",
-                "centos",
-                "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "Security"
     },
@@ -104,18 +117,7 @@
         "default_timeout": "60",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "archlinux",
-                "centos",
-                "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "Security"
     },
@@ -141,14 +143,7 @@
         "default_timeout": "120",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "debian",
-                "ubuntu",
-                "rocky",
-                "centos",
-                "redhat"
-            ]
+            "linux"
         ],
         "category": "System Monitoring"
     },
@@ -174,14 +169,7 @@
         "default_timeout": "120",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "debian",
-                "ubuntu",
-                "rocky",
-                "centos",
-                "redhat"
-            ]
+            "linux"
         ],
         "category": "System Monitoring"
     },
@@ -201,18 +189,7 @@
         "default_timeout": "60",
         "shell": "python",
         "supported_platforms": [
-            [
-                "linux",
-                "archlinux",
-                "centos",
-                "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "User Management"
     },
@@ -231,18 +208,7 @@
         "default_timeout": "60",
         "shell": "shell",
         "supported_platforms": [
-            [
-                "linux",
-                "archlinux",
-                "centos",
-                "debian",
-                "fedora",
-                "linuxmint",
-                "redhat",
-                "rocky",
-                "suse",
-                "ubuntu"
-            ]
+            "linux"
         ],
         "category": "User Management"
     },
@@ -257,11 +223,7 @@
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
-        "supported_platforms": [
-            [
-                "linux"
-            ]
-        ],
+        "supported_platforms": [],
         "category": null
     }
 ]

@@ -16,6 +16,7 @@ import os
 import argparse
 import pwd
 import sys
+import ctypes
 
 
 
@@ -50,9 +51,16 @@ def ssh_get_user_authorized_keys(username: str) -> list:
 
 ##
 # Simple check to enforce the script to be run as root
-if os.getuid() != 0:
-	print("This script must be run as root!")
-	exit(1)
+
+try:
+	if os.getuid() != 0:
+		print("This script must be run as root!")
+		exit(1)
+except AttributeError:
+	# Windows doesn't have os.getuid
+	if not ctypes.windll.shell32.IsUserAnAdmin():
+		print("This script must be run with administrative privileges!")
+		exit(1)
 
 
 parser = argparse.ArgumentParser(

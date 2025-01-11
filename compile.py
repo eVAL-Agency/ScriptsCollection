@@ -41,6 +41,7 @@ class Script:
 		in_header = True
 		parse_description = True
 		header_section = None
+		multiline_header = False
 
 		self._parse_guid()
 
@@ -56,7 +57,7 @@ class Script:
 					# Check for "# scriptlet:..." replacements
 					in_header = False
 					include = line[12:].strip()
-					line = self._parse_include(file, line_number, include)
+					line = self._parse_include(self.file, line_number, include)
 
 				if line.startswith('import ') and self.type == 'python':
 					in_header = False
@@ -78,13 +79,32 @@ class Script:
 				if line.strip() == '# compile:argparse':
 					line = self.generate_argparse()
 
-				if in_header and not line.startswith('#'):
+				if in_header and self.type == 'python' and line.strip() == '"""':
+					multiline_header = not multiline_header
+
+				if in_header and self.type == 'powershell' and line.strip() == '<#':
+					multiline_header = True
+
+				if in_header and self.type == 'powershell' and line.strip() == '#>':
+					multiline_header = False
+					in_header = False
+
+				if in_header and not multiline_header and not line.startswith('#'):
 					# End of '#' lines indicate an end of the header
 					in_header = False
 
 				if in_header:
+					att_start = ' ' if multiline_header else '#  '
+
 					# Process header tags
-					if self.title is None and line.strip() != '#' and line_number > 1:
+					if self.title is None and self.type == 'python' and multiline_header and line.strip() != '':
+						if line.startswith('"""'):
+							# Allow the title to be placed on the first line of the docstring block
+							t = line[3:].strip()
+							self.title =  t if len(t) > 0 else None
+						else:
+							self.title = line.strip()
+					elif self.title is None and line.strip() != '#' and not multiline_header and line_number > 1:
 						self.title = line[1:].strip()
 					elif '@AUTHOR' in line:
 						parse_description = False
@@ -98,36 +118,44 @@ class Script:
 					elif '@TRMM-TIMEOUT' in line:
 						parse_description = False
 						self.trmm_timeout = int(line[15:].strip())
-					elif '# trmm arguments:' == line.lower().strip():
+					elif re.match(r'^(# |\.|)trmm arguments(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'trmm_args'
-					elif '# trmm environment:' == line.lower().strip():
+					elif re.match(r'^(# |\.|)trmm environment(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'trmm_env'
-					elif '# syntax:' == line.lower().strip():
+					elif re.match(r'^(# |\.|)syntax(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'syntax'
-					elif '# supports:' == line.lower().strip():
+					elif re.match(r'^(# |\.|)supports(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'supports'
-					elif '# category:' == line.lower().strip():
+					elif re.match(r'^(# |\.|)category(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'category'
-					elif line[0:3] == '#  ' and header_section == 'trmm_args':
+					elif re.match(r'^(# |\.|)title(:|)$', line.lower().strip()):
+						parse_description = False
+						header_section = 'title'
+					elif line[0:len(att_start)] == att_start and header_section == 'trmm_args':
 						self._parse_arg(line)
-					elif line[0:3] == '#  ' and header_section == 'trmm_env':
+					elif line[0:len(att_start)] == att_start and header_section == 'trmm_env':
 						self._parse_env(line)
-					elif line[0:3] == '#  ' and header_section == 'syntax':
+					elif line[0:len(att_start)] == att_start and header_section == 'syntax':
 						line = self._parse_syntax(line)
-					elif line[0:3] == '#  ' and header_section == 'supports':
+					elif line[0:len(att_start)] == att_start and header_section == 'supports':
 						self._parse_supports(line)
-					elif line[0:3] == '#  ' and header_section == 'category':
+					elif line[0:len(att_start)] == att_start and header_section == 'category':
 						self.category = line[1:].strip()
+					elif line[0:len(att_start)] == att_start and header_section == 'title':
+						self.title = line[1:].strip()
 					elif line.lower().startswith('# category: '):
 						parse_description = False
 						header_section = None
 						self.category = line[12:].strip()
 					elif line.strip() == '#' and header_section is not None:
+						header_section = None
+						parse_description = False
+					elif line.strip() == '' and header_section is not None:
 						header_section = None
 						parse_description = False
 					elif parse_description and line_number > 1:
@@ -308,6 +336,7 @@ class Script:
 			('rocky', ('linux-all', 'rhel-all', 'rocky', 'rockylinux')),
 			('suse', ('linux-all', 'suse', 'opensuse')),
 			('ubuntu', ('linux-all', 'debian-all', 'ubuntu')),
+			('windows', ('windows',))
 		]
 		for os_key, lookups in maps:
 			for lookup in lookups:
@@ -402,12 +431,28 @@ class Script:
 			'readme': self.readme,
 			'author': self.author,
 			'supports': self.supports,
+			'supports_detailed': self.supports_detailed,
 			'category': self.category,
 			'trmm_timeout': self.trmm_timeout,
 			'guid': self.guid,
+			'syntax': self.syntax,
+			'args': self.args,
+			'env': self.env,
 		}
 
 	def as_trmm_meta(self):
+		# TRMM treats all *nix distros as just "linux"
+		all_platforms = (
+			('linux', ('archlinux', 'centos', 'debian', 'fedora', 'linuxmint', 'redhat', 'rocky', 'suse', 'ubuntu')),
+			('macos', ('macos',)),
+			('windows', ('windows',)),
+		)
+		platforms = []
+
+		for platform, distros in all_platforms:
+			if any([x in self.supports for x in distros]):
+				platforms.append(platform)
+
 		return {
 			'$schema': 'https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json',
 			'guid': self.guid,
@@ -419,7 +464,7 @@ class Script:
 			'syntax': self.syntax,
 			'default_timeout': str(self.trmm_timeout),
 			'shell': self.type,
-			'supported_platforms': [['linux'] + self.supports],
+			'supported_platforms': platforms,
 			'category': self.category,
 		}
 
@@ -430,6 +475,10 @@ if os.path.exists('dist'):
 
 scripts = []
 
+#s = Script('src/suitecrm/windows_inventory_device_to_suitecrm.ps1', 'powershell')
+#s.parse()
+#pprint(s.asdict())
+#exit(1)
 
 # Parse and company any script files
 for file in glob('src/**/*.sh', recursive=True):
@@ -442,6 +491,14 @@ for file in glob('src/**/*.sh', recursive=True):
 
 for file in glob('src/**/*.py', recursive=True):
 	script = Script(file, 'python')
+	# Parse the source
+	script.parse()
+	script.write()
+	# Add to stack to update project docs
+	scripts.append(script)
+
+for file in glob('src/**/*.ps1', recursive=True):
+	script = Script(file, 'powershell')
 	# Parse the source
 	script.parse()
 	script.write()
