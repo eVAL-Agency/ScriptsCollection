@@ -1,6 +1,6 @@
 <#
 .TITLE
-    Collect Asset Inventory (SuiteCRM)
+    Collect Asset Inventory (SuiteCRM) [Windows]
 
 .DESCRIPTION
     Collect asset information for a device including CPU, memory, network, and OS details.
@@ -12,33 +12,14 @@
 .CATEGORY
     Asset Tracking
 
+.LICENSE
+    AGPLv3
+
 .TRMM ENVIRONMENT
     CRM_URL={{client.crm_url}}
     CRM_CLIENT_ID={{client.crm_client_id}}
     CRM_CLIENT_SECRET={{client.crm_client_secret}}
     CRM_ID={{agent.crm_id}}
-
-
-
-.PARAMETER xx
-   Inputs to this cmdlet (if any)
-
-.PARAMETER yy
-   Inputs to this cmdlet (if any)
-
-.OUTPUTS
-   Output from this cmdlet (if any)
-
-.EXAMPLE
-   Example of how to use this cmdlet
-
-.EXAMPLE
-   Another example of how to use this cmdlet
-
-.NOTES
-   Licensed under name-of-your-license-here
-   v1.0 1/1/1900 Username
-   General Notes for script
 #>
 
 $crm_url = $Env:CRM_URL

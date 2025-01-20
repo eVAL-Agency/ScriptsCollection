@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Collect Asset Inventory (SuiteCRM)
+Collect Asset Inventory (SuiteCRM) [Linux]
 
 Collect asset information for a device including CPU, memory, network, and OS details.
 This information is then sent to SuiteCRM for asset tracking.

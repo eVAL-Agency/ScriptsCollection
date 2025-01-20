@@ -11,7 +11,7 @@
             "CRM_ID={{agent.crm_id}}"
         ],
         "submittedBy": "",
-        "name": "Collect Asset Inventory (SuiteCRM)",
+        "name": "Collect Asset Inventory (SuiteCRM) [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "python",
@@ -32,7 +32,7 @@
             "CRM_ID={{agent.crm_id}}"
         ],
         "submittedBy": "",
-        "name": "Collect Asset Inventory (SuiteCRM)",
+        "name": "Collect Asset Inventory (SuiteCRM) [Windows]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "powershell",
@@ -88,6 +88,22 @@
             "linux"
         ],
         "category": "Hardware"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
+        "filename": "windows/windows_inventory_get_windows_license.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Get Windows License Information",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Licensing"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
