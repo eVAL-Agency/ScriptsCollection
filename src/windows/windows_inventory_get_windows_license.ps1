@@ -1,27 +1,27 @@
 <#
 .TITLE
-    Get Windows License Information
+	Get Windows License Information
 
 .DESCRIPTION
-    Collect the windows license key, product, and status.
+	Collect the windows license key, product, and status.
 
 .SUPPORTS
-    Windows 8, 10, 11, Server 2016, Server 2019
+	Windows 8, 10, 11, Server 2016, Server 2019
 
 .CATEGORY
-    Licensing
+	Licensing
 
 .LICENSE
-    AGPLv3
+	AGPLv3
 
 .OUTPUTS
-   {
-     "ProductType": "...",   # License type, usually Retail, OEM, etc
-     "ProductId": "...",     # Product ID of this version of Windows
-     "ProductName": "...",   # Human-friendly name of the version of Windows
-     "ProductKey": "...",    # License key for this installation
-     "ProductStatus": "...", # Status of the license, ie: Licensed, Unlicensed, etc
-   }
+	{
+		"ProductType": "...",   # License type, usually Retail, OEM, etc
+		"ProductId": "...",     # Product ID of this version of Windows
+		"ProductName": "...",   # Human-friendly name of the version of Windows
+		"ProductKey": "...",    # License key for this installation
+		"ProductStatus": "...", # Status of the license, ie: Licensed, Unlicensed, etc
+	}
 
 #>
 
