@@ -1,4 +1,8 @@
 #!/bin/bash
+# Firewall test
+#
+# Draft:
+#    true
 
 ##
 # Get which firewall is enabled,

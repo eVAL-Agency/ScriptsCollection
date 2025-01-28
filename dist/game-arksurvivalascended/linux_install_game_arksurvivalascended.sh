@@ -828,7 +828,7 @@ function update_game {
 # Check if any maps are running; do not update an actively running server.
 RUNNING=0
 for MAP in \$GAME_MAPS; do
-	if [ "\$(systemctl is-active $MAP)" == "active" ]; then
+	if [ "\$(systemctl is-active \$MAP)" == "active" ]; then
 		RUNNING=1
 	fi
 done
@@ -886,7 +886,7 @@ function update_game {
 
 RUNNING=0
 for MAP in \$GAME_MAPS; do
-	if [ "\$(systemctl is-active $MAP)" == "active" ]; then
+	if [ "\$(systemctl is-active \$MAP)" == "active" ]; then
 		RUNNING=1
 	fi
 done

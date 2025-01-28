@@ -1,18 +1,19 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0e27dfef-e475-9d56-32d0-ac685ea892aa",
-        "filename": "suitecrm\\linux_inventory_device_to_suitecrm.py",
+        "guid": "2ba379c5-eb3f-26c8-85cc-190cf4b26ea4",
+        "filename": "suitecrm/linux_inventory_device_to_suitecrm.py",
         "args": [],
         "env": [
             "CRM_URL={{client.crm_url}}",
             "CRM_CLIENT_ID={{client.crm_client_id}}",
-            "CRM_CLIENT_SECRET={{client.crm_client_secret}}",
-            "CRM_ID={{agent.crm_id}}"
+            "CRM_CLIENT_SECRET={{client.crm_client_secret}}"
         ],
         "submittedBy": "",
         "name": "Collect Asset Inventory (SuiteCRM) [Linux]",
-        "syntax": [],
+        "syntax": [
+            "--debug: Enable debug logging"
+        ],
         "default_timeout": "60",
         "shell": "python",
         "supported_platforms": [
@@ -22,14 +23,13 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "5128d26f-6f49-73a2-6bf3-228d1f81c644",
-        "filename": "suitecrm\\windows_inventory_device_to_suitecrm.ps1",
+        "guid": "0efa5650-113c-96fd-68cc-0de3379f320f",
+        "filename": "suitecrm/windows_inventory_device_to_suitecrm.ps1",
         "args": [],
         "env": [
             "CRM_URL={{client.crm_url}}",
             "CRM_CLIENT_ID={{client.crm_client_id}}",
-            "CRM_CLIENT_SECRET={{client.crm_client_secret}}",
-            "CRM_ID={{agent.crm_id}}"
+            "CRM_CLIENT_SECRET={{client.crm_client_secret}}"
         ],
         "submittedBy": "",
         "name": "Collect Asset Inventory (SuiteCRM) [Windows]",
@@ -43,8 +43,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "08442827-ff33-ec2d-ec4e-bf6a777607f6",
-        "filename": "game-arksurvivalascended\\linux_install_game_arksurvivalascended.sh",
+        "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
+        "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
@@ -59,8 +59,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "79a79faa-2b04-f9e0-a95f-300ef9255207",
-        "filename": "game-palworld\\linux_install_game_palworld.sh",
+        "guid": "79a79faa-2b04-f9e0-d90d-1760fc8c6eb1",
+        "filename": "game-palworld/linux_install_game_palworld.sh",
         "args": [],
         "env": [],
         "submittedBy": "Drew Wort <drew@worttechnologies.tech>",
@@ -75,8 +75,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "4391efbe-101d-75a5-8ade-76c958e93de9",
-        "filename": "game-projectzomboid\\linux_install_game_zomboid.sh",
+        "guid": "4391efbe-101d-75a5-6464-c832456cbaa4",
+        "filename": "game-projectzomboid/linux_install_game_zomboid.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
@@ -91,8 +91,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "428c6f18-7aba-e5b6-86f7-c5e04d5f3b0a",
-        "filename": "disk\\linux_check_disk_health.sh",
+        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
+        "filename": "disk/linux_check_disk_health.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
@@ -107,8 +107,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3d2c3dbd-7430-11a8-8514-865b5d41ec92",
-        "filename": "windows\\windows_inventory_get_windows_license.ps1",
+        "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
+        "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],
         "env": [],
         "submittedBy": "",
@@ -123,8 +123,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "e7d1ae74-9181-e3fc-58bd-8f92e4d05e42",
-        "filename": "firewall\\linux_check_firewall.sh",
+        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
+        "filename": "firewall/linux_check_firewall.sh",
         "args": [],
         "env": [],
         "submittedBy": "",
@@ -139,8 +139,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0fa0896f-0d61-eba0-e309-887c22fe96a9",
-        "filename": "ufw\\linux_install_ufw.sh",
+        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
+        "filename": "ufw/linux_install_ufw.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
@@ -155,8 +155,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "7594d620-8123-0420-d353-bf273c11d5de",
-        "filename": "zabbix\\linux_install_zabbix_agent2.sh",
+        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
+        "filename": "zabbix/linux_install_zabbix_agent2.sh",
         "args": [
             "--noninteractive",
             "--version=7.0",
@@ -181,8 +181,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "683832fb-0378-afd3-6b31-34ceed0a37f0",
-        "filename": "zabbix\\linux_install_zabbix_proxy.sh",
+        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
+        "filename": "zabbix/linux_install_zabbix_proxy.sh",
         "args": [
             "--noninteractive",
             "--version=7.0",
@@ -207,8 +207,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "6b4b5647-2e43-682f-64fe-cce19d34ead3",
-        "filename": "ssh\\linux_util_ssh_authorize.py",
+        "guid": "6b4b5647-2e43-682f-aa87-fd717d00108e",
+        "filename": "ssh/linux_util_ssh_authorize.py",
         "args": [],
         "env": [],
         "submittedBy": "",
@@ -227,8 +227,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c6a7d6ea-1202-b679-e5ad-fd46aa93cdc9",
-        "filename": "firewall\\linux_util_firewall_whitelist_ip.sh",
+        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
+        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
         "args": [],
         "env": [],
         "submittedBy": "",
@@ -243,19 +243,5 @@
             "linux"
         ],
         "category": "User Management"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "2b565553-5d9f-d003-2535-3f381356df4c",
-        "filename": "test-firewall\\test.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": null,
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [],
-        "category": null
     }
 ]

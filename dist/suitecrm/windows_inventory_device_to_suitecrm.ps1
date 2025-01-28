@@ -1,31 +1,29 @@
 <#
 .TITLE
-    Collect Asset Inventory (SuiteCRM) [Windows]
+	Collect Asset Inventory (SuiteCRM) [Windows]
 
 .DESCRIPTION
-    Collect asset information for a device including CPU, memory, network, and OS details.
-    This information is then sent to SuiteCRM for asset tracking.
+	Collect asset information for a device including CPU, memory, network, and OS details.
+	This information is then sent to SuiteCRM for asset tracking.
 
 .SUPPORTS
-    Windows 10, 11
+	Windows 10, 11
 
 .CATEGORY
-    Asset Tracking
+	Asset Tracking
 
 .LICENSE
-    AGPLv3
+	AGPLv3
 
 .TRMM ENVIRONMENT
-    CRM_URL={{client.crm_url}}
-    CRM_CLIENT_ID={{client.crm_client_id}}
-    CRM_CLIENT_SECRET={{client.crm_client_secret}}
-    CRM_ID={{agent.crm_id}}
+	CRM_URL={{client.crm_url}}
+	CRM_CLIENT_ID={{client.crm_client_id}}
+	CRM_CLIENT_SECRET={{client.crm_client_secret}}
 #>
 
 $crm_url = $Env:CRM_URL
 $crm_client_id = $Env:CRM_CLIENT_ID
 $crm_client_secret = $Env:CRM_CLIENT_SECRET
-$crm_id = $Env:CRM_ID
 $crm_object = 'MSP_Devices'
 
 if ($crm_url -eq $null -or $crm_url -eq '') {
@@ -40,11 +38,6 @@ if ($crm_client_id -eq $null -or $crm_client_id -eq '') {
 
 if ($crm_client_secret -eq $null -or $crm_client_secret -eq '') {
 	Write-Host "CRM_CLIENT_SECRET is not set"
-	exit(1)
-}
-
-if ($crm_id -eq $null -or $crm_id -eq '') {
-	Write-Host "CRM_ID is not set"
 	exit(1)
 }
 
@@ -212,8 +205,49 @@ Catch {
 	Write-Host $ErrResp
 	exit(1)
 }
-
 $access_token = $token_response.access_token
+
+
+# Locate the device ID based on its mac
+$data_url = "https://$crm_url/Api/V8/module/MSP_Devices?fields[MSP_Devices]=id&filter[operator]=OR&filter[mac_pri][EQ]=$($data.mac_pri)&filter[mac_sec][EQ]=$($data.mac_pri)"
+$data_header = @{
+	'Content-Type' = 'application/json'
+	'Accept' = 'application/json'
+	'Authorization' = 'Bearer ' + $access_token
+}
+Try {
+	$find_response = Invoke-RestMethod -Uri $data_url -Method Get -Header $data_header
+}
+Catch {
+	Write-Host $_.Exception.Message
+	$streamReader = [System.IO.StreamReader]::new($_.Exception.Response.GetResponseStream())
+	$ErrResp = $streamReader.ReadToEnd()
+	$streamReader.Close()
+	Write-Host $ErrResp
+	exit(1)
+}
+
+if ($find_response.data.Count -eq 0) {
+	# Device does not exist; create new.
+	$data_method = 'Post'
+	$data_body = @{
+		'data' = @{
+			'type' = $crm_object
+			'attributes' = $data
+		}
+	} | ConvertTo-Json
+}
+else {
+	# Device exists, send an update request
+	$data_method = 'Patch'
+	$data_body = @{
+		'data' = @{
+			'type' = $crm_object
+			'id' = $find_response.data[0].id
+			'attributes' = $data
+		}
+	} | ConvertTo-Json
+}
 
 # Send the device data to SuiteCRM
 $data_url = "https://$crm_url/Api/V8/module"
@@ -222,15 +256,8 @@ $data_header = @{
 	'Accept' = 'application/json'
 	'Authorization' = 'Bearer ' + $access_token
 }
-$data_body = @{
-	'data' = @{
-		'type' = $crm_object
-		'id' = $crm_id
-		'attributes' = $data
-	}
-} | ConvertTo-Json
 Try {
-	Invoke-RestMethod -Uri $data_url -Method Patch -Header $data_header -Body $data_body
+	Invoke-RestMethod -Uri $data_url -Method $data_method -Header $data_header -Body $data_body
 }
 Catch {
 	Write-Host $_.Exception.Message
