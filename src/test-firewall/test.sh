@@ -1,4 +1,8 @@
 #!/bin/bash
+# Firewall test
+#
+# Draft:
+#    true
 
 # scriptlet:_common/get_firewall.sh
 # scriptlet:ufw/install.sh
