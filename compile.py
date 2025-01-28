@@ -17,6 +17,7 @@ class Script:
 		self.author = None
 		self.guid = None
 		self.category = None
+		self.draft = False
 		self.trmm_timeout = 60
 		self.supports = []
 		self.supports_detailed = []
@@ -58,43 +59,47 @@ class Script:
 					in_header = False
 					include = line[12:].strip()
 					line = self._parse_include(self.file, line_number, include)
-
-				if line.startswith('import ') and self.type == 'python':
+				elif line.startswith('import ') and self.type == 'python':
 					in_header = False
 					self._parse_import(line)
 					write = False
-
-				if line.startswith('from scriptlets.') and self.type == 'python':
+				elif line.startswith('from scriptlets.') and self.type == 'python':
+					in_header = False
 					# Treat this as a scriptlet include
 					# Trim "from scriptlets." off the beginning to get the filename
 					line = line[16:].strip()
 					# Trim anything after "import..."; we'll just include the whole file
 					line = line[:line.index(' import')]
 					line = line.replace('.', '/') + '.py'
-					line = self._parse_include(file, line_number, line)
-
-				if line.strip() == '# compile:usage':
+					line = self._parse_include(self.file, line_number, line)
+				elif re.match(r'^from .* import .*', line) and self.type == 'python':
+					in_header = False
+					self._parse_import(line)
+					write = False
+				elif line.strip() == '# compile:usage':
+					in_header = False
 					line = self.generate_usage()
-
-				if line.strip() == '# compile:argparse':
+				elif line.strip() == '# compile:argparse':
+					in_header = False
 					line = self.generate_argparse()
-
-				if in_header and self.type == 'python' and line.strip() == '"""':
+				elif in_header and self.type == 'python' and line.strip() == '"""':
 					multiline_header = not multiline_header
-
-				if in_header and self.type == 'powershell' and line.strip() == '<#':
+				elif in_header and self.type == 'powershell' and line.strip() == '<#':
 					multiline_header = True
-
-				if in_header and self.type == 'powershell' and line.strip() == '#>':
+				elif in_header and self.type == 'powershell' and line.strip() == '#>':
 					multiline_header = False
 					in_header = False
 
-				if in_header and not multiline_header and not line.startswith('#'):
-					# End of '#' lines indicate an end of the header
-					in_header = False
+				if line_number > 1 and in_header and not multiline_header:
+					if self.type == 'python':
+						# Lines that do not start with '"""' indicate that we are no longer in the file header
+						in_header = line.startswith('"""') or line.startswith('#')
+					elif not line.startswith('#'):
+						# End of '#' lines indicate an end of the header
+						in_header = False
 
 				if in_header:
-					att_start = ' ' if multiline_header else '#  '
+					att_start = '\t' if multiline_header else '#  '
 
 					# Process header tags
 					if self.title is None and self.type == 'python' and multiline_header and line.strip() != '':
@@ -136,6 +141,9 @@ class Script:
 					elif re.match(r'^(# |\.|)title(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'title'
+					elif re.match(r'^(# |\.|)draft(:|)$', line.lower().strip()):
+						parse_description = False
+						header_section = 'draft'
 					elif line[0:len(att_start)] == att_start and header_section == 'trmm_args':
 						self._parse_arg(line)
 					elif line[0:len(att_start)] == att_start and header_section == 'trmm_env':
@@ -148,6 +156,9 @@ class Script:
 						self.category = line[1:].strip()
 					elif line[0:len(att_start)] == att_start and header_section == 'title':
 						self.title = line[1:].strip()
+					elif line[0:len(att_start)] == att_start and header_section == 'draft':
+						val = line[1:].strip().lower()
+						self.draft = (val == '1' or val == 'true' or val == 'yes')
 					elif line.lower().startswith('# category: '):
 						parse_description = False
 						header_section = None
@@ -282,7 +293,7 @@ class Script:
 		hashedValueEven = hashedValueOdd = 3074457345618258791
 		KnuthMultiValue = 3074457345618258799
 		i = 1
-		for char in self.file:
+		for char in self.file.replace('\\', '/'):
 			i += 1
 			if i % 2 == 0:
 				hashedValueEven = (hashedValueEven + ord(char)) * KnuthMultiValue
@@ -438,6 +449,7 @@ class Script:
 			'syntax': self.syntax,
 			'args': self.args,
 			'env': self.env,
+			'draft': self.draft
 		}
 
 	def as_trmm_meta(self):
@@ -453,10 +465,14 @@ class Script:
 			if any([x in self.supports for x in distros]):
 				platforms.append(platform)
 
+		filename = os.path.basename(self.file)
+		# Fix windows-style directory separators
+		filename = filename.replace('\\', '/')
+
 		return {
 			'$schema': 'https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json',
 			'guid': self.guid,
-			'filename': os.path.basename(self.file),
+			'filename': filename,
 			'args': self.args,
 			'env': self.env,
 			'submittedBy': self.get_full_author(),
@@ -475,8 +491,9 @@ if os.path.exists('dist'):
 
 scripts = []
 
-#s = Script('src/suitecrm/windows_inventory_device_to_suitecrm.ps1', 'powershell')
+#s = Script('src/github/linux_install_github_runner.sh', 'shell')
 #s.parse()
+#s.write()
 #pprint(s.asdict())
 #exit(1)
 
@@ -520,8 +537,14 @@ scripts_table = []
 scripts_table.append('| Category | Script | Type | Supports |')
 scripts_table.append('|----------|--------|------|----------|')
 for script in scripts:
+	if script.draft:
+		continue
 	title = script.title if script.title else script.file
-	href = script.readme.replace('src/', 'dist/') if script.readme else script.file.replace('src/', 'dist/')
+	href = script.readme if script.readme else script.file
+	# Fix windows-style directory separators
+	href = href.replace('\\', '/')
+	# Swap src/ with dist/ for the href target, (folks usually want to see the compiled version, not the source)
+	href = href.replace('src/', 'dist/') if script.readme else script.file.replace('src/', 'dist/')
 	type = script.type[0].upper() + script.type[1:]
 	category = script.category if script.category else 'Uncategorized'
 	os_support = []
@@ -546,6 +569,8 @@ with open('README.md', 'w') as f:
 with open('dist/community_scripts.json', 'w') as f:
 	meta = []
 	for script in scripts:
+		if script.draft:
+			continue
 		data = script.as_trmm_meta()
 		data['filename'] = script.file[4:]
 		meta.append(data)
