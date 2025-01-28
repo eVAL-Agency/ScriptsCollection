@@ -6,32 +6,45 @@ Collect asset information for a device including CPU, memory, network, and OS de
 This information is then sent to SuiteCRM for asset tracking.
 
 TRMM Environment:
-    CRM_URL={{client.crm_url}}
-    CRM_CLIENT_ID={{client.crm_client_id}}
-    CRM_CLIENT_SECRET={{client.crm_client_secret}}
-    CRM_ID={{agent.crm_id}}
+	CRM_URL={{client.crm_url}}
+	CRM_CLIENT_ID={{client.crm_client_id}}
+	CRM_CLIENT_SECRET={{client.crm_client_secret}}
+
+Syntax:
+	--debug: Enable debug logging
 
 Supports:
-    Linux-All
+	Linux-All
 
 Category:
-    Asset Tracking
+	Asset Tracking
 """
 
 
 import os
 import subprocess
 from typing import Union
-import json
+import logging
+import argparse
 import sys
-from urllib import request
-from urllib.error import HTTPError
+from scriptlets.suitecrm.suitecrmsync import *
+
+
+parser = argparse.ArgumentParser(
+	prog='linux_inventory_device_to_suitecrm.py',
+	description='Collect device asset inventory and send to SuiteCRM')
+
+parser.add_argument('--debug', action='store_true', help='Enable debug output')
+
+options = parser.parse_args()
 
 crm_url = os.getenv('CRM_URL')
 crm_client_id = os.getenv('CRM_CLIENT_ID')
 crm_client_secret = os.getenv('CRM_CLIENT_SECRET')
-crm_id = os.getenv('CRM_ID')
 crm_object = 'MSP_Devices'
+
+if options.debug:
+	logging.basicConfig(level=logging.DEBUG)
 
 if crm_url is None:
 	print('CRM_URL is not set', file=sys.stderr)
@@ -43,10 +56,6 @@ if crm_client_id is None:
 
 if crm_client_secret is None:
 	print('CRM_CLIENT_SECRET is not set', file=sys.stderr)
-	sys.exit(1)
-
-if crm_id is None:
-	print('CRM_ID is not set', file=sys.stderr)
 	sys.exit(1)
 
 # scriptlet:_common/require_root.py
@@ -134,6 +143,7 @@ set_field('hardware_version', read_from([
 	'/sys/devices/virtual/dmi/id/chassis_version'
 ]))
 set_field('board_manufacturer', read_from(['/sys/devices/virtual/dmi/id/board_vendor']))
+set_field('board_model', read_from(['/sys/devices/virtual/dmi/id/board_name']))
 set_field('board_serial', read_from(['/sys/devices/virtual/dmi/id/board_serial']))
 
 
@@ -294,54 +304,25 @@ for iface in ifaces:
 print(json.dumps(data, indent=4))
 
 # Request an access token via OAuth2 from SuitCRM
-req = request.Request(
-	'https://%s/Api/access_token' % crm_url,
-	method='POST',
-	headers={
-		'Content-Type': 'application/json',
-		'Accept': 'application/json',
-	},
-	data=json.dumps({
-		'grant_type': 'client_credentials',
-		'client_id': crm_client_id,
-		'client_secret': crm_client_secret,
-	}).encode('utf-8')
-)
-try:
-	ret = request.urlopen(req)
-except HTTPError as e:
-	print('Failed to get access token, please check the credentials and server connectivity', file=sys.stderr)
-	print(e.read(), file=sys.stderr)
-	sys.exit(1)
+sync = SuiteCRMSync(crm_url, crm_client_id, crm_client_secret)
+sync.get_token()
 
-try:
-	token = json.loads(ret.read())['access_token']
-except json.decoder.JSONDecodeError:
-	print('Failed to parse access token response', file=sys.stderr)
-	print(ret.read(), file=sys.stderr)
-	sys.exit(1)
+# Lookup the device based on its MAC
+if field_map['mac_primary'] in data:
+	mac = data[field_map['mac_primary']]
+	ret = sync.find(
+		'MSP_Devices',
+		{'mac_pri': mac, 'mac_sec': mac},
+		operator='OR',
+		fields=('id',)
+	)
+else:
+	print('Unable to sync to SuiteCRM, no MAC found', file=sys.stderr)
+	exit(1)
 
-# Send the device data to SuiteCRM
-req = request.Request(
-	'https://%s/Api/V8/module' % crm_url,
-	method='PATCH',
-	headers={
-		'Content-Type': 'application/json',
-		'Accept': 'application/json',
-		'Authorization': 'Bearer %s' % token,
-	},
-	data=json.dumps({
-		'data': {
-			'type': crm_object,
-			'id': crm_id,
-			'attributes': data,
-		}
-	}).encode('utf-8')
-)
-
-try:
-	request.urlopen(req)
-except HTTPError as e:
-	print('Failed to send device info to SuiteCRM', file=sys.stderr)
-	print(e.read(), file=sys.stderr)
-	sys.exit(1)
+if len(ret) == 0:
+	# New device
+	sync.create('MSP_Devices', data)
+else:
+	# Update existing device
+	sync.update('MSP_Devices', ret[0]['id'], data)
