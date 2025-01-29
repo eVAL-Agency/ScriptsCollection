@@ -19,7 +19,9 @@ Version:
 	2025.01.28
 
 Changelog:
-	2025.01.28 - Added debug logging
+	2025.01.28
+		* Added debug logging
+		* Create and update return server data
 """
 import json
 from typing import Union
@@ -160,7 +162,7 @@ class SuiteCRMSync:
 
 		# Send the UPDATE request to SuiteCRM
 		try:
-			self._send(
+			return self._send(
 				'/Api/V8/module',
 				'PATCH',
 				{
@@ -184,7 +186,7 @@ class SuiteCRMSync:
 
 		# Send the device data to SuiteCRM
 		try:
-			self._send(
+			return self._send(
 				'/Api/V8/module',
 				'POST',
 				{

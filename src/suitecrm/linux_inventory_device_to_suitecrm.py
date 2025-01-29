@@ -155,10 +155,29 @@ with open('/proc/cpuinfo', 'r') as f:
 	for line in f:
 		if line.startswith('model name'):
 			cpu_model = line.split(':')[1].strip()
+		elif line.startswith('processor'):
 			cpu_threads += 1
 		elif line.startswith('physical id'):
 			if line not in cpu_sockets:
 				cpu_sockets.append(line)
+		elif line.startswith('Serial'):
+			# Raspberry PI has their hardware information in /proc/cpuinfo
+			set_field('board_serial', line.split(':')[1].strip())
+		elif line.startswith('Model'):
+			# Raspberry PI has their hardware information in /proc/cpuinfo
+			val = line.split(':')[1].strip()
+			set_field('board_model', val)
+			if 'Raspberry Pi' in val:
+				set_field('board_manufacturer', 'Raspberry Pi Ltd')
+
+if cpu_model is None:
+	# Try lscpu instead
+	process = subprocess.run(['lscpu', '-J'], stdout=subprocess.PIPE)
+	cpu_data = json.loads(process.stdout.decode().strip())
+	for record in cpu_data['lscpu']:
+		if record['field'] == 'Model name:':
+			cpu_model = record['data']
+
 
 if len(cpu_sockets) > 1 and cpu_model is not None:
 	set_field('cpu_model', "%sx %s" % (len(cpu_sockets), cpu_model))
@@ -170,17 +189,11 @@ if cpu_threads > 0:
 
 
 # Read memory information from /proc/meminfo or dmidecode if available
-if subprocess.run(['which', 'dmidecode'], check=False, stdout=subprocess.PIPE).returncode != 0:
-	print('dmidecode not found, unable to provide full details for memory', file=sys.stderr)
-
-	with open('/proc/meminfo', 'r') as f:
-		for line in f:
-			if line.startswith('MemTotal:'):
-				mem_size = line.split(':')[1].strip()
-				if mem_size.endswith(' kB'):
-					mem_size = int(round(int(mem_size[:-3]) / 1024 / 1024, 0))
-				set_field('mem_size', mem_size)
-else:
+if subprocess.run(['which', 'dmidecode'], check=False, stdout=subprocess.PIPE).returncode == 0:
+	# Use dmidecode to gather memory information, (if it's installed)
+	# Just because this is present does not mean it'll succeed though,
+	# Raspberry PIs do not support SMBIOS information, so nothing will be returned
+	# and we'll need to fallback to /proc/meminfo
 	memory = []
 	current_stick = None
 	process = subprocess.run(['dmidecode', '--type', 'memory'], stdout=subprocess.PIPE)
@@ -257,6 +270,16 @@ else:
 
 	set_field('mem_model', ', '.join(mem_models))
 
+if 'mem_size' not in data or data['mem_size'] == 0:
+	# Lookup from dmidecode failed, fallback to /proc/meminfo
+	with open('/proc/meminfo', 'r') as f:
+		for line in f:
+			if line.startswith('MemTotal:'):
+				mem_size = line.split(':')[1].strip()
+				if mem_size.endswith(' kB'):
+					mem_size = int(round(int(mem_size[:-3]) / 1024 / 1024, 0))
+				set_field('mem_size', mem_size)
+
 
 # Get OS name and version from common, (and not-so-common) sources
 if subprocess.run(['which', 'pveversion'], check=False, stdout=subprocess.PIPE).returncode == 0:
@@ -322,7 +345,20 @@ else:
 
 if len(ret) == 0:
 	# New device
-	sync.create('MSP_Devices', data)
+	ret = sync.create('MSP_Devices', data)
+	print(
+		'Updated device record https://' +
+		crm_url +
+		'/index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DMSP_Devices%26action%3DDetailView%26record%3D' +
+		ret['data']['id'], file=sys.stderr
+	)
+
 else:
 	# Update existing device
 	sync.update('MSP_Devices', ret[0]['id'], data)
+	print(
+		'Updated device record https://' +
+		crm_url +
+		'/index.php?action=ajaxui#ajaxUILoc=index.php%3Fmodule%3DMSP_Devices%26action%3DDetailView%26record%3D' +
+		ret[0]['id'], file=sys.stderr
+	)
