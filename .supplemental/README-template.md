@@ -212,6 +212,15 @@ Distros can be listed individually, or one of the group declarations for multipl
 ```bash
 #/bin/bash
 # ...
+# Author:
+#   Some Name <some-email@domain.tld>
+```
+
+alternative syntax:
+
+```bash
+#/bin/bash
+# ...
 # @AUTHOR  Some Name <some-email@domain.tld>
 ```
 

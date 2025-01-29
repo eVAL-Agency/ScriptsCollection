@@ -53,7 +53,9 @@ Version:
 	2025.01.28
 
 Changelog:
-	2025.01.28 - Added debug logging
+	2025.01.28
+		* Added debug logging
+		* Create and update return server data
 """
 
 

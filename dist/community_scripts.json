@@ -123,6 +123,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "9e3d582b-e00d-e7b9-e4bb-07bccd0f51ad",
+        "filename": "net-diag/linux_install_net_diag.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install net-diag utilities",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Network Utility"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],

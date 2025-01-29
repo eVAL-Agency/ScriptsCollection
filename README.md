@@ -13,6 +13,7 @@ A collection of useful scripts for various Linux distributions
 | Game Server | [Install Project Zomboid](dist/game-projectzomboid/linux_install_game_zomboid.sh) | Shell | ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | Hardware | [Disk Drive Health Check](dist/disk/linux_check_disk_health.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Arch") ![centos](.supplemental/images/icons/centos.svg "RHEL-All") ![debian](.supplemental/images/icons/debian.svg "Debian-All") ![fedora](.supplemental/images/icons/fedora.svg "RHEL-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Debian-All") ![redhat](.supplemental/images/icons/redhat.svg "RHEL-All") ![rocky](.supplemental/images/icons/rocky.svg "RHEL-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Debian-All") |
 | Licensing | [Get Windows License Information](dist/windows/windows_inventory_get_windows_license.ps1) | Powershell | ![windows](.supplemental/images/icons/windows.svg "Windows 8, 10, 11, Server 2016, Server 2019") |
+| Network Utility | [Install net-diag utilities](dist/net-diag/linux_install_net_diag.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | Security | [Firewall - Check Status](dist/firewall/linux_check_firewall.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | Security | [Install Firewall (UFW)](dist/ufw/linux_install_ufw.sh) | Shell | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | System Monitoring | [Install Zabbix Agent2](dist/zabbix/linux_install_zabbix_agent2.sh) | Shell | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
@@ -222,6 +223,15 @@ Distros can be listed individually, or one of the group declarations for multipl
 * Windows
 
 ### Author Tag
+
+```bash
+#/bin/bash
+# ...
+# Author:
+#   Some Name <some-email@domain.tld>
+```
+
+alternative syntax:
 
 ```bash
 #/bin/bash

@@ -113,7 +113,7 @@ class Script:
 						self.title = line[1:].strip()
 					elif '@AUTHOR' in line:
 						parse_description = False
-						self._parse_author(line)
+						self._parse_author(line[9:].strip())
 					elif '@SUPPORTS' in line:
 						parse_description = False
 						self._parse_supports(line)
@@ -144,6 +144,9 @@ class Script:
 					elif re.match(r'^(# |\.|)draft(:|)$', line.lower().strip()):
 						parse_description = False
 						header_section = 'draft'
+					elif re.match(r'^(# |\.|)author(:|)$', line.lower().strip()):
+						parse_description = False
+						header_section = 'author'
 					elif line[0:len(att_start)] == att_start and header_section == 'trmm_args':
 						self._parse_arg(line)
 					elif line[0:len(att_start)] == att_start and header_section == 'trmm_env':
@@ -159,6 +162,8 @@ class Script:
 					elif line[0:len(att_start)] == att_start and header_section == 'draft':
 						val = line[1:].strip().lower()
 						self.draft = (val == '1' or val == 'true' or val == 'yes')
+					elif line[0:len(att_start)] == att_start and header_section == 'author':
+						self._parse_author(line[1:].strip())
 					elif line.lower().startswith('# category: '):
 						parse_description = False
 						header_section = None
@@ -321,13 +326,12 @@ class Script:
 
 
 	def _parse_author(self, line):
-		a = line[9:].strip()
-		if '<' in a and '>' in a:
-			n = a[:a.find('<')].strip()
-			e = a[a.find('<')+1:a.find('>')].strip()
+		if '<' in line and '>' in line:
+			n = line[:line.find('<')].strip()
+			e = line[line.find('<')+1:line.find('>')].strip()
 			self.author = {'name': n, 'email': e}
 		else:
-			self.author = {'name': a, 'email': None}
+			self.author = {'name': line, 'email': None}
 
 	def _parse_supports(self, line):
 		if line.lower().startswith('# @supports'):
