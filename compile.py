@@ -538,25 +538,45 @@ for file in glob('src/**/README.md', recursive=True):
 # Generate project README
 scripts.sort(key=lambda x: '-'.join([x.category if x.category else 'ZZZ', x.title if x.title else x.file]))
 scripts_table = []
-scripts_table.append('| Category | Script | Type | Supports |')
-scripts_table.append('|----------|--------|------|----------|')
+scripts_table.append('| Category / Script | Supports |')
+scripts_table.append('|-------------------|----------|')
 for script in scripts:
 	if script.draft:
 		continue
 	title = script.title if script.title else script.file
-	href = script.readme if script.readme else script.file
+	readme = script.readme if script.readme else None
+	if readme is not None:
+		# Fix windows-style directory separators
+		readme = readme.replace('\\', '/')
+		# Swap src/ with dist/ for the href target, (folks usually want to see the compiled version, not the source)
+		readme = readme.replace('src/', 'dist/')
+		# Markdown-ify it
+		readme = '[![README](.supplemental/images/icons/readme.svg "README")](%s)' % readme
+	else:
+		readme = ''
+
+	href = script.file
 	# Fix windows-style directory separators
 	href = href.replace('\\', '/')
 	# Swap src/ with dist/ for the href target, (folks usually want to see the compiled version, not the source)
-	href = href.replace('src/', 'dist/') if script.readme else script.file.replace('src/', 'dist/')
-	type = script.type[0].upper() + script.type[1:]
+	href = href.replace('src/', 'dist/')
+
+	if script.type == 'shell':
+		type = '![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell")'
+	elif script.type == 'powershell':
+		type = '![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell")'
+	elif script.type == 'python':
+		type = '![Python](.supplemental/images/icons/python.svg "Python")'
+	else:
+		type = script.type[0].upper() + script.type[1:]
+
 	category = script.category if script.category else 'Uncategorized'
 	os_support = []
 	supported = script.supports_detailed
 	supported.sort(key = lambda x: x[0])
 	for support in supported:
 		os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
-	scripts_table.append('| %s | [%s](%s) | %s | %s |' % (category, title, href, type, ' '.join(os_support)))
+	scripts_table.append('| %s [%s / %s](%s) %s | %s |' % (type, category, title, href, readme, ' '.join(os_support)))
 
 replacements = {
 	'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),

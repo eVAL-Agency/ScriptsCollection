@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Install net-diag utilities
+# Install net-diag utilities [Linux]
 #
 # Supports:
 #   Linux-All

@@ -18,16 +18,21 @@ Supports:
 
 Category:
 	Asset Tracking
+
+License:
+	AGPLv3
+
+Author:
+	Charlie Powell <cdp1337@veraciousnetwork.com>
 """
 
 
 import os
-import subprocess
-from typing import Union
 import logging
 import argparse
 import sys
 from scriptlets.suitecrm.suitecrmsync import *
+from scriptlets._common.cmd import *
 
 
 parser = argparse.ArgumentParser(
@@ -127,8 +132,7 @@ data = {}
 
 
 # Grab hostname from binary
-process = subprocess.run(['hostname', '-f'], stdout=subprocess.PIPE)
-set_field('hostname', process.stdout.decode().strip())
+set_field('hostname', Cmd(['hostname', '-f']).text())
 
 
 # Read general hardware info basic files as provided from the kernel
@@ -170,10 +174,9 @@ with open('/proc/cpuinfo', 'r') as f:
 			if 'Raspberry Pi' in val:
 				set_field('board_manufacturer', 'Raspberry Pi Ltd')
 
-if cpu_model is None:
+if cpu_model is None or True:
 	# Try lscpu instead
-	process = subprocess.run(['lscpu', '-J'], stdout=subprocess.PIPE)
-	cpu_data = json.loads(process.stdout.decode().strip())
+	cpu_data = Cmd(['lscpu', '-J']).json()
 	for record in cpu_data['lscpu']:
 		if record['field'] == 'Model name:':
 			cpu_model = record['data']
@@ -189,15 +192,15 @@ if cpu_threads > 0:
 
 
 # Read memory information from /proc/meminfo or dmidecode if available
-if subprocess.run(['which', 'dmidecode'], check=False, stdout=subprocess.PIPE).returncode == 0:
+dmi = Cmd(['dmidecode', '--type', 'memory'])
+if dmi.exists():
 	# Use dmidecode to gather memory information, (if it's installed)
 	# Just because this is present does not mean it'll succeed though,
 	# Raspberry PIs do not support SMBIOS information, so nothing will be returned
 	# and we'll need to fallback to /proc/meminfo
 	memory = []
 	current_stick = None
-	process = subprocess.run(['dmidecode', '--type', 'memory'], stdout=subprocess.PIPE)
-	for line in process.stdout.decode().split('\n'):
+	for line in dmi.lines():
 		if line.startswith('Memory Device'):
 			current_stick = {
 				'total_width': None,
@@ -225,6 +228,11 @@ if subprocess.run(['which', 'dmidecode'], check=False, stdout=subprocess.PIPE).r
 			current_stick['size'] = line.split(':')[1].strip()
 		elif current_stick and line.startswith('\tPart Number:'):
 			current_stick['part'] = line.split(':')[1].strip()
+
+	if current_stick is not None:
+		# Last stick (the output would have been completed)
+		memory.append(current_stick)
+		current_stick = None
 
 	# memory now contains a list of all memory sticks, each with the necessary information for each module
 	mem_total_width = None
@@ -282,10 +290,10 @@ if 'mem_size' not in data or data['mem_size'] == 0:
 
 
 # Get OS name and version from common, (and not-so-common) sources
-if subprocess.run(['which', 'pveversion'], check=False, stdout=subprocess.PIPE).returncode == 0:
+pve = Cmd(['pveversion'])
+if pve.exists():
 	set_field('os_name', 'Proxmox')
-	process = subprocess.run(['pveversion'], stdout=subprocess.PIPE)
-	set_field('os_version', process.stdout.decode().strip().split('/')[1])
+	set_field('os_version', pve.text().split('/')[1])
 elif os.path.exists('/etc/os-release'):
 	with open('/etc/os-release', 'r') as f:
 		for line in f:
@@ -296,8 +304,7 @@ elif os.path.exists('/etc/os-release'):
 
 
 # Get IP and MAC address for this device
-process = subprocess.run(['ip', '-j', 'address'], stdout=subprocess.PIPE)
-ifaces = json.loads(process.stdout.decode().strip())
+ifaces = Cmd(['ip', '-j', 'address']).json()
 pri_sent = False
 for iface in ifaces:
 	if iface['operstate'] == 'DOWN':
@@ -325,6 +332,10 @@ for iface in ifaces:
 		break
 
 print(json.dumps(data, indent=4))
+
+if crm_url == 'test':
+	print('Skipping SuiteCRM sync, CRM_URL is set to test', file=sys.stderr)
+	exit(0)
 
 # Request an access token via OAuth2 from SuitCRM
 sync = SuiteCRMSync(crm_url, crm_client_id, crm_client_secret)

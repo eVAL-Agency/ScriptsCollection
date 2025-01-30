@@ -9,7 +9,7 @@
             "CRM_CLIENT_ID={{client.crm_client_id}}",
             "CRM_CLIENT_SECRET={{client.crm_client_secret}}"
         ],
-        "submittedBy": "",
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Collect Asset Inventory (SuiteCRM) [Linux]",
         "syntax": [
             "--debug: Enable debug logging"
@@ -40,6 +40,62 @@
             "windows"
         ],
         "category": "Asset Tracking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
+        "filename": "disk/linux_check_disk_health.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Check Disk Health [Linux]",
+        "syntax": [],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Disks"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "2da7444c-2b50-e03e-7d14-51f7ca0b1d4d",
+        "filename": "disk/linux_check_disk_space.py",
+        "args": [
+            "--threshold 20"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Check Disk Space [Linux]",
+        "syntax": [
+            "--threshold: <int> - The percentage of free space that is considered a warning"
+        ],
+        "default_timeout": "60",
+        "shell": "python",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Disks"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "440bbbcf-25b8-7c21-1ecd-f05d67becb5e",
+        "filename": "disk/windows_check_disk_space.ps1",
+        "args": [
+            "-threshold 20"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Check Disk Space [Windows]",
+        "syntax": [
+            "-threshold <int> - The percentage of free space that is considered a warning"
+        ],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Disks"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -91,22 +147,6 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
-        "filename": "disk/linux_check_disk_health.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Disk Drive Health Check",
-        "syntax": [],
-        "default_timeout": "120",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Hardware"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
         "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],
@@ -123,12 +163,64 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
+        "filename": "zabbix/linux_install_zabbix_agent2.sh",
+        "args": [
+            "--noninteractive",
+            "--version=7.0",
+            "--server={{client.zabbix_hostname}}",
+            "--hostname={{agent.fqdn}}"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Zabbix Agent2 [Linux]",
+        "syntax": [
+            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
+            "--server=... - Hostname or IP of Zabbix server",
+            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
+        "filename": "zabbix/linux_install_zabbix_proxy.sh",
+        "args": [
+            "--noninteractive",
+            "--version=7.0",
+            "--server={{client.zabbix_hostname}}",
+            "--hostname={{agent.fqdn}}"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Zabbix Proxy [Linux]",
+        "syntax": [
+            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=... - Version of Zabbix to install (default: 7.0)",
+            "--server=... - Hostname or IP of Zabbix server",
+            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "9e3d582b-e00d-e7b9-e4bb-07bccd0f51ad",
         "filename": "net-diag/linux_install_net_diag.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install net-diag utilities",
+        "name": "Install net-diag utilities [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
@@ -144,7 +236,7 @@
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Firewall - Check Status",
+        "name": "Check Firewall Status [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
@@ -160,7 +252,7 @@
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install Firewall (UFW)",
+        "name": "Install Firewall (UFW) [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
@@ -171,55 +263,35 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
-        "filename": "zabbix/linux_install_zabbix_agent2.sh",
-        "args": [
-            "--noninteractive",
-            "--version=7.0",
-            "--server={{client.zabbix_hostname}}",
-            "--hostname={{agent.fqdn}}"
-        ],
+        "guid": "09061f78-668f-6981-4341-86fd4deeb2ef",
+        "filename": "updates/linux_check_reboot_required.sh",
+        "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install Zabbix Agent2",
-        "syntax": [
-            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
-            "--server=... - Hostname or IP of Zabbix server",
-            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
-        ],
-        "default_timeout": "120",
+        "name": "Check if Reboot Required [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
         "shell": "shell",
         "supported_platforms": [
             "linux"
         ],
-        "category": "System Monitoring"
+        "category": "Updates"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
-        "filename": "zabbix/linux_install_zabbix_proxy.sh",
-        "args": [
-            "--noninteractive",
-            "--version=7.0",
-            "--server={{client.zabbix_hostname}}",
-            "--hostname={{agent.fqdn}}"
-        ],
+        "guid": "26a782bd-be97-6c2e-365e-906e992d9a00",
+        "filename": "updates/windows_check_reboot_required.ps1",
+        "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install Zabbix Proxy",
-        "syntax": [
-            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=... - Version of Zabbix to install (default: 7.0)",
-            "--server=... - Hostname or IP of Zabbix server",
-            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
-        ],
-        "default_timeout": "120",
-        "shell": "shell",
+        "name": "Check if Reboot Required [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
         "supported_platforms": [
-            "linux"
+            "windows"
         ],
-        "category": "System Monitoring"
+        "category": "Updates"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",

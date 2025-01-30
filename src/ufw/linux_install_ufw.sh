@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Install Firewall (UFW)
+# Install Firewall (UFW) [Linux]
 #
 # Install and enable the UFW firewall
 #

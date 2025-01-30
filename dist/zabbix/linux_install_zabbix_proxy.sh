@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Install Zabbix Proxy
+# Install Zabbix Proxy [Linux]
 #
 # Please ensure to run this script as root (or at least with sudo)
 #
@@ -29,7 +29,7 @@
 #
 # @LICENSE AGPLv3
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
-# @CATEGORY System Monitoring
+# @CATEGORY Monitoring
 # @TRMM-TIMEOUT 120
 
 ##

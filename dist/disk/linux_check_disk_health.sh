@@ -1,18 +1,23 @@
 #!/bin/bash
 #
-# Disk Drive Health Check
+# Check Disk Health [Linux]
 #
 # Uses smartctl to check physical disk health.
+# If ZFS is installed, it will also check the health of the pools.
 #
 # Supports:
 #   Debian-All
 #   RHEL-All
 #   Arch
 #
-# Category: Hardware
+# Category: Disks
 #
-# @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@veraciousnetwork.com>
+#
 # @TRMM-TIMEOUT 120
 #
 
@@ -21,6 +26,7 @@ function usage() {
 Usage: $0
 
 Uses smartctl to check physical disk health.
+If ZFS is installed, it will also check the health of the pools.
 EOD
   exit 1
 }
@@ -181,17 +187,34 @@ function package_install (){
 		exit 1
 	fi
 }
+##
+# Simple check to enforce the script to be run as root
+if [ $(id -u) -ne 0 ]; then
+	echo "This script must be run as root or with sudo!" >&2
+	exit 1
+fi
 
-if [ -z "$(which smartmontools)" ]; then
+if [ -z "$(which smartctl)" ]; then
 	package_install smartmontools
 fi
 
 EXIT=0
-for DISK in $(sudo smartctl --scan | cut -d ' ' -f1); do
-	sudo smartctl -H $DISK
+for DISK in $(smartctl --scan | cut -d ' ' -f1); do
+	echo "Disk $DISK"
+	smartctl -H $DISK
 	if [ $? -ne 0 ]; then
 		EXIT=1
 	fi
 done
+
+if [ -n "$(which zpool)" ]; then
+	# ZFS is installed; check the health of the pools
+	for POOL in $(zpool list -H -o name); do
+		zpool status $POOL
+		if [ "$(zpool list $POOL -H -o health)" != "ONLINE" ]; then
+			EXIT=1
+		fi
+	done
+fi
 
 exit $EXIT
