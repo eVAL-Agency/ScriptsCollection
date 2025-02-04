@@ -38,7 +38,7 @@ parser.add_argument(
 options = parser.parse_args()
 
 ret = 0
-for line in Cmd(['df', '--output=source,pcent']).lines():
+for line in Cmd(['df', '--output=source,pcent,target']).lines():
 	if not line.startswith('/dev/'):
 		# Only check physical partitions
 		continue
@@ -47,12 +47,14 @@ for line in Cmd(['df', '--output=source,pcent']).lines():
 		# Skip loop devices
 		continue
 
-	free = 100 - int(line.split()[1][:-1])
+	line_parts = line.split()
+
+	free = 100 - int(line_parts[1][:-1])
 	if free < options.threshold:
-		print('WARNING: Partition %s has %s%% free space remaining!' % (line.split()[0], free))
+		print('WARNING: Partition %s (%s) has %s%% free space remaining!' % (line_parts[0], line_parts[2], free))
 		ret = 1
 	else:
-		print('Partition %s has %s%% free space remaining.' % (line.split()[0], free))
+		print('Partition %s (%s) has %s%% free space remaining.' % (line_parts[0], line_parts[2], free))
 
 # Check ZFS pools
 zfs = Cmd(['zpool', 'list', '-H', '-o', 'name,capacity'])
