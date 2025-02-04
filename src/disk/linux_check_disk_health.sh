@@ -31,7 +31,7 @@ if [ -z "$(which smartctl)" ]; then
 fi
 
 EXIT=0
-for DISK in $(smartctl --scan | cut -d ' ' -f1); do
+for DISK in $(smartctl --scan | egrep -v '^#' | cut -d ' ' -f1); do
 	echo "Disk $DISK"
 	smartctl -H $DISK
 	if [ $? -ne 0 ]; then
