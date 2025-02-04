@@ -59,6 +59,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "fc8ff5c3-4f19-9823-0847-d1984d5ec58f",
+        "filename": "disk/windows_check_disk_health.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Disk Health [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Disks"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "2da7444c-2b50-e03e-7d14-51f7ca0b1d4d",
         "filename": "disk/linux_check_disk_space.py",
         "args": [
@@ -163,6 +179,42 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "ee0a7718-5663-89a6-d964-a3371d9e0d95",
+        "filename": "memory/linux_check_memory_usage.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Check Memory Usage [Linux]",
+        "syntax": [
+            "--threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Memory"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3ac5cc65-d710-1cb0-2537-bf230001c660",
+        "filename": "memory/windows_check_memory_usage.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Check Memory Usage [Windows]",
+        "syntax": [
+            "-Threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20"
+        ],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Memory"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
         "filename": "zabbix/linux_install_zabbix_agent2.sh",
         "args": [
@@ -176,9 +228,9 @@
         "name": "Install Zabbix Agent2 [Linux]",
         "syntax": [
             "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
-            "--server=... - Hostname or IP of Zabbix server",
-            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+            "--version=<string>... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
+            "--server=<string>... - Hostname or IP of Zabbix server",
+            "--hostname=<string>... - Hostname of local device for matching with a Zabbix host entry"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -202,9 +254,9 @@
         "name": "Install Zabbix Proxy [Linux]",
         "syntax": [
             "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=... - Version of Zabbix to install (default: 7.0)",
-            "--server=... - Hostname or IP of Zabbix server",
-            "--hostname=... - Hostname of local device for matching with a Zabbix host entry"
+            "--version=<string>... - Version of Zabbix to install (default: 7.0)",
+            "--server=<string>... - Hostname or IP of Zabbix server",
+            "--hostname=<string>... - Hostname of local device for matching with a Zabbix host entry"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -231,6 +283,27 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "c682e175-acf5-b885-1855-a597ef6dc15b",
+        "filename": "defender/windows_check_defender_status.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Defender Status [Windows]",
+        "syntax": [
+            "-DaysBack=<integer> - Number of days to search back for Defender alerts DEFAULT=1",
+            "-FullScanThreshold=<integer> - Number of days since last full scan DEFAULT=7",
+            "-QuickScanThreshold=<integer> - Number of days since last quick scan DEFAULT=1",
+            "-SignatureUpdateThreshold=<integer> - Number of days since last signature update DEFAULT=1"
+        ],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],
@@ -242,6 +315,22 @@
         "shell": "shell",
         "supported_platforms": [
             "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
+        "filename": "firewall/windows_check_firewall.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Firewall Status [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
         ],
         "category": "Security"
     },
@@ -304,7 +393,7 @@
         "syntax": [
             "--user=<username>  - The user account to authorize the SSH key for",
             "--key=<public key> - The SSH key to authorize",
-            "--comment=[optional comment] - Optional comment to attribute with this key"
+            "--comment=<string>[optional comment] - Optional comment to attribute with this key"
         ],
         "default_timeout": "60",
         "shell": "python",
