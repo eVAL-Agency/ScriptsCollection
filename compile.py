@@ -251,13 +251,33 @@ class Script:
 		"""
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
 		line = line[1:].strip()
-		arg_map = re.match(r'^([A-Z][A-Z0-9_]*)=([\-]+[a-z\-]*)([= ])(.*)$', line)
+		arg_map = re.match(
+			r'^((?P<var>[A-Za-z][A-Za-z0-9_]*)=)?' +
+			r'(?P<tacks>[\-]+)(?P<name>[A-Za-z\-]*)' +
+			r'(?P<type>[= ])' +
+			r'(\<(?P<var_type>.+)\>)?' +
+			r'(?P<comment>.*)$',
+			line
+		)
 		if arg_map:
-			arg_var = arg_map.group(1)
-			arg_name = arg_map.group(2)
-			arg_type = arg_map.group(3)
+			tacks = arg_map.group('tacks')
+			arg_var = arg_map.group('var')
+			arg_name = arg_map.group('name')
+			arg_type = arg_map.group('type')
 			arg_default = '0' if arg_type == ' ' else ''
-			line = arg_name + arg_type + arg_map.group(4)
+			var_type = arg_map.group('var_type')
+			if arg_var is None:
+				arg_var = arg_name
+
+			if arg_type == '=':
+				# Key/Value pairs require a variable type to be set, defaults to STRING
+				var_type = 'string' if var_type is None else var_type
+
+			if var_type is None:
+				line = tacks + arg_name + arg_type + arg_map.group('comment')
+			else:
+				line = tacks + arg_name + arg_type + '<' + var_type + '>' + arg_map.group('comment')
+
 			arg_required = 'REQUIRED' in line
 			if 'DEFAULT=' in line:
 				arg_default = line[line.find('DEFAULT=')+8:]
@@ -275,14 +295,15 @@ class Script:
 
 			self.syntax_arg_map.append({
 				'var': arg_var,
-				'name': arg_name,
+				'name': tacks + arg_name,
 				'type': arg_type,
+				'var_type': var_type,
 				'required': arg_required,
 				'default': arg_default
 			})
 		self.syntax.append(line)
 
-		return '#   ' + line + '\n'
+		return ('#   ' if self.type == 'shell' else '\t') + line + '\n'
 
 	def _parse_arg(self, line: str):
 		#   -n - Run in non-interactive mode, (will not ask for prompts)
@@ -387,6 +408,23 @@ class Script:
 		return '\n'.join(code)
 
 	def generate_argparse(self) -> str:
+		if self.type == 'shell':
+			return self._generate_argparse_shell()
+		elif self.type == 'powershell':
+			return self._generate_argparse_powershell()
+		else:
+			return ''
+
+	def _generate_argparse_powershell(self) -> str:
+		params = []
+		for arg in self.syntax_arg_map:
+			if arg['var_type'] == 'integer':
+				arg['var_type'] = 'int'
+			params.append('\t[%s]$%s = %s' % (arg['var_type'], arg['var'], arg['default']))
+
+		return '# Parse arguments\nparam (\n' + ',\n'.join(params) + '\n)\n\n'
+
+	def _generate_argparse_shell(self) -> str:
 		code = []
 
 		code.append('# Parse arguments')

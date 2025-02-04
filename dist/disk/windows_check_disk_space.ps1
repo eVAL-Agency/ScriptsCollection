@@ -15,7 +15,7 @@
 	Disks
 
 .SYNTAX
-#   -threshold <int> - The percentage of free space that is considered a warning
+	-threshold <int> - The percentage of free space that is considered a warning
 
 .LICENSE
 	AGPLv3

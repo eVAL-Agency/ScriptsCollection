@@ -11,7 +11,7 @@ TRMM Environment:
 	CRM_CLIENT_SECRET={{client.crm_client_secret}}
 
 Syntax:
-#   --debug: Enable debug logging
+	--debug: Enable debug logging
 
 Supports:
 	Linux-All

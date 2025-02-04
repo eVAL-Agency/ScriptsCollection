@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
-#
-# Authorize SSH key for a user
-#
-# Syntax:
-#   --user=<username>  - The user account to authorize the SSH key for
-#   --key=<public key> - The SSH key to authorize
-#   --comment=[optional comment] - Optional comment to attribute with this key
-#
-# Supports:
-#   Linux-All
-#
-# Category:
-#   User Management
+"""
+Authorize SSH key for a user
+
+Syntax:
+	--user=<username>  - The user account to authorize the SSH key for
+	--key=<public key> - The SSH key to authorize
+	--comment=<string>[optional comment] - Optional comment to attribute with this key
+
+Supports:
+	Linux-All
+
+Category:
+	User Management
+"""
 import os
 import argparse
 import pwd

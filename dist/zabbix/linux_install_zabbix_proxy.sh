@@ -10,9 +10,9 @@
 #
 # Syntax:
 #   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   --version=... - Version of Zabbix to install (default: 7.0)
-#   --server=... - Hostname or IP of Zabbix server
-#   --hostname=... - Hostname of local device for matching with a Zabbix host entry
+#   --version=<string>... - Version of Zabbix to install (default: 7.0)
+#   --server=<string>... - Hostname or IP of Zabbix server
+#   --hostname=<string>... - Hostname of local device for matching with a Zabbix host entry
 #
 # TRMM Arguments:
 #   --noninteractive
@@ -491,9 +491,9 @@ Usage: $0 [options]
 
 Options:
     --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-    --version=... - Version of Zabbix to install (default: 7.0)
-    --server=... - Hostname or IP of Zabbix server
-    --hostname=... - Hostname of local device for matching with a Zabbix host entry
+    --version=<string>... - Version of Zabbix to install (default: 7.0)
+    --server=<string>... - Hostname or IP of Zabbix server
+    --hostname=<string>... - Hostname of local device for matching with a Zabbix host entry
 
 Please ensure to run this script as root (or at least with sudo)
 
