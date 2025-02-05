@@ -13,6 +13,9 @@
 #
 # Author:
 #   Charlie Powell <cdp1337@veraciousnetwork.com>
+#
+# Changelog:
+#   20250129 - Initial version
 
 ##
 # Simple check to enforce the script to be run as root

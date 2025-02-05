@@ -25,12 +25,13 @@
 	-QuickScanThreshold=<integer> - Number of days since last quick scan DEFAULT=1
 	-SignatureUpdateThreshold=<integer> - Number of days since last signature update DEFAULT=1
 
-.NOTES
-	Based on checks from dinger, bdrayer, and SDM216
-    v1 dinger initial release 2021
-    v1.1 bdrayer Adding full message output if items found
-    v1.2 added extra event IDs for ASR monitoring suggested by SDM216
-    v1.3 dinger added Get-MpComputerStatus for comprehensive Defender health status, added parameters and replaced Event Viewer checks with PowerShell commands
+.CHANGELOG
+	20250204 - Initial version (in this format)
+		Based on checks from dinger, bdrayer, and SDM216
+    	v1 dinger initial release 2021
+    	v1.1 bdrayer Adding full message output if items found
+    	v1.2 added extra event IDs for ASR monitoring suggested by SDM216
+    	v1.3 dinger added Get-MpComputerStatus for comprehensive Defender health status, added parameters and replaced Event Viewer checks with PowerShell commands
 #>
 
 # compile:argparse

@@ -13,6 +13,9 @@
 #
 # Author:
 #   Charlie Powell <cdp1337@veraciousnetwork.com>
+#
+# Changelog:
+#   20250129 - Initial version
 
 # scriptlet:_common/require_root.sh
 

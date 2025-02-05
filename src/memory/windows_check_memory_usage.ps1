@@ -16,6 +16,9 @@
 
 .SYNTAX
 	-Threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20
+
+.CHANGELOG
+	20250204 - Initial version
 #>
 
 # compile:argparse

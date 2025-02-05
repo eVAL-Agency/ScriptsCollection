@@ -10,6 +10,9 @@
 
 .CATEGORY
 	Security
+
+.CHANGELOG
+	20250204 - Initial version
 #>
 
 $Ret = 0

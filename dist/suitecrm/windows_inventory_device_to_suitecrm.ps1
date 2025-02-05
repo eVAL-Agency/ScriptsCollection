@@ -19,6 +19,10 @@
 	CRM_URL={{client.crm_url}}
 	CRM_CLIENT_ID={{client.crm_client_id}}
 	CRM_CLIENT_SECRET={{client.crm_client_secret}}
+
+.CHANGELOG
+	20250128 - Switch from single-device ID assigning to lookup via MAC to simplify deployment
+	20240111 - Initial release
 #>
 
 $crm_url = $Env:CRM_URL

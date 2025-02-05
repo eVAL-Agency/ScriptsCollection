@@ -9,6 +9,9 @@
 #
 # Category:
 #   Security
+#
+# Changelog:
+#   20250105 - Initial version
 
 # scriptlet:_common/get_firewall.sh
 

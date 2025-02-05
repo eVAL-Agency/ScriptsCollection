@@ -22,6 +22,10 @@ License:
 
 Author:
 	Charlie Powell <cdp1337@veraciousnetwork.com>
+
+Changelog:
+	20250204 - Add mount point to output
+	20250130 - Initial version
 """
 import argparse
 import subprocess

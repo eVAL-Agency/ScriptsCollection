@@ -24,6 +24,17 @@ License:
 
 Author:
 	Charlie Powell <cdp1337@veraciousnetwork.com>
+
+Changelog:
+	20250205 - Fix debug statement on CPU lookup
+	20240130 - Switch to standardized cmd library
+		Add support for "test" for CRM url (useful for debugging)
+	20240128 - Add support for Raspberry PI devices
+		Print URL for created/updated device
+		Switch from single-device ID assigning to lookup via MAC to simplify deployment
+		Switch to standardized suitecrmsync library
+		Add board_model lookup
+	20240111 - Initial release
 """
 import os
 import logging
@@ -490,7 +501,7 @@ with open('/proc/cpuinfo', 'r') as f:
 			if 'Raspberry Pi' in val:
 				set_field('board_manufacturer', 'Raspberry Pi Ltd')
 
-if cpu_model is None or True:
+if cpu_model is None:
 	# Try lscpu instead
 	cpu_data = Cmd(['lscpu', '-J']).json()
 	for record in cpu_data['lscpu']:

@@ -12,6 +12,10 @@ Supports:
 
 Category:
 	User Management
+
+Changelog:
+	20250105 - Initial version
+
 """
 
 

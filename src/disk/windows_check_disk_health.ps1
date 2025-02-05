@@ -10,6 +10,9 @@
 
 .CATEGORY
 	Disks
+
+.CHANGELOG
+	20250204 - Initial version
 #>
 
 $Disks = Get-PhysicalDisk

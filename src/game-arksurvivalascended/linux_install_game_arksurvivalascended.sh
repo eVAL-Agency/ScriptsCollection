@@ -22,6 +22,12 @@
 #
 # TRMM Custom Fields:
 #   None
+#
+# Changelog:
+#   20250128 - Fix missing escape character
+#   20241220 - Switch to UFW
+#            - Add Extinction
+#
 
 ############################################
 ## Parameter Configuration

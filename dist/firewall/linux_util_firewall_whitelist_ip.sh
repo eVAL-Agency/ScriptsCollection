@@ -13,6 +13,9 @@
 # Syntax:
 #   --ip=<ip>             IP address to whitelist (REQUIRED)
 #   --comment=<comment>  Optional comment for the rule
+#
+# Changelog:
+#   20250105 - Initial version
 
 ##
 # Get which firewall is enabled,

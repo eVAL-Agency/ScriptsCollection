@@ -16,6 +16,9 @@
 #
 # Syntax:
 #   --threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20
+#
+# Changelog:
+#   20250204 - Initial version
 
 # Parse arguments
 THRESHOLD="20"

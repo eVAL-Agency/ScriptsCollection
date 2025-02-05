@@ -13,6 +13,9 @@
 # Syntax:
 #   SOURCE=--ip=<ip>             IP address to whitelist (REQUIRED)
 #   COMMENT=--comment=<comment>  Optional comment for the rule
+#
+# Changelog:
+#   20250105 - Initial version
 
 # scriptlet:_common/get_firewall.sh
 # scriptlet:_common/firewall_allow.sh

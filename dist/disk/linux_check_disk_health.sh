@@ -20,6 +20,13 @@
 #
 # @TRMM-TIMEOUT 120
 #
+# Changelog:
+#   20250204 - Skip smartctl check when no physical disks present, (VM)
+#   20250130 - Change category to Disks
+#            - Require root
+#            - Add support for ZFS
+#   20250106 - Initial version
+#
 
 function usage() {
   cat >&2 <<EOD

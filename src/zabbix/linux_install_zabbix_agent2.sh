@@ -31,6 +31,10 @@
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @CATEGORY Monitoring
 # @TRMM-TIMEOUT 120
+#
+# Changelog:
+#   20250130 - Change category to Monitoring
+#   20250101 - Initial release
 
 # scriptlet:_common/require_root.sh
 # scriptlet:zabbix/repo-setup.sh

@@ -19,6 +19,9 @@
 
 .AUTHOR
 	Charlie Powell <cdp1337@veraciousnetwork.com>
+
+.CHANGELOG
+	20250130 - Initial release
 #>
 
 if (Get-ChildItem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending" -EA Ignore) {

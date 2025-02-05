@@ -12,6 +12,9 @@
 # @CATEGORY Security
 # @TRMM-TIMEOUT 60
 #
+# Changelog:
+#   20250105 - Initial release
+#
 
 function usage() {
   cat >&2 <<EOD

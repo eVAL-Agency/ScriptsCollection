@@ -15,6 +15,9 @@
 #
 # Author:
 #   Charlie Powell <cdp1337@veraciousnetwork.com>
+#
+# Changelog:
+#   20250130 - Initial release
 
 if [ -e /var/run/reboot-required ]; then
 	cat /var/run/reboot-required

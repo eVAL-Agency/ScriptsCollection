@@ -23,6 +23,9 @@
 		"ProductStatus": "...", # Status of the license, ie: Licensed, Unlicensed, etc
 	}
 
+.CHANGELOG
+	20250120 - Initial release
+
 #>
 
 $SLP = $(Get-CimInstance SoftwareLicensingProduct -Filter 'PartialProductKey is not null' | ? name -like windows*)

@@ -12,6 +12,9 @@
 # @CATEGORY Security
 # @TRMM-TIMEOUT 60
 #
+# Changelog:
+#   20250105 - Initial release
+#
 
 # compile:usage
 # compile:argparse

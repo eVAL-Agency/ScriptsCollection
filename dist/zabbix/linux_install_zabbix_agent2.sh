@@ -31,6 +31,10 @@
 # @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
 # @CATEGORY Monitoring
 # @TRMM-TIMEOUT 120
+#
+# Changelog:
+#   20250130 - Change category to Monitoring
+#   20250101 - Initial release
 
 ##
 # Simple check to enforce the script to be run as root
