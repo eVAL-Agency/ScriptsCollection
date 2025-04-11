@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   Security
+#   Firewall
 #
 # Changelog:
 #   20250105 - Initial version
@@ -31,10 +31,13 @@ function get_enabled_firewall() {
 ##
 # Get which firewall is available on the local system,
 # or "none" if none located
+#
+# CHANGELOG:
+#   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if systemctl list-unit-files firewalld.service &>/dev/null; then
+	if which firewall-cmd &>/dev/null; then
 		echo "firewalld"
-	elif systemctl list-unit-files ufw.service &>/dev/null; then
+	elif which ufw &>/dev/null; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"

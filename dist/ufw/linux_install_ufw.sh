@@ -50,10 +50,13 @@ function get_enabled_firewall() {
 ##
 # Get which firewall is available on the local system,
 # or "none" if none located
+#
+# CHANGELOG:
+#   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if systemctl list-unit-files firewalld.service &>/dev/null; then
+	if which firewall-cmd &>/dev/null; then
 		echo "firewalld"
-	elif systemctl list-unit-files ufw.service &>/dev/null; then
+	elif which ufw &>/dev/null; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"
@@ -225,6 +228,10 @@ function package_remove (){
 # @param $1..$N string
 #        Package, (or packages), to install.  Accepts multiple packages at once.
 #
+#
+# CHANGELOG:
+#   2025.04.10 - Set Debian frontend to noninteractive
+#
 function package_install (){
 	echo "package_install: Installing $*..."
 
@@ -237,7 +244,7 @@ function package_install (){
 	if [ "$TYPE_BSD" == 1 ]; then
 		pkg install -y $*
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
-		apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
+		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
 	elif [ "$TYPE_RHEL" == 1 ]; then
 		yum install -y $*
 	elif [ "$TYPE_ARCH" == 1 ]; then

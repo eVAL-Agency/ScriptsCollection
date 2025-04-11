@@ -325,6 +325,10 @@ function yum_repo_excludepkg() {
 # @param $1..$N string
 #        Package, (or packages), to install.  Accepts multiple packages at once.
 #
+#
+# CHANGELOG:
+#   2025.04.10 - Set Debian frontend to noninteractive
+#
 function package_install (){
 	echo "package_install: Installing $*..."
 
@@ -337,7 +341,7 @@ function package_install (){
 	if [ "$TYPE_BSD" == 1 ]; then
 		pkg install -y $*
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
-		apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
+		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
 	elif [ "$TYPE_RHEL" == 1 ]; then
 		yum install -y $*
 	elif [ "$TYPE_ARCH" == 1 ]; then
@@ -425,7 +429,8 @@ function zabbix_repo_setup() {
 #
 function setconfigfile_orappend() {
   # Swap '/' with '\/' since sed here uses '/' as the delimiter
-  SED_SEARCH="$(echo "$1" | sed 's:/:\\/:g')"
+  # Additionally, '?' characters in the SED search need escaped
+  SED_SEARCH="$(echo "$1" | sed 's:/:\\/:g' | sed 's:?:\\\?:g')"
   SED_REPLACE="$(echo "$2" | sed 's:/:\\/:g')"
   GREP_SEARCH="$1"
   GREP_REPLACE="$2"
@@ -515,9 +520,21 @@ ZABBIX_AGENT_HOSTNAME=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--noninteractive) NONINTERACTIVE=1; shift 1;;
-		--version=*) VERSION="${1#*=}"; shift 1;;
-		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
-		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
+		--version=*)
+			VERSION="${1#*=}";
+			if [ "${VERSION:0:1}" == "'" -a "${VERSION:0-1}" == "'" ]; then VERSION="${VERSION:1:-1}"; fi;
+			if [ "${VERSION:0:1}" == '"' -a "${VERSION:0-1}" == '"' ]; then VERSION="${VERSION:1:-1}"; fi;
+			shift 1;;
+		--server=*)
+			ZABBIX_SERVER="${1#*=}";
+			if [ "${ZABBIX_SERVER:0:1}" == "'" -a "${ZABBIX_SERVER:0-1}" == "'" ]; then ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"; fi;
+			if [ "${ZABBIX_SERVER:0:1}" == '"' -a "${ZABBIX_SERVER:0-1}" == '"' ]; then ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"; fi;
+			shift 1;;
+		--hostname=*)
+			ZABBIX_AGENT_HOSTNAME="${1#*=}";
+			if [ "${ZABBIX_AGENT_HOSTNAME:0:1}" == "'" -a "${ZABBIX_AGENT_HOSTNAME:0-1}" == "'" ]; then ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"; fi;
+			if [ "${ZABBIX_AGENT_HOSTNAME:0:1}" == '"' -a "${ZABBIX_AGENT_HOSTNAME:0-1}" == '"' ]; then ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"; fi;
+			shift 1;;
 		-h|--help) usage;;
 	esac
 done

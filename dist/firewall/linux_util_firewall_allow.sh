@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Firewall - Whitelist IP
+# Firewall - Allow IP/Port [Linux]
 #
-# Add an IP address to the firewall whitelist.
+# Allow a service in the firewall.
 #
 # Supports:
 #   Linux-All
@@ -11,11 +11,13 @@
 #   Firewall
 #
 # Syntax:
-#   --ip=<ip>             IP address to whitelist (REQUIRED)
+#   --ip=<string>        IP address or CIDR network to allow DEFAULT=any
+#   --port=<int>         Port(s) to allow (REQUIRED)
+#   --proto=<tcp|udp>    Protocol to allow DEFAULT=tcp
 #   --comment=<comment>  Optional comment for the rule
 #
 # Changelog:
-#   20250105 - Initial version
+#   2025.04.10 - Initial version
 
 ##
 # Get which firewall is enabled,
@@ -190,16 +192,20 @@ function usage() {
 Usage: $0 [options]
 
 Options:
-    --ip=<ip>             IP address to whitelist (REQUIRED)
+    --ip=<string>        IP address or CIDR network to allow DEFAULT=any
+    --port=<int>         Port(s) to allow (REQUIRED)
+    --proto=<tcp|udp>    Protocol to allow DEFAULT=tcp
     --comment=<comment>  Optional comment for the rule
 
-Add an IP address to the firewall whitelist.
+Allow a service in the firewall.
 EOD
   exit 1
 }
 
 # Parse arguments
-SOURCE=""
+SOURCE="any"
+PORT=""
+PROTO="tcp"
 COMMENT=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
@@ -207,6 +213,16 @@ while [ "$#" -gt 0 ]; do
 			SOURCE="${1#*=}";
 			if [ "${SOURCE:0:1}" == "'" -a "${SOURCE:0-1}" == "'" ]; then SOURCE="${SOURCE:1:-1}"; fi;
 			if [ "${SOURCE:0:1}" == '"' -a "${SOURCE:0-1}" == '"' ]; then SOURCE="${SOURCE:1:-1}"; fi;
+			shift 1;;
+		--port=*)
+			PORT="${1#*=}";
+			if [ "${PORT:0:1}" == "'" -a "${PORT:0-1}" == "'" ]; then PORT="${PORT:1:-1}"; fi;
+			if [ "${PORT:0:1}" == '"' -a "${PORT:0-1}" == '"' ]; then PORT="${PORT:1:-1}"; fi;
+			shift 1;;
+		--proto=*)
+			PROTO="${1#*=}";
+			if [ "${PROTO:0:1}" == "'" -a "${PROTO:0-1}" == "'" ]; then PROTO="${PROTO:1:-1}"; fi;
+			if [ "${PROTO:0:1}" == '"' -a "${PROTO:0-1}" == '"' ]; then PROTO="${PROTO:1:-1}"; fi;
 			shift 1;;
 		--comment=*)
 			COMMENT="${1#*=}";
@@ -216,7 +232,7 @@ while [ "$#" -gt 0 ]; do
 		-h|--help) usage;;
 	esac
 done
-if [ -z "$SOURCE" ]; then
+if [ -z "$PORT" ]; then
 	usage
 fi
 
@@ -228,4 +244,4 @@ if [ "$FIREWALL_ENABLED" == "none" ]; then
 	exit 1
 fi
 
-firewall_allow --zone trusted --source "$SOURCE" --comment "$COMMENT"
+firewall_allow --port "$PORT" --proto "$PROTO" --source "$SOURCE" --comment "$COMMENT"

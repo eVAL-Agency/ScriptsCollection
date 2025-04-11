@@ -169,6 +169,10 @@ function os_like_macos() {
 # @param $1..$N string
 #        Package, (or packages), to install.  Accepts multiple packages at once.
 #
+#
+# CHANGELOG:
+#   2025.04.10 - Set Debian frontend to noninteractive
+#
 function package_install (){
 	echo "package_install: Installing $*..."
 
@@ -181,7 +185,7 @@ function package_install (){
 	if [ "$TYPE_BSD" == 1 ]; then
 		pkg install -y $*
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
-		apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
+		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
 	elif [ "$TYPE_RHEL" == 1 ]; then
 		yum install -y $*
 	elif [ "$TYPE_ARCH" == 1 ]; then
