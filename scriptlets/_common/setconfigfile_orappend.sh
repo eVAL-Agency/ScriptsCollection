@@ -11,9 +11,13 @@
 # Example:
 #   setconfigfile_orappend "^Password=.*" "Password=1234" "/etc/myapp/myapp.conf"
 #
+#
+# CHANGELOG:
+#   2025.04.10 - Escape '?' characters in the sed search
 function setconfigfile_orappend() {
   # Swap '/' with '\/' since sed here uses '/' as the delimiter
-  SED_SEARCH="$(echo "$1" | sed 's:/:\\/:g')"
+  # Additionally, '?' characters in the SED search need escaped
+  SED_SEARCH="$(echo "$1" | sed 's:/:\\/:g' | sed 's:?:\\\?:g')"
   SED_REPLACE="$(echo "$2" | sed 's:/:\\/:g')"
   GREP_SEARCH="$1"
   GREP_REPLACE="$2"
