@@ -7,9 +7,14 @@
 #   --source <source>   Source IP to allow (default: any)
 #   --zone <zone>       Zone to allow (default: public)
 #   --tcp|--udp         Protocol to allow (default: tcp)
+#   --proto <tcp|udp>   Protocol to allow (alternative method)
 #   --comment <comment> (only UFW) Comment for the rule
 #
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
+#
+# CHANGELOG:
+#   2025.04.10 - Add "--proto" argument as alternative to "--tcp|--udp"
+#
 function firewall_allow() {
 	# Defaults and argument processing
 	local PORT=""
@@ -26,6 +31,10 @@ function firewall_allow() {
 				;;
 			--tcp|--udp)
 				PROTO=${1:2}
+				;;
+			--proto)
+				shift
+				PROTO=$1
 				;;
 			--source|--from)
 				shift
