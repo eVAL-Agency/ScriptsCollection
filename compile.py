@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import re
 import shutil
 import uuid
@@ -6,6 +8,7 @@ import os
 import stat
 from pprint import pprint
 import json
+import urllib.request
 
 
 class Script:
@@ -59,6 +62,11 @@ class Script:
 					in_header = False
 					include = line[12:].strip()
 					line = self._parse_include(self.file, line_number, include)
+				elif line.startswith('# script:'):
+					# Check for "# script:..." replacements
+					in_header = False
+					include = line[9:].strip()
+					line = self._parse_script(self.file, line_number, include)
 				elif line.startswith('import ') and self.type == 'python':
 					in_header = False
 					self._parse_import(line)
@@ -222,10 +230,51 @@ class Script:
 		if not line.strip() in self.imports:
 			self.imports.append(line.strip())
 
+	def _parse_script(self, src_file: str, src_line: int, include: str):
+		file = os.path.join('scripts', include)
+		if not os.path.exists(file):
+			print('ERROR - script %s not found' % include)
+			print('  in file %s at line %d' % (src_file, src_line))
+			return '# ERROR - script ' + include + ' not found\n\n'
+
+		out = ''
+		with open(file, 'r') as f:
+			escape = True
+			for line in f:
+				# Provide options for escaping or not escaping lines
+				# Useful for injecting variables from the calling script.
+				if 'compile:noescape' in line:
+					escape = False
+					continue
+				if 'compile:escape' in line:
+					escape = True
+					continue
+
+				# @todo language-specific escaping
+				if escape:
+					line = line.replace('$', '\\$')
+					line = line.replace('`', '\\`')
+				out += line
+
+		if not out.endswith('\n'):
+			out += '\n'
+		return out
+
 	def _parse_include(self, src_file: str, src_line: int, include: str):
 		if include not in self.scriptlets:
 			self.scriptlets.append(include)
 			file = os.path.join('scriptlets', include)
+			if not os.path.exists(file):
+				# Try to auto-download scripts from the repository
+				if not os.path.exists(os.path.dirname(file)):
+					os.makedirs(os.path.dirname(file))
+				try:
+					print('Trying to auto-download %s scriptlet from Github' % include)
+					url_path = 'https://raw.githubusercontent.com/eVAL-Agency/ScriptsCollection/refs/heads/main/scriptlets/%s'
+					urllib.request.urlretrieve(url_path % include, file)
+				except Exception as e:
+					print('Could not download scriptlet %s' % include)
+
 			if os.path.exists(file):
 				script = Script(file, self.type)
 				script.scriptlets = self.scriptlets
@@ -441,7 +490,16 @@ class Script:
 		for arg in self.syntax_arg_map:
 			if arg['type'] == '=':
 				# --version=*) VERSION="${1#*=}"; shift 1;;
-				code.append('\t\t%s=*) %s="${1#*=}"; shift 1;;' % (arg['name'], arg['var']))
+				code.append('\t\t%s=*)\n\t\t\t%s="${1#*=}";' % (arg['name'], arg['var']))
+				code.append(
+					'\t\t\tif [ "${%s:0:1}" == "\'" -a "${%s:0-1}" == "\'" ]; then %s="${%s:1:-1}"; fi;' %
+					(arg['var'], arg['var'], arg['var'], arg['var'])
+				)
+				code.append(
+					'\t\t\tif [ "${%s:0:1}" == \'"\' -a "${%s:0-1}" == \'"\' ]; then %s="${%s:1:-1}"; fi;' %
+					(arg['var'], arg['var'], arg['var'], arg['var'])
+				)
+				code.append('\t\t\tshift 1;;')
 			else:
 				# --noninteractive) NONINTERACTIVE=1; shift 1;;
 				code.append('\t\t%s) %s=1; shift 1;;' % (arg['name'], arg['var']))
@@ -616,16 +674,17 @@ for script in scripts:
 		os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
 	scripts_table.append('| %s [%s / %s](%s) %s | %s |' % (type, category, title, href, readme, ' '.join(os_support)))
 
-replacements = {
-	'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),
-}
-with open('.supplemental/README-template.md', 'r') as f:
-	template = f.read()
-	for key, value in replacements.items():
-		template = template.replace(key, value)
+if os.path.exists('.supplemental/README-template.md'):
+	replacements = {
+		'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),
+	}
+	with open('.supplemental/README-template.md', 'r') as f:
+		template = f.read()
+		for key, value in replacements.items():
+			template = template.replace(key, value)
 
-with open('README.md', 'w') as f:
-	f.write(template)
+	with open('README.md', 'w') as f:
+		f.write(template)
 
 # Generate TRMM metafile
 with open('dist/community_scripts.json', 'w') as f:
