@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   User Management
+#   Firewall
 #
 # Syntax:
 #   SOURCE=--ip=<ip>             IP address to whitelist (REQUIRED)

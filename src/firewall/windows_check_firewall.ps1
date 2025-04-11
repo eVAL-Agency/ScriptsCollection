@@ -9,7 +9,7 @@
 	AGPLv3
 
 .CATEGORY
-	Security
+	Firewall
 
 .CHANGELOG
 	20250204 - Initial version

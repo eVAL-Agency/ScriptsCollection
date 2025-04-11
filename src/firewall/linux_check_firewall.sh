@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   Security
+#   Firewall
 #
 # Changelog:
 #   20250105 - Initial version
