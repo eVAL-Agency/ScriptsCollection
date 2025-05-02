@@ -477,6 +477,10 @@ class Script:
 	def _generate_argparse_shell(self) -> str:
 		code = []
 
+		if len(self.syntax_arg_map) == 0 and not self._generated_usage:
+			# No arguments to parse, just return
+			return ''
+
 		code.append('# Parse arguments')
 		# Print default arguments to at least have them defined
 		for arg in self.syntax_arg_map:
