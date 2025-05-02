@@ -417,6 +417,7 @@ class Script:
 			('debian', ('linux-all', 'debian-all', 'debian')),
 			('fedora', ('linux-all', 'rhel-all', 'fedora')),
 			('linuxmint', ('linux-all', 'debian-all', 'linuxmint')),
+			('proxmox', ('proxmox',)),
 			('redhat', ('linux-all', 'rhel-all', 'redhat', 'rhel')),
 			('rocky', ('linux-all', 'rhel-all', 'rocky', 'rockylinux')),
 			('suse', ('linux-all', 'suse', 'opensuse')),
