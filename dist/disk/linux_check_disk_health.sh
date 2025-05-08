@@ -21,6 +21,7 @@
 # @TRMM-TIMEOUT 120
 #
 # Changelog:
+#   20250507 - Fix support for Cisco Megaraid devices
 #   20250204 - Skip smartctl check when no physical disks present, (VM)
 #   20250130 - Change category to Disks
 #            - Require root
@@ -210,7 +211,11 @@ if [ -z "$(which smartctl)" ]; then
 fi
 
 EXIT=0
-for DISK in $(smartctl --scan | egrep -v '^#' | cut -d ' ' -f1); do
+# Run smartctl to scan for physical disks
+# excluding /dev/bus (to fix Cisco megaraid devices)
+# skipping any comments (lines starting with #)
+# and grab the first field (the device name)
+for DISK in $(smartctl --scan | grep -v '/dev/bus/' | egrep -v '^#' | cut -d ' ' -f1); do
 	echo "Disk $DISK"
 	smartctl -H $DISK
 	if [ $? -ne 0 ]; then
