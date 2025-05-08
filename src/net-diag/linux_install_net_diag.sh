@@ -15,9 +15,13 @@
 #   Charlie Powell <cdp1337@veraciousnetwork.com>
 #
 # Changelog:
+#   20250507 - Include curl installation
 #   20250129 - Initial version
 
 # scriptlet:_common/require_root.sh
+# scriptlet:_common/package_install.sh
+
+package_install curl
 
 RELEASE="$(curl -I https://github.com/eVAL-Agency/net-diag/releases/latest 2>&1 | egrep '^location' | sed 's:.*tag/\(v[0-9\.]*\).*:\1:')"
 SRC="https://github.com/eVAL-Agency/net-diag/releases/download/${RELEASE}/net_diag-linux-$(uname -m)-${RELEASE}.tgz"
