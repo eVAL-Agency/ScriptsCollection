@@ -34,6 +34,10 @@ class Script:
 		self.content_header = ''
 		self.content_body = ''
 		self._generated_usage = False
+		self._argparser_var = None
+		"""
+		Argument parser variable name in Python, used to know what variable to use for parsing arguments
+		"""
 
 	def parse(self):
 		"""
@@ -90,6 +94,9 @@ class Script:
 				elif line.strip() == '# compile:argparse':
 					in_header = False
 					line = self.generate_argparse()
+				elif self.type == 'python' and re.match(r'.* = argparse\.ArgumentParser.*', line):
+					in_header = False
+					self._argparser_var = line.split('=')[0].strip()
 				elif in_header and self.type == 'python' and line.strip() == '"""':
 					multiline_header = not multiline_header
 				elif in_header and self.type == 'powershell' and line.strip() == '<#':
@@ -314,6 +321,7 @@ class Script:
 			arg_name = arg_map.group('name')
 			arg_type = arg_map.group('type')
 			arg_default = '0' if arg_type == ' ' else ''
+			arg_comment = arg_map.group('comment').strip(' -')
 			var_type = arg_map.group('var_type')
 			if arg_var is None:
 				arg_var = arg_name
@@ -323,9 +331,9 @@ class Script:
 				var_type = 'string' if var_type is None else var_type
 
 			if var_type is None:
-				line = tacks + arg_name + arg_type + arg_map.group('comment')
+				line = tacks + arg_name + arg_type + ' - ' + arg_comment
 			else:
-				line = tacks + arg_name + arg_type + '<' + var_type + '>' + arg_map.group('comment')
+				line = tacks + arg_name + arg_type + '<' + var_type + '> - ' + arg_comment
 
 			arg_required = 'REQUIRED' in line
 			if 'DEFAULT=' in line:
@@ -334,13 +342,19 @@ class Script:
 					# Default contains quotes, grab the content between them
 					arg_default = arg_default[1:]
 					arg_default = arg_default[:arg_default.find('"')]
+
+					arg_comment = arg_comment.replace('DEFAULT="%s"' % arg_default, '').strip()
 				elif arg_default[0] == "'":
 					# Default contains single quote, grab the content between them
 					arg_default = arg_default[1:]
 					arg_default = arg_default[:arg_default.find("'")]
+
+					arg_comment = arg_comment.replace("DEFAULT='%s'" % arg_default, '').strip()
 				else:
 					# Default is a value, grab the first word
 					arg_default = arg_default.split(' ')[0]
+
+					arg_comment = arg_comment.replace('DEFAULT=%s' % arg_default, '').strip()
 
 			self.syntax_arg_map.append({
 				'var': arg_var,
@@ -348,7 +362,8 @@ class Script:
 				'type': arg_type,
 				'var_type': var_type,
 				'required': arg_required,
-				'default': arg_default
+				'default': arg_default,
+				'comment': arg_comment
 			})
 		self.syntax.append(line)
 
@@ -462,6 +477,8 @@ class Script:
 			return self._generate_argparse_shell()
 		elif self.type == 'powershell':
 			return self._generate_argparse_powershell()
+		elif self.type == 'python' and self._argparser_var is not None:
+			return self._generate_argparse_python()
 		else:
 			return ''
 
@@ -527,6 +544,26 @@ class Script:
 		return '\n'.join(code)
 
 		# @todo Support #-p) pidfile="$2"; shift 2;;
+
+	def _generate_argparse_python(self) -> str:
+		code = []
+
+		if len(self.syntax_arg_map) == 0 and not self._generated_usage:
+			# No arguments to parse, just return
+			return ''
+
+		code.append('# Parse arguments')
+		for arg in self.syntax_arg_map:
+			fn = self._argparser_var + '.add_argument'
+			comment = arg['comment'].replace("'", "\\'")
+			if arg['var_type'] == 'int':
+				default = int(arg['default'])
+			else:
+				default = "'" + arg['default'].replace("'", "\\'") + "'"
+			code.append(f"{fn}('--{arg['var']}', type={arg['var_type']}, help='{comment}', default={default})")
+		code.append('')
+		code.append('')
+		return '\n'.join(code)
 
 
 	def __str__(self):

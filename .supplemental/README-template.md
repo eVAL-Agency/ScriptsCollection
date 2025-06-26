@@ -70,6 +70,10 @@ Syntax:
 """
 ```
 
+#### Argument Parsing
+
+Adding `# compile:argparse` to the script will generate a dynamic argument parser for the script.
+
 (BASH only) Optionally, you can include the destination variable name before each argument
 to allow for dynamic generation of the argument parsing via `compile:argparse`.
 
@@ -120,6 +124,55 @@ if [ -z "$SOURCE" ]; then
 	usage
 fi
 ```
+
+```python
+#!/usr/bin/env python3
+"""
+Do something
+
+Syntax:
+	--arg1=<str> - Some parameter DEFAULT=yup
+	--arg2=<int> - The SSH key to authorize DEFAULT=42
+"""
+
+import argparse
+
+# ...
+
+parser = argparse.ArgumentParser(
+	prog='scriptname.py',
+	description='Does a thing')
+# compile:argparse
+args = parser.parse_args()
+```
+
+#### Variable Type
+
+To support Python, ensure a variable type is specified, like so:
+
+```python
+#!/usr/bin/env python3
+"""
+Syntax:
+	--option1=<str> - Short description of option 1
+	--option2=<int> - Short description of option 2
+"""
+```
+
+Argument types in Bash are ignored and are for reference only.
+
+#### Defaults
+
+The default value can be specified by appending `DEFAULT=(value)` to the argument, like so:
+
+```bash
+#/bin/bash
+# ...
+# Syntax:
+#   --option1=<str> - Short description of option 1 DEFAULT=default_value
+#   --option2=<int> - Short description of option 2 DEFAULT=42
+```
+
 
 
 ### TRMM Arguments
