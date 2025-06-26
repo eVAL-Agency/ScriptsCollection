@@ -4,7 +4,7 @@
 #
 #
 # Syntax:
-#   --server=<string>... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
+#   --server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
 #   GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)
 #
 # TRMM Arguments:
@@ -44,7 +44,7 @@ function usage() {
 Usage: $0 [options]
 
 Options:
-    --server=<string>... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
+    --server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
     GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)
 
 

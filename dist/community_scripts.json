@@ -43,6 +43,37 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "ef099fce-f70d-51bf-de55-0d9d849ada77",
+        "filename": "nextcloud/linux_nextcloud_backup.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Backup Nextcloud configuration and data",
+        "syntax": [
+            "--base=<str> - Location where Nextcloud is installed DEFAULT=/var/www/nextcloud",
+            "--exclude-db  - Exclude database from backup",
+            "--exclude-files  - Exclude local files from backup",
+            "--exclude-config  - Exclude configuration from backup",
+            "--www-user=<str> - Web server user DEFAULT=www-data",
+            "--db-name=<str> - Database name DEFAULT=nextcloud",
+            "--db-user=<str> - Database user DEFAULT=nextcloud",
+            "--db-pass=<str> - Database password DEFAULT=nextcloud",
+            "--db-prefix=<str> - Database prefix DEFAULT=oc_",
+            "--dest=<str> - Destination directory for backup DEFAULT=/backups",
+            "--sftp-host=<str> - SFTP host to upload backups to (if DEST=SFTP)",
+            "--sftp-user=<str> - SFTP user to upload backups to (if DEST=SFTP)",
+            "--sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22",
+            "--sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups"
+        ],
+        "default_timeout": "600",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Backup"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "b582e11c-b487-2310-598a-846cf35d236b",
         "filename": "disk/linux_check_disk_health.sh",
         "args": [],
@@ -112,6 +143,78 @@
             "windows"
         ],
         "category": "Disks"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
+        "filename": "firewall/linux_check_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Firewall Status [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Firewall"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
+        "filename": "firewall/windows_check_firewall.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Firewall Status [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Firewall"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "eb5a88c9-f02d-47d9-202e-578f3d2b8564",
+        "filename": "firewall/linux_util_firewall_allow.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Firewall - Allow IP/Port [Linux]",
+        "syntax": [
+            "--ip=<string> - IP address or CIDR network to allow DEFAULT=any",
+            "--port=<int> - Port(s) to allow (REQUIRED)",
+            "--proto=<tcp|udp> - Protocol to allow DEFAULT=tcp",
+            "--comment=<comment> - Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Firewall"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
+        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Firewall - Whitelist IP",
+        "syntax": [
+            "--ip=<ip> - IP address to whitelist (REQUIRED)",
+            "--comment=<comment> - Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Firewall"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -215,6 +318,29 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "9f10cfd7-5997-8018-9701-991c87aff751",
+        "filename": "graylog/linux_install_graylog_sidecar.sh",
+        "args": [
+            "--server={{client.graylog_server}}"
+        ],
+        "env": [
+            "GRAYLOG_TOKEN={{client.graylog_token}}"
+        ],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Install Graylog Sidecar [Linux]",
+        "syntax": [
+            "--server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)",
+            "GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
         "filename": "zabbix/linux_install_zabbix_agent2.sh",
         "args": [
@@ -227,10 +353,10 @@
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Install Zabbix Agent2 [Linux]",
         "syntax": [
-            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=<string>... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
-            "--server=<string>... - Hostname or IP of Zabbix server",
-            "--hostname=<string>... - Hostname of local device for matching with a Zabbix host entry"
+            "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=<string> - ... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
+            "--server=<string> - ... - Hostname or IP of Zabbix server",
+            "--hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -253,10 +379,10 @@
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Install Zabbix Proxy [Linux]",
         "syntax": [
-            "--noninteractive - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=<string>... - Version of Zabbix to install (default: 7.0)",
-            "--server=<string>... - Hostname or IP of Zabbix server",
-            "--hostname=<string>... - Hostname of local device for matching with a Zabbix host entry"
+            "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
+            "--version=<string> - ... - Version of Zabbix to install (default: 7.0)",
+            "--server=<string> - ... - Hostname or IP of Zabbix server",
+            "--hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -283,6 +409,20 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "5c39ff46-fa69-52c0-d995-6135da7f41fc",
+        "filename": "proxmox/linux_manage_proxmox_repo_community.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Switch Repo to Community [Proxmox]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [],
+        "category": "Repo"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c682e175-acf5-b885-1855-a597ef6dc15b",
         "filename": "defender/windows_check_defender_status.ps1",
         "args": [],
@@ -295,38 +435,6 @@
             "-QuickScanThreshold=<integer> - Number of days since last quick scan DEFAULT=1",
             "-SignatureUpdateThreshold=<integer> - Number of days since last signature update DEFAULT=1"
         ],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [
-            "windows"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
-        "filename": "firewall/linux_check_firewall.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": "Check Firewall Status [Linux]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
-        "filename": "firewall/windows_check_firewall.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": "Check Firewall Status [Windows]",
-        "syntax": [],
         "default_timeout": "60",
         "shell": "powershell",
         "supported_platforms": [
@@ -391,9 +499,9 @@
         "submittedBy": "",
         "name": "Authorize SSH key for a user",
         "syntax": [
-            "--user=<username>  - The user account to authorize the SSH key for",
+            "--user=<username> - The user account to authorize the SSH key for",
             "--key=<public key> - The SSH key to authorize",
-            "--comment=<string>[optional comment] - Optional comment to attribute with this key"
+            "--comment=<string> - [optional comment] - Optional comment to attribute with this key"
         ],
         "default_timeout": "60",
         "shell": "python",
@@ -404,18 +512,18 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
-        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
+        "guid": "c9e46511-4ea2-7c03-39c3-1689587be6c5",
+        "filename": "ssh/linux_util_ssh_get_key.py",
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Firewall - Whitelist IP",
+        "name": "Retrieve the public SSH key for a given user account",
         "syntax": [
-            "--ip=<ip>             IP address to whitelist (REQUIRED)",
-            "--comment=<comment>  Optional comment for the rule"
+            "--user=<str> - The user account to authorize the SSH key for DEFAULT=root",
+            "--type=<str> - The SSH key to authorize DEFAULT=ecdsa"
         ],
         "default_timeout": "60",
-        "shell": "shell",
+        "shell": "python",
         "supported_platforms": [
             "linux"
         ],

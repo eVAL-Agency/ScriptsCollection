@@ -11,8 +11,8 @@
 #   Firewall
 #
 # Syntax:
-#   --ip=<ip>             IP address to whitelist (REQUIRED)
-#   --comment=<comment>  Optional comment for the rule
+#   --ip=<ip> - IP address to whitelist (REQUIRED)
+#   --comment=<comment> - Optional comment for the rule
 #
 # Changelog:
 #   20250105 - Initial version
@@ -190,8 +190,8 @@ function usage() {
 Usage: $0 [options]
 
 Options:
-    --ip=<ip>             IP address to whitelist (REQUIRED)
-    --comment=<comment>  Optional comment for the rule
+    --ip=<ip> - IP address to whitelist (REQUIRED)
+    --comment=<comment> - Optional comment for the rule
 
 Add an IP address to the firewall whitelist.
 EOD

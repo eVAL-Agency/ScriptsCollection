@@ -8,6 +8,7 @@ A collection of useful scripts for various Linux distributions
 |-------------------|----------|
 | ![Python](.supplemental/images/icons/python.svg "Python") [Asset Tracking / Collect Asset Inventory (SuiteCRM) [Linux]](dist/suitecrm/linux_inventory_device_to_suitecrm.py) [![README](.supplemental/images/icons/readme.svg "README")](dist/suitecrm/README.md) | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Asset Tracking / Collect Asset Inventory (SuiteCRM) [Windows]](dist/suitecrm/windows_inventory_device_to_suitecrm.ps1) [![README](.supplemental/images/icons/readme.svg "README")](dist/suitecrm/README.md) | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Backup / Backup Nextcloud configuration and data](dist/nextcloud/linux_nextcloud_backup.sh)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Disks / Check Disk Health [Linux]](dist/disk/linux_check_disk_health.sh)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Arch") ![centos](.supplemental/images/icons/centos.svg "RHEL-All") ![debian](.supplemental/images/icons/debian.svg "Debian-All") ![fedora](.supplemental/images/icons/fedora.svg "RHEL-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Debian-All") ![redhat](.supplemental/images/icons/redhat.svg "RHEL-All") ![rocky](.supplemental/images/icons/rocky.svg "RHEL-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Debian-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Disks / Check Disk Health [Windows]](dist/disk/windows_check_disk_health.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [Disks / Check Disk Space [Linux]](dist/disk/linux_check_disk_space.py)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
@@ -32,6 +33,7 @@ A collection of useful scripts for various Linux distributions
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Updates / Check if Reboot Required [Linux]](dist/updates/linux_check_reboot_required.sh)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Updates / Check if Reboot Required [Windows]](dist/updates/windows_check_reboot_required.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Authorize SSH key for a user](dist/ssh/linux_util_ssh_authorize.py)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
+| ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Retrieve the public SSH key for a given user account](dist/ssh/linux_util_ssh_get_key.py)  | ![archlinux](.supplemental/images/icons/archlinux.svg "Linux-All") ![centos](.supplemental/images/icons/centos.svg "Linux-All") ![debian](.supplemental/images/icons/debian.svg "Linux-All") ![fedora](.supplemental/images/icons/fedora.svg "Linux-All") ![linuxmint](.supplemental/images/icons/linuxmint.svg "Linux-All") ![redhat](.supplemental/images/icons/redhat.svg "Linux-All") ![rocky](.supplemental/images/icons/rocky.svg "Linux-All") ![suse](.supplemental/images/icons/suse.svg "Linux-All") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Linux-All") |
 
 ## Compile all scripts
 
@@ -97,6 +99,10 @@ Syntax:
 """
 ```
 
+#### Argument Parsing
+
+Adding `# compile:argparse` to the script will generate a dynamic argument parser for the script.
+
 (BASH only) Optionally, you can include the destination variable name before each argument
 to allow for dynamic generation of the argument parsing via `compile:argparse`.
 
@@ -147,6 +153,55 @@ if [ -z "$SOURCE" ]; then
 	usage
 fi
 ```
+
+```python
+#!/usr/bin/env python3
+"""
+Do something
+
+Syntax:
+	--arg1=<str> - Some parameter DEFAULT=yup
+	--arg2=<int> - The SSH key to authorize DEFAULT=42
+"""
+
+import argparse
+
+# ...
+
+parser = argparse.ArgumentParser(
+	prog='scriptname.py',
+	description='Does a thing')
+# compile:argparse
+args = parser.parse_args()
+```
+
+#### Variable Type
+
+To support Python, ensure a variable type is specified, like so:
+
+```python
+#!/usr/bin/env python3
+"""
+Syntax:
+	--option1=<str> - Short description of option 1
+	--option2=<int> - Short description of option 2
+"""
+```
+
+Argument types in Bash are ignored and are for reference only.
+
+#### Defaults
+
+The default value can be specified by appending `DEFAULT=(value)` to the argument, like so:
+
+```bash
+#/bin/bash
+# ...
+# Syntax:
+#   --option1=<str> - Short description of option 1 DEFAULT=default_value
+#   --option2=<int> - Short description of option 2 DEFAULT=42
+```
+
 
 
 ### TRMM Arguments

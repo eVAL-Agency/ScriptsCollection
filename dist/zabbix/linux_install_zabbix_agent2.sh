@@ -9,10 +9,10 @@
 #
 #
 # Syntax:
-#   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   --version=<string>... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0
-#   --server=<string>... - Hostname or IP of Zabbix server
-#   --hostname=<string>... - Hostname of local device for matching with a Zabbix host entry
+#   --noninteractive  - Run in non-interactive mode, (will not ask for prompts)
+#   --version=<string> - ... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0
+#   --server=<string> - ... - Hostname or IP of Zabbix server
+#   --hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry
 #
 # TRMM Arguments:
 #   --noninteractive
@@ -427,6 +427,9 @@ function zabbix_repo_setup() {
 # Example:
 #   setconfigfile_orappend "^Password=.*" "Password=1234" "/etc/myapp/myapp.conf"
 #
+#
+# CHANGELOG:
+#   2025.04.10 - Escape '?' characters in the sed search
 function setconfigfile_orappend() {
   # Swap '/' with '\/' since sed here uses '/' as the delimiter
   # Additionally, '?' characters in the SED search need escaped
@@ -496,10 +499,10 @@ function usage() {
 Usage: $0 [options]
 
 Options:
-    --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-    --version=<string>... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0
-    --server=<string>... - Hostname or IP of Zabbix server
-    --hostname=<string>... - Hostname of local device for matching with a Zabbix host entry
+    --noninteractive  - Run in non-interactive mode, (will not ask for prompts)
+    --version=<string> - ... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0
+    --server=<string> - ... - Hostname or IP of Zabbix server
+    --hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry
 
 Please ensure to run this script as root (or at least with sudo)
 

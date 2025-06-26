@@ -3,9 +3,9 @@
 Authorize SSH key for a user
 
 Syntax:
-	--user=<username>  - The user account to authorize the SSH key for
+	--user=<username> - The user account to authorize the SSH key for
 	--key=<public key> - The SSH key to authorize
-	--comment=<string>[optional comment] - Optional comment to attribute with this key
+	--comment=<string> - [optional comment] - Optional comment to attribute with this key
 
 Supports:
 	Linux-All

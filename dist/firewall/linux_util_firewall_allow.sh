@@ -11,10 +11,10 @@
 #   Firewall
 #
 # Syntax:
-#   --ip=<string>        IP address or CIDR network to allow DEFAULT=any
-#   --port=<int>         Port(s) to allow (REQUIRED)
-#   --proto=<tcp|udp>    Protocol to allow DEFAULT=tcp
-#   --comment=<comment>  Optional comment for the rule
+#   --ip=<string> - IP address or CIDR network to allow DEFAULT=any
+#   --port=<int> - Port(s) to allow (REQUIRED)
+#   --proto=<tcp|udp> - Protocol to allow DEFAULT=tcp
+#   --comment=<comment> - Optional comment for the rule
 #
 # Changelog:
 #   2025.04.10 - Initial version
@@ -192,10 +192,10 @@ function usage() {
 Usage: $0 [options]
 
 Options:
-    --ip=<string>        IP address or CIDR network to allow DEFAULT=any
-    --port=<int>         Port(s) to allow (REQUIRED)
-    --proto=<tcp|udp>    Protocol to allow DEFAULT=tcp
-    --comment=<comment>  Optional comment for the rule
+    --ip=<string> - IP address or CIDR network to allow DEFAULT=any
+    --port=<int> - Port(s) to allow (REQUIRED)
+    --proto=<tcp|udp> - Protocol to allow DEFAULT=tcp
+    --comment=<comment> - Optional comment for the rule
 
 Allow a service in the firewall.
 EOD
