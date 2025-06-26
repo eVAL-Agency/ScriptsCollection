@@ -425,25 +425,29 @@ class Script:
 		else:
 			# Supports:\n#  Distro Name\n...
 			line = line[1:].strip()
-		s = line.lower()
-		maps = [
-			('archlinux', ('linux-all', 'archlinux', 'arch')),
-			('centos', ('linux-all', 'rhel-all', 'centos')),
-			('debian', ('linux-all', 'debian-all', 'debian')),
-			('fedora', ('linux-all', 'rhel-all', 'fedora')),
-			('linuxmint', ('linux-all', 'debian-all', 'linuxmint')),
-			('proxmox', ('proxmox',)),
-			('redhat', ('linux-all', 'rhel-all', 'redhat', 'rhel')),
-			('rocky', ('linux-all', 'rhel-all', 'rocky', 'rockylinux')),
-			('suse', ('linux-all', 'suse', 'opensuse')),
-			('ubuntu', ('linux-all', 'debian-all', 'ubuntu')),
-			('windows', ('windows',))
-		]
-		for os_key, lookups in maps:
-			for lookup in lookups:
-				if lookup in s and os_key not in self.supports:
-					self.supports.append(os_key)
-					self.supports_detailed.append((os_key, line))
+
+		# Strip any trailing versions and comments; we just want the first word.
+		s = line.lower().split(' ')[0].strip()
+		aliases = {
+			'linux-all': ('tux',),
+			'debian-all': ('debian', 'ubuntu', 'linuxmint'),
+			'arch': ('archlinux',),
+			'rhel-all': ('redhat', 'centos', 'rocky', 'fedora'),
+			'rhel': ('redhat', 'rocky'),
+			'opensuse': ('suse',),
+			'rocklinux': ('rocky',),
+		}
+
+		if s in aliases:
+			# Check if this is an alias for a set of distros, (or just an alias for a single distro)
+			for alias in aliases[s]:
+				if alias not in self.supports:
+					self.supports.append(alias)
+					self.supports_detailed.append((alias, line))
+		else:
+			if s not in self.supports:
+				self.supports.append(s)
+				self.supports_detailed.append((s, line))
 
 	def generate_usage(self) -> str:
 		"""
@@ -597,7 +601,7 @@ class Script:
 	def as_trmm_meta(self):
 		# TRMM treats all *nix distros as just "linux"
 		all_platforms = (
-			('linux', ('archlinux', 'centos', 'debian', 'fedora', 'linuxmint', 'redhat', 'rocky', 'suse', 'ubuntu')),
+			('linux', ('tux', 'archlinux', 'centos', 'debian', 'fedora', 'linuxmint', 'redhat', 'rocky', 'suse', 'ubuntu')),
 			('macos', ('macos',)),
 			('windows', ('windows',)),
 		)

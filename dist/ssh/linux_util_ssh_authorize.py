@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Authorize SSH key for a user
+Authorize SSH Key [Linux]
 
 Syntax:
 	--user=<username> - The user account to authorize the SSH key for

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+Get SSH Public Key [Linux]
+
 Retrieve the public SSH key for a given user account
 
 Syntax:

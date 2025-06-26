@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-# Backup Nextcloud configuration and data
+# Backup Nextcloud Server [Linux]
+#
+# Backup Nextcloud configuration, database, and local files.
 #
 # Syntax:
 #   NEXTCLOUD_DIR=--base=<str> - Location where Nextcloud is installed DEFAULT=/var/www/nextcloud

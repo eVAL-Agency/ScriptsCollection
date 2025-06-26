@@ -1,6 +1,8 @@
 #!/bin/bash
 #
-# Backup Nextcloud configuration and data
+# Backup Nextcloud Server [Linux]
+#
+# Backup Nextcloud configuration, database, and local files.
 #
 # Syntax:
 #   --base=<str> - Location where Nextcloud is installed DEFAULT=/var/www/nextcloud
@@ -52,7 +54,7 @@ Options:
     --sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22
     --sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups
 
-
+Backup Nextcloud configuration, database, and local files.
 EOD
   exit 1
 }

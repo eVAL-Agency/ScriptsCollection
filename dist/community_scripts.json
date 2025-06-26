@@ -48,7 +48,7 @@
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Backup Nextcloud configuration and data",
+        "name": "Backup Nextcloud Server [Linux]",
         "syntax": [
             "--base=<str> - Location where Nextcloud is installed DEFAULT=/var/www/nextcloud",
             "--exclude-db  - Exclude database from backup",
@@ -497,7 +497,7 @@
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Authorize SSH key for a user",
+        "name": "Authorize SSH Key [Linux]",
         "syntax": [
             "--user=<username> - The user account to authorize the SSH key for",
             "--key=<public key> - The SSH key to authorize",
@@ -517,7 +517,7 @@
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Retrieve the public SSH key for a given user account",
+        "name": "Get SSH Public Key [Linux]",
         "syntax": [
             "--user=<str> - The user account to authorize the SSH key for DEFAULT=root",
             "--type=<str> - The SSH key to authorize DEFAULT=ecdsa"
