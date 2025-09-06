@@ -4,8 +4,8 @@ Scripts that collect device asset inventory information to be sent to an externa
 
 Provides support for SuiteCRM (fork of SugarCRM) and [Grist](https://www.getgrist.com/).
 
-* Grist: [Windows](windows_inventory_device_to_grist.ps1) [Linux](linux_inventory_device_to_grist.sh)
-* SuiteCRM: [Windows](windows_inventory_device_to_suitecrm.ps1) [Linux](linux_inventory_device_to_suitecrm.sh)
+* Grist: [Windows](windows_inventory_device_to_grist.ps1) [Linux](linux_inventory_device_to_grist.py)
+* SuiteCRM: [Windows](windows_inventory_device_to_suitecrm.ps1) [Linux](linux_inventory_device_to_suitecrm.py)
 
 ## Grist
 
