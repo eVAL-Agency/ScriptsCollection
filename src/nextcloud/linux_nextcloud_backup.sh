@@ -15,8 +15,8 @@
 #   DB_PASS=--db-pass=<str> - Database password DEFAULT=nextcloud
 #   DB_PREFIX=--db-prefix=<str> - Database prefix DEFAULT=oc_
 #   DEST=--dest=<str> - Destination directory for backup DEFAULT=/backups
-#   SFTP_HOST=--sftp-host=<str> - SFTP host to upload backups to (if DEST=SFTP)
-#   SFTP_USER=--sftp-user=<str> - SFTP user to upload backups to (if DEST=SFTP)
+#   SFTP_HOST=--sftp-host=<str> - SFTP host to upload backups to (optional unless DEST=SFTP)
+#   SFTP_USER=--sftp-user=<str> - SFTP user to upload backups to (optional unless DEST=SFTP)
 #   SFTP_PORT=--sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22
 #   SFTP_DIR=--sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups
 #

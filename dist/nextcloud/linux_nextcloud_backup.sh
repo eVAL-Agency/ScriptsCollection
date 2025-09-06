@@ -15,8 +15,8 @@
 #   --db-pass=<str> - Database password DEFAULT=nextcloud
 #   --db-prefix=<str> - Database prefix DEFAULT=oc_
 #   --dest=<str> - Destination directory for backup DEFAULT=/backups
-#   --sftp-host=<str> - SFTP host to upload backups to (if DEST=SFTP)
-#   --sftp-user=<str> - SFTP user to upload backups to (if DEST=SFTP)
+#   --sftp-host=<str> - SFTP host to upload backups to (optional unless DEST=SFTP)
+#   --sftp-user=<str> - SFTP user to upload backups to (optional unless DEST=SFTP)
 #   --sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22
 #   --sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups
 #
@@ -49,8 +49,8 @@ Options:
     --db-pass=<str> - Database password DEFAULT=nextcloud
     --db-prefix=<str> - Database prefix DEFAULT=oc_
     --dest=<str> - Destination directory for backup DEFAULT=/backups
-    --sftp-host=<str> - SFTP host to upload backups to (if DEST=SFTP)
-    --sftp-user=<str> - SFTP user to upload backups to (if DEST=SFTP)
+    --sftp-host=<str> - SFTP host to upload backups to (optional unless DEST=SFTP)
+    --sftp-user=<str> - SFTP user to upload backups to (optional unless DEST=SFTP)
     --sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22
     --sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups
 

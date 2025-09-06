@@ -323,6 +323,8 @@ class Script:
 			arg_default = '0' if arg_type == ' ' else ''
 			arg_comment = arg_map.group('comment').strip(' -')
 			var_type = arg_map.group('var_type')
+			arg_required = False
+			default_set = False
 			if arg_var is None:
 				arg_var = arg_name
 
@@ -330,13 +332,20 @@ class Script:
 				# Key/Value pairs require a variable type to be set, defaults to STRING
 				var_type = 'string' if var_type is None else var_type
 
-			if var_type is None:
-				line = tacks + arg_name + arg_type + ' - ' + arg_comment
+			if self.type == 'powershell':
+				# Powershell has a slightly different format
+				if var_type is None:
+					line = tacks + arg_name + ' - ' + arg_comment
+				else:
+					line = tacks + arg_name + ' <' + var_type + '> - ' + arg_comment
 			else:
-				line = tacks + arg_name + arg_type + '<' + var_type + '> - ' + arg_comment
+				if var_type is None:
+					line = tacks + arg_name + arg_type + ' - ' + arg_comment
+				else:
+					line = tacks + arg_name + arg_type + '<' + var_type + '> - ' + arg_comment
 
-			arg_required = 'REQUIRED' in line
 			if 'DEFAULT=' in line:
+				default_set = True
 				arg_default = line[line.find('DEFAULT=')+8:]
 				if arg_default[0] == '"':
 					# Default contains quotes, grab the content between them
@@ -355,6 +364,13 @@ class Script:
 					arg_default = arg_default.split(' ')[0]
 
 					arg_comment = arg_comment.replace('DEFAULT=%s' % arg_default, '').strip()
+
+			if 'required' in line.lower():
+				arg_required = True
+			elif 'optional' in line.lower():
+				arg_required = False
+			elif not default_set and arg_type == '=':
+				arg_required = True
 
 			self.syntax_arg_map.append({
 				'var': arg_var,
@@ -491,7 +507,16 @@ class Script:
 		for arg in self.syntax_arg_map:
 			if arg['var_type'] == 'integer':
 				arg['var_type'] = 'int'
-			params.append('\t[%s]$%s = %s' % (arg['var_type'], arg['var'], arg['default']))
+			if arg['required']:
+				if arg['default'] == '':
+					params.append('\t[%s]$%s' % (arg['var_type'], arg['var']))
+				else:
+					params.append('\t[%s]$%s = %s' % (arg['var_type'], arg['var'], arg['default']))
+			else:
+				if arg['default'] == '':
+					params.append('\t[%s]$%s = $None' % (arg['var_type'], arg['var']))
+				else:
+					params.append('\t[%s]$%s = %s' % (arg['var_type'], arg['var'], arg['default']))
 
 		return '# Parse arguments\nparam (\n' + ',\n'.join(params) + '\n)\n\n'
 
