@@ -167,11 +167,20 @@ def read_from(sources: list) -> Union[str, None]:
 
 	return None
 
-def set_field(key: str, value: Union[str, None]):
+def set_field(key: str, value: Union[str, int, None]):
 	if value is not None:
 		data[key] = value
 
 data = {}
+
+# Check if this is a virtual machine; this will define how some information is gathered.
+is_vm = False
+sys_vendor = read_from(['/sys/devices/virtual/dmi/id/sys_vendor'])
+if sys_vendor is not None:
+	vms = ('kvm', 'qemu', 'vmware', 'xen', 'bochs', 'bhyve', 'parallels', 'virtualbox', 'openstack')
+	if sys_vendor.lower() in vms:
+		is_vm = True
+		set_field('type', 'VM')
 
 
 # Grab hostname from binary
@@ -236,7 +245,7 @@ if cpu_threads > 0:
 
 # Read memory information from /proc/meminfo or dmidecode if available
 dmi = Cmd(['dmidecode', '--type', 'memory'])
-if dmi.exists():
+if not is_vm and dmi.exists():
 	# Use dmidecode to gather memory information, (if it's installed)
 	# Just because this is present does not mean it'll succeed though,
 	# Raspberry PIs do not support SMBIOS information, so nothing will be returned
@@ -295,7 +304,12 @@ if dmi.exists():
 			mem_type = stick['type']
 			mem_speed = stick['speed']
 			mem_form_factor = stick['form_factor']
-			mem_size += int(stick['size'].split(' ')[0])
+			if stick['size'].endswith(' MB'):
+				# 12288 MB -> 12 GB
+				mem_size += int(round(int(stick['size'].split(' ')[0]) / 1024, 0))
+			else:
+				# Default; most provide size in GB
+				mem_size += int(stick['size'].split(' ')[0])
 
 		if l not in mem_sticks:
 			mem_sticks[l] = 1
@@ -312,7 +326,7 @@ if dmi.exists():
 
 		set_field('mem_type', mem_type)
 
-	set_field('mem_speed', mem_speed)
+	set_field('mem_speed', int(mem_speed))
 	set_field('mem_size', mem_size)
 
 	mem_models = []
@@ -320,6 +334,9 @@ if dmi.exists():
 		mem_models.append("%sx %s" % (mem_sticks[type], type))
 
 	set_field('mem_model', ', '.join(mem_models))
+
+if is_vm:
+	set_field('mem_type', 'VIRTUAL')
 
 if 'mem_size' not in data or data['mem_size'] == 0:
 	# Lookup from dmidecode failed, fallback to /proc/meminfo
