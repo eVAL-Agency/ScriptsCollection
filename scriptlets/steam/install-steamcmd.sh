@@ -1,4 +1,5 @@
 # scriptlet: _common/os_like.sh
+# scriptlet: _common/os_version.sh
 
 ##
 # Install SteamCMD
@@ -7,6 +8,7 @@ function install_steamcmd() {
 
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_UBUNTU="$(os_like_ubuntu)"
+	OS_VERSION="$(os_version)"
 
 	# Preliminary requirements
 	if [ "$TYPE_UBUNTU" == 1 ]; then
@@ -24,14 +26,31 @@ function install_steamcmd() {
 	elif [ "$TYPE_DEBIAN" == 1 ]; then
 		dpkg --add-architecture i386
 		apt update
-		apt install -y software-properties-common apt-transport-https dirmngr ca-certificates lib32gcc-s1
 
-		# Enable "non-free" repos for Debian (for steamcmd)
-		# https://stackoverflow.com/questions/76688863/apt-add-repository-doesnt-work-on-debian-12
-		add-apt-repository -y -U http://deb.debian.org/debian -c non-free-firmware -c non-free
-		if [ $? -ne 0 ]; then
-			echo "Workaround failed to add non-free repos, trying new method instead"
-			apt-add-repository -y non-free
+		if [ "$OS_VERSION" -le 12 ]; then
+			apt install -y software-properties-common apt-transport-https dirmngr ca-certificates lib32gcc-s1
+
+			# Enable "non-free" repos for Debian (for steamcmd)
+			# https://stackoverflow.com/questions/76688863/apt-add-repository-doesnt-work-on-debian-12
+			add-apt-repository -y -U http://deb.debian.org/debian -c non-free-firmware -c non-free
+			if [ $? -ne 0 ]; then
+				echo "Workaround failed to add non-free repos, trying new method instead"
+				apt-add-repository -y non-free
+			fi
+		else
+			# Debian Trixie and later
+			if [ -e /etc/apt/sources.list ]; then
+				if ! grep -q ' non-free ' /etc/apt/sources.list; then
+					sed -i 's/main/main non-free-firmware non-free contrib/g' /etc/apt/sources.list
+				fi
+			elif [ -e /etc/apt/sources.list.d/debian.sources ]; then
+				if ! grep -q ' non-free ' /etc/apt/sources.list.d/debian.sources; then
+					sed -i 's/main/main non-free-firmware non-free contrib/g' /etc/apt/sources.list.d/debian.sources
+				fi
+			else
+				echo "Could not find a sources.list file to enable non-free repos" >&2
+				exit 1
+			fi
 		fi
 
 		# Install steam repo
