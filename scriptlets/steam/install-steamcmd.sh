@@ -1,5 +1,6 @@
-# scriptlet: _common/os_like.sh
-# scriptlet: _common/os_version.sh
+# scriptlet:_common/os_like.sh
+# scriptlet:_common/os_version.sh
+# scriptlet:_common/download.sh
 
 ##
 # Install SteamCMD
@@ -54,7 +55,7 @@ function install_steamcmd() {
 		fi
 
 		# Install steam repo
-		curl -s http://repo.steampowered.com/steam/archive/stable/steam.gpg > /usr/share/keyrings/steam.gpg
+		download http://repo.steampowered.com/steam/archive/stable/steam.gpg /usr/share/keyrings/steam.gpg
 		echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] http://repo.steampowered.com/steam/ stable steam" > /etc/apt/sources.list.d/steam.list
 
 		# By using this script, you agree to the Steam license agreement at https://store.steampowered.com/subscriber_agreement/
