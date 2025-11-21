@@ -1,8 +1,48 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "2ba379c5-eb3f-26c8-85cc-190cf4b26ea4",
-        "filename": "suitecrm/linux_inventory_device_to_suitecrm.py",
+        "guid": "f83375c9-465f-6fee-837a-7e12412c64f2",
+        "filename": "inventory/linux_inventory_device_to_grist.py",
+        "args": [],
+        "env": [
+            "GRIST_URL={{client.grist_url}}",
+            "GRIST_ACCOUNT={{client.grist_account}}"
+        ],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Collect Asset Inventory (Grist) [Linux]",
+        "syntax": [
+            "--debug: Enable debug logging"
+        ],
+        "default_timeout": "60",
+        "shell": "python",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Asset Tracking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "50f2a9fe-f035-af39-011e-379e0499ae9a",
+        "filename": "inventory/windows_inventory_device_to_grist.ps1",
+        "args": [],
+        "env": [
+            "GRIST_URL={{client.grist_url}}",
+            "GRIST_ACCOUNT={{client.grist_account}}"
+        ],
+        "submittedBy": "",
+        "name": "Collect Asset Inventory (Grist) [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Asset Tracking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "b88b9ed7-7c4e-b9d7-fae7-5024dd492272",
+        "filename": "inventory/linux_inventory_device_to_suitecrm.py",
         "args": [],
         "env": [
             "CRM_URL={{client.crm_url}}",
@@ -23,8 +63,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0efa5650-113c-96fd-68cc-0de3379f320f",
-        "filename": "suitecrm/windows_inventory_device_to_suitecrm.ps1",
+        "guid": "85c431a3-7692-6ae5-bd7e-f844075deb04",
+        "filename": "inventory/windows_inventory_device_to_suitecrm.ps1",
         "args": [],
         "env": [
             "CRM_URL={{client.crm_url}}",
@@ -43,7 +83,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ef099fce-f70d-51bf-de55-0d9d849ada77",
+        "guid": "f37506b1-987c-5e2e-f029-010c24f7019d",
         "filename": "nextcloud/linux_nextcloud_backup.sh",
         "args": [],
         "env": [],
@@ -60,8 +100,8 @@
             "--db-pass=<str> - Database password DEFAULT=nextcloud",
             "--db-prefix=<str> - Database prefix DEFAULT=oc_",
             "--dest=<str> - Destination directory for backup DEFAULT=/backups",
-            "--sftp-host=<str> - SFTP host to upload backups to (if DEST=SFTP)",
-            "--sftp-user=<str> - SFTP user to upload backups to (if DEST=SFTP)",
+            "--sftp-host=<str> - SFTP host to upload backups to (optional unless DEST=SFTP)",
+            "--sftp-user=<str> - SFTP user to upload backups to (optional unless DEST=SFTP)",
             "--sftp-port=<int> - SFTP port to upload backups to (if DEST=SFTP) DEFAULT=22",
             "--sftp-dir=<str> - SFTP directory to upload backups to (if DEST=SFTP) DEFAULT=/backups"
         ],
@@ -74,7 +114,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
+        "guid": "cef9441c-a50f-0b78-962c-606c421d6c20",
         "filename": "disk/linux_check_disk_health.sh",
         "args": [],
         "env": [],
@@ -146,7 +186,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
+        "guid": "90d2f788-20b9-51cf-dba1-9af20e3eee6d",
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],
         "env": [],
@@ -178,7 +218,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "eb5a88c9-f02d-47d9-202e-578f3d2b8564",
+        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
         "filename": "firewall/linux_util_firewall_allow.sh",
         "args": [],
         "env": [],
@@ -199,7 +239,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f9225b7b-fbe5-7c31-42c9-250d08fc0113",
+        "guid": "1d682aba-8ce0-fddc-3abb-3ae9cf23e790",
         "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
         "args": [],
         "env": [],
@@ -218,7 +258,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c515ad07-a126-0f89-1fbd-95719872e760",
+        "guid": "34329a67-0b76-bb70-5458-654db9ef67ec",
         "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
         "args": [],
         "env": [],
@@ -234,7 +274,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "79a79faa-2b04-f9e0-d90d-1760fc8c6eb1",
+        "guid": "b4ac1b0d-8171-6a7b-ba3f-7f1800426340",
         "filename": "game-palworld/linux_install_game_palworld.sh",
         "args": [],
         "env": [],
@@ -250,7 +290,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "4391efbe-101d-75a5-6464-c832456cbaa4",
+        "guid": "9f3cd88c-29f6-efee-524c-41a56c268866",
         "filename": "game-projectzomboid/linux_install_game_zomboid.sh",
         "args": [],
         "env": [],
@@ -282,7 +322,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ee0a7718-5663-89a6-d964-a3371d9e0d95",
+        "guid": "ee849c4b-3180-914b-7dfe-45657a6b89a3",
         "filename": "memory/linux_check_memory_usage.sh",
         "args": [],
         "env": [],
@@ -307,7 +347,7 @@
         "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
         "name": "Check Memory Usage [Windows]",
         "syntax": [
-            "-Threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20"
+            "-Threshold <integer> - Threshold of memory used before an error is dispatched DEFAULT=20"
         ],
         "default_timeout": "60",
         "shell": "powershell",
@@ -318,7 +358,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "9f10cfd7-5997-8018-9701-991c87aff751",
+        "guid": "12d30b25-109b-a79c-c0aa-ee32cb6ce4f8",
         "filename": "graylog/linux_install_graylog_sidecar.sh",
         "args": [
             "--server={{client.graylog_server}}"
@@ -341,7 +381,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
+        "guid": "0bc0be4e-fe3d-d874-b7b2-2bc069a0995b",
         "filename": "zabbix/linux_install_zabbix_agent2.sh",
         "args": [
             "--noninteractive",
@@ -354,9 +394,9 @@
         "name": "Install Zabbix Agent2 [Linux]",
         "syntax": [
             "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=<string> - ... - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
-            "--server=<string> - ... - Hostname or IP of Zabbix server",
-            "--hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry"
+            "--version=<string> - Version of Zabbix to install (5.0|6.0|7.0|latest) DEFAULT=7.0",
+            "--server=<string> - Hostname or IP of Zabbix server (optional unless non-interactive)",
+            "--hostname=<string> - Hostname of local device for matching with a Zabbix host entry (optional unless non-interactive)"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -367,7 +407,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
+        "guid": "a39d33f5-af37-3a86-4605-fb4b04c670a2",
         "filename": "zabbix/linux_install_zabbix_proxy.sh",
         "args": [
             "--noninteractive",
@@ -380,9 +420,9 @@
         "name": "Install Zabbix Proxy [Linux]",
         "syntax": [
             "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
-            "--version=<string> - ... - Version of Zabbix to install (default: 7.0)",
-            "--server=<string> - ... - Hostname or IP of Zabbix server",
-            "--hostname=<string> - ... - Hostname of local device for matching with a Zabbix host entry"
+            "--version=<string> - Version of Zabbix to install DEFAULT=7.0",
+            "--server=<string> - Hostname or IP of Zabbix server (optional unless non-interactive)",
+            "--hostname=<string> - Hostname of local device for matching with a Zabbix host entry (optional unless non-interactive)"
         ],
         "default_timeout": "120",
         "shell": "shell",
@@ -393,7 +433,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "9e3d582b-e00d-e7b9-e4bb-07bccd0f51ad",
+        "guid": "f9db00d0-e1f1-d463-2d31-27780416e7b6",
         "filename": "net-diag/linux_install_net_diag.sh",
         "args": [],
         "env": [],
@@ -409,7 +449,26 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "5c39ff46-fa69-52c0-d995-6135da7f41fc",
+        "guid": "cdc7a4ef-498a-87d7-56d6-ca8be2bcbde3",
+        "filename": "hostname/windows_set_hostname.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "name": "Set Hostname and Restart [Windows]",
+        "syntax": [
+            "-Hostname <string> - New hostname to set",
+            "-Workgroup <string> - Workgroup to set (optional)"
+        ],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Networking"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "cebfec3b-f016-1b0f-8ba8-cf8a3ad5776d",
         "filename": "proxmox/linux_manage_proxmox_repo_community.sh",
         "args": [],
         "env": [],
@@ -430,10 +489,10 @@
         "submittedBy": "",
         "name": "Check Defender Status [Windows]",
         "syntax": [
-            "-DaysBack=<integer> - Number of days to search back for Defender alerts DEFAULT=1",
-            "-FullScanThreshold=<integer> - Number of days since last full scan DEFAULT=7",
-            "-QuickScanThreshold=<integer> - Number of days since last quick scan DEFAULT=1",
-            "-SignatureUpdateThreshold=<integer> - Number of days since last signature update DEFAULT=1"
+            "-DaysBack <integer> - Number of days to search back for Defender alerts DEFAULT=1",
+            "-FullScanThreshold <integer> - Number of days since last full scan DEFAULT=7",
+            "-QuickScanThreshold <integer> - Number of days since last quick scan DEFAULT=1",
+            "-SignatureUpdateThreshold <integer> - Number of days since last signature update DEFAULT=1"
         ],
         "default_timeout": "60",
         "shell": "powershell",
@@ -444,7 +503,7 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
+        "guid": "b8be8ca8-8365-47fc-b069-7d0c8dd87ca9",
         "filename": "ufw/linux_install_ufw.sh",
         "args": [],
         "env": [],
@@ -460,7 +519,23 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "09061f78-668f-6981-4341-86fd4deeb2ef",
+        "guid": "f87f6937-29e7-920f-e2d1-0ea2870b8b6a",
+        "filename": "windows/windows_debloat_win10.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "Richard Newton (https://github.com/Sycnex)",
+        "name": "Remove Bloatware in Win10 [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "System Cleanup"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "f8659a14-4c51-8f69-7891-b58ba90d175c",
         "filename": "updates/linux_check_reboot_required.sh",
         "args": [],
         "env": [],

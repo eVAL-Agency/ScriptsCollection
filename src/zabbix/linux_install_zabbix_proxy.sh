@@ -10,9 +10,9 @@
 #
 # Syntax:
 #   NONINTERACTIVE=--noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   VERSION=--version=... - Version of Zabbix to install (default: 7.0)
-#   ZABBIX_SERVER=--server=... - Hostname or IP of Zabbix server
-#   ZABBIX_AGENT_HOSTNAME=--hostname=... - Hostname of local device for matching with a Zabbix host entry
+#   VERSION=--version=<string> - Version of Zabbix to install DEFAULT=7.0
+#   ZABBIX_SERVER=--server=<string> - Hostname or IP of Zabbix server (optional unless non-interactive)
+#   ZABBIX_AGENT_HOSTNAME=--hostname=<string> - Hostname of local device for matching with a Zabbix host entry (optional unless non-interactive)
 #
 # TRMM Arguments:
 #   --noninteractive
@@ -65,6 +65,13 @@ if [ $NONINTERACTIVE -eq 0 ]; then
 	fi
 	if [ -z "$ZABBIX_AGENT_HOSTNAME" ]; then
 		ZABBIX_AGENT_HOSTNAME="$(prompt_text "Hostname of local device for matching with a Zabbix host entry" --default="$(hostname -f)")"
+	fi
+else
+	if [ -z "$ZABBIX_SERVER" ]; then
+		usage
+	fi
+	if [ -z "$ZABBIX_AGENT_HOSTNAME" ]; then
+		usage
 	fi
 fi
 

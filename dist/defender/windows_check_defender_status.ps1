@@ -20,10 +20,10 @@
 	Windows
 
 .SYNTAX
-	-DaysBack=<integer> - Number of days to search back for Defender alerts DEFAULT=1
-	-FullScanThreshold=<integer> - Number of days since last full scan DEFAULT=7
-	-QuickScanThreshold=<integer> - Number of days since last quick scan DEFAULT=1
-	-SignatureUpdateThreshold=<integer> - Number of days since last signature update DEFAULT=1
+	-DaysBack <integer> - Number of days to search back for Defender alerts DEFAULT=1
+	-FullScanThreshold <integer> - Number of days since last full scan DEFAULT=7
+	-QuickScanThreshold <integer> - Number of days since last quick scan DEFAULT=1
+	-SignatureUpdateThreshold <integer> - Number of days since last signature update DEFAULT=1
 
 .CHANGELOG
 	20250204 - Initial version (in this format)

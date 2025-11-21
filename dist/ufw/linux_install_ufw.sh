@@ -275,7 +275,7 @@ function install_ufw() {
 	systemctl start ufw
 
 	# Auto-add the current user's remote IP to the whitelist (anti-lockout rule)
-	local TTY_IP="$(who am i | awk '{print $5}' | sed 's/[()]//g')"
+	local TTY_IP="$(who am i | awk '{print $NF}' | sed 's/[()]//g')"
 	if [ -n "$TTY_IP" ]; then
 		ufw allow from $TTY_IP comment 'Anti-lockout rule based on first install of UFW'
 	fi
