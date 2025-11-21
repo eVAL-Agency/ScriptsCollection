@@ -6,7 +6,6 @@ import uuid
 from glob import glob
 import os
 import stat
-from pprint import pprint
 import json
 import urllib.request
 
@@ -62,6 +61,11 @@ class Script:
 				write = True
 
 				if line.startswith('# scriptlet:'):
+					"""
+					Most common command; load a script content in its entirety and integrate it into the parent script
+					
+					The loaded script is parsed and supports its own includes, imports, and so forth.
+					"""
 					# Check for "# scriptlet:..." replacements
 					in_header = False
 					include = line[12:].strip()
@@ -86,6 +90,12 @@ class Script:
 					line = self._parse_include(self.file, line_number, line)
 				elif re.match(r'^from .* import .*', line) and self.type == 'python':
 					in_header = False
+					self._parse_import(line)
+					write = False
+				elif line.startswith('# import:') and self.type == 'python':
+					in_header = False
+					include = line[9:].strip()
+					line = self._parse_include(self.file, line_number, include)
 					self._parse_import(line)
 					write = False
 				elif line.strip() == '# compile:usage':
@@ -230,6 +240,10 @@ class Script:
 	def _parse_import(self, line: str):
 		"""
 		Parse Python-style 'import' statements to the parent script
+
+		These are generally short import statements like 'import blah' or 'from blah import ...'
+		and get appended to the top of the generated script.
+
 		:param line:
 		:return:
 		"""
@@ -238,6 +252,25 @@ class Script:
 			self.imports.append(line.strip())
 
 	def _parse_script(self, src_file: str, src_line: int, include: str):
+		"""
+		Load the contents of a given script and return its body.
+
+		This is similar to scriptlet but differs in that it does not integrate the script
+		and simply returns the contents of the file, (with variables escaped if requested).
+
+		Example usage:
+		```bash
+		# Install system service file to be loaded by systemd
+		cat > /etc/systemd/system/${GAME_SERVICE}.service <<EOF
+		# script:systemd-template.service
+		EOF
+		```
+
+		:param src_file:
+		:param src_line:
+		:param include:
+		:return:
+		"""
 		file = os.path.join('scripts', include)
 		if not os.path.exists(file):
 			print('ERROR - script %s not found' % include)
