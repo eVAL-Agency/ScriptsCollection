@@ -1,3 +1,5 @@
+# scriptlet:_common/download.sh
+
 ##
 # Install Glorious Eggroll's Proton fork on a requested version
 #
@@ -7,6 +9,11 @@
 # with its pfx directory in /opt/script-collection/GE-Proton${VERSION}/files/share/default_pfx
 #
 # @arg $1 string Proton version to install
+#
+# CHANGELOG:
+#   2025.11.23 - Use download scriptlet for downloading
+#   2024.12.22 - Initial version
+#
 function install_proton() {
 	VERSION="${1:-9-21}"
 
@@ -20,9 +27,11 @@ function install_proton() {
 	[ -d /opt/script-collection ] || mkdir -p /opt/script-collection
 
 	# Grab Proton from Glorious Eggroll
-	if [ ! -e "/opt/script-collection/$PROTON_TGZ" ]; then
-		wget "$PROTON_URL" -O "/opt/script-collection/$PROTON_TGZ"
+	if ! download "$PROTON_URL" "/opt/script-collection/$PROTON_TGZ"; then
+		echo "Failed to download Proton GE version $VERSION from $PROTON_URL" >&2
+		return 1
 	fi
+
 	# Extract GE Proton into /opt
 	if [ ! -e "/opt/script-collection/$PROTON_NAME" ]; then
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$PROTON_TGZ"
