@@ -12,6 +12,11 @@
 # Returns:
 #   1 for yes, 0 for no (or inverted if --invert is set)
 #
+# CHANGELOG:
+#   2025.11.23 - Use is_noninteractive to handle non-interactive mode
+#   2025.11.09 - Add -q (quiet) option to suppress output after prompt (and use return value)
+#   2025.01.01 - Initial version
+#
 function prompt_yn() {
 	local TRUE=0 # Bash convention: 0 is success/true
 	local YES=1

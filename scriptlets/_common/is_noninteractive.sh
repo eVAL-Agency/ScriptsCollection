@@ -5,6 +5,9 @@
 #
 # Returns 0 (true) if non-interactive, 1 (false) if interactive.
 #
+# CHANGELOG:
+#   2025.11.23 - Initial version
+#
 function is_noninteractive() {
 	# explicit flags
 	case "${NONINTERACTIVE:-}${CI:-}" in

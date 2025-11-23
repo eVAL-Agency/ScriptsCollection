@@ -9,6 +9,10 @@
 # Returns:
 #   text as entered by user
 #
+# CHANGELOG:
+#   2025.11.23 - Use is_noninteractive to handle non-interactive mode
+#   2025.01.01 - Initial version
+#
 function prompt_text() {
 	local DEFAULT=""
 	local PROMPT="Enter some text"

@@ -7,6 +7,12 @@
 # upon a successful download to avoid partial files.
 #
 # Returns 0 on success, 1 on failure
+#
+# CHANGELOG:
+#   2025.11.23 - Download to a temp location to verify download was successful
+#              - use which -s for cleaner checks
+#   2025.11.09 - Initial version
+#
 function download() {
 	local SOURCE="$1"
 	local DESTINATION="$2"
@@ -17,7 +23,7 @@ function download() {
 		return 1
 	fi
 
-	if [ -n "$(which curl)" ]; then
+	if which -s curl; then
 		if curl -fsL "$SOURCE" -o "$TMP"; then
 			mv $TMP "$DESTINATION"
 			return 0
@@ -25,7 +31,7 @@ function download() {
 			echo "download: curl failed to download $SOURCE" >&2
 			return 1
 		fi
-	elif [ -n "$(which wget)" ]; then
+	elif which -s wget; then
 		if wget -q "$SOURCE" -O "$TMP"; then
 			mv $TMP "$DESTINATION"
 			return 0

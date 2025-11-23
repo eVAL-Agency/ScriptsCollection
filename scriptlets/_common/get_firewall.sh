@@ -20,9 +20,9 @@ function get_enabled_firewall() {
 # CHANGELOG:
 #   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if which firewall-cmd &>/dev/null; then
+	if which -s firewall-cmd; then
 		echo "firewalld"
-	elif which ufw &>/dev/null; then
+	elif which -s ufw; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"

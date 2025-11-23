@@ -13,6 +13,7 @@
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
 #
 # CHANGELOG:
+#   2025.11.23 - Use return codes instead of exit to allow the caller to handle errors
 #   2025.04.10 - Add "--proto" argument as alternative to "--tcp|--udp"
 #
 function firewall_allow() {
@@ -57,17 +58,17 @@ function firewall_allow() {
 
 	if [ "$PORT" == "" -a "$ZONE" != "trusted" ]; then
 		echo "firewall_allow: No port specified!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$PORT" != "" -a "$ZONE" == "trusted" ]; then
 		echo "firewall_allow: Trusted zones do not use ports!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$ZONE" == "trusted" -a "$SOURCE" == "any" ]; then
 		echo "firewall_allow: Trusted zones require a source!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$FIREWALL" == "ufw" ]; then
@@ -81,6 +82,7 @@ function firewall_allow() {
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
 			ufw allow from $SOURCE proto $PROTO to any port $PORT comment "$COMMENT"
 		fi
+		return 0
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
 			# Firewalld uses Zones to specify sources
@@ -107,6 +109,7 @@ function firewall_allow() {
 		fi
 
 		firewall-cmd --reload
+		return 0
 	elif [ "$FIREWALL" == "iptables" ]; then
 		echo "firewall_allow/iptables: WARNING - iptables is untested"
 		# iptables doesn't natively support multiple ports, so we have to get creative
@@ -126,12 +129,13 @@ function firewall_allow() {
 			iptables -A INPUT -p $PROTO $DPORTS -s $SOURCE -j ACCEPT
 		fi
 		iptables-save > /etc/iptables/rules.v4
+		return 0
 	elif [ "$FIREWALL" == "none" ]; then
 		echo "firewall_allow: No firewall detected" >&2
-		exit 1
+		return 1
 	else
 		echo "firewall_allow: Unsupported or unknown firewall" >&2
 		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
-		exit 1
+		return 1
 	fi
 }
