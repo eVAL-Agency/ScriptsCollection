@@ -1,3 +1,5 @@
+# scriptlet:_common/is_noninteractive.sh
+
 ##
 # Prompt user for a text response
 #
@@ -22,6 +24,13 @@ function prompt_text() {
 
 	echo "$PROMPT" >&2
 	echo -n '> : ' >&2
+
+	if is_noninteractive; then
+		# In non-interactive mode, return the default value
+		echo $DEFAULT
+		return
+	fi
+
 	read RESPONSE
 	if [ "$RESPONSE" == "" ]; then
 		echo "$DEFAULT"

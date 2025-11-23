@@ -1,3 +1,5 @@
+# scriptlet:_common/is_noninteractive.sh
+
 ##
 # Prompt user for a yes or no response
 #
@@ -42,6 +44,15 @@ function prompt_yn() {
 		DEFAULT_CODE=$FALSE
 		echo -n "> (y/N): " >&2
 	fi
+
+	if is_noninteractive; then
+		# In non-interactive mode, return the default value
+		if [ $QUIET -eq 0 ]; then
+			echo $DEFAULT
+		fi
+		return $DEFAULT_CODE
+	fi
+
 	read RESPONSE
 	case "$RESPONSE" in
 		[yY]*)
@@ -61,4 +72,3 @@ function prompt_yn() {
 			return $DEFAULT_CODE;;
 	esac
 }
-
