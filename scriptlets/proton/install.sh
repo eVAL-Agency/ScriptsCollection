@@ -27,9 +27,11 @@ function install_proton() {
 	[ -d /opt/script-collection ] || mkdir -p /opt/script-collection
 
 	# Grab Proton from Glorious Eggroll
-	if ! download "$PROTON_URL" "/opt/script-collection/$PROTON_TGZ"; then
-		echo "Failed to download Proton GE version $VERSION from $PROTON_URL" >&2
-		return 1
+	if [ ! -e "/opt/script-collection/$PROTON_TGZ" ]; then
+		if ! download "$PROTON_URL" "/opt/script-collection/$PROTON_TGZ"; then
+			echo "install_proton: Cannot download Proton from ${PROTON_URL}!" >&2
+			return 1
+		fi
 	fi
 
 	# Extract GE Proton into /opt
