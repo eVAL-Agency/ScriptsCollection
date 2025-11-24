@@ -249,11 +249,6 @@ class Script:
 		# Ensure new file is executable
 		os.chmod(dest_file, 0o775)
 
-		# Store the TRMM metafile
-		#script_name = os.path.basename(self.file)[:-3]
-		#with open(os.path.join(os.path.dirname(dest_file), script_name + '.json'), 'w') as dest_f:
-		#	dest_f.write(json.dumps([self.as_trmm_meta()], indent=4))
-
 	def _parse_import(self, line: str):
 		"""
 		Parse Python-style 'import' statements to the parent script
@@ -338,6 +333,9 @@ class Script:
 				script.imports = self.imports
 				# Parse the source
 				script.parse()
+				# Scripts must end with an empty newline.
+				if not script.content_body.endswith('\n'):
+					script.content_body += '\n'
 				return script.content_header + script.content_body
 			else:
 				print('ERROR - script %s not found' % include)
@@ -596,11 +594,11 @@ class Script:
 				# --version=*) VERSION="${1#*=}"; shift 1;;
 				code.append('\t\t%s=*)\n\t\t\t%s="${1#*=}";' % (arg['name'], arg['var']))
 				code.append(
-					'\t\t\tif [ "${%s:0:1}" == "\'" -a "${%s:0-1}" == "\'" ]; then %s="${%s:1:-1}"; fi;' %
+					'\t\t\t[ "${%s:0:1}" == "\'" ] && [ "${%s:0-1}" == "\'" ] && %s="${%s:1:-1}"' %
 					(arg['var'], arg['var'], arg['var'], arg['var'])
 				)
 				code.append(
-					'\t\t\tif [ "${%s:0:1}" == \'"\' -a "${%s:0-1}" == \'"\' ]; then %s="${%s:1:-1}"; fi;' %
+					'\t\t\t[ "${%s:0:1}" == \'"\' ] && [ "${%s:0-1}" == \'"\' ] && %s="${%s:1:-1}"' %
 					(arg['var'], arg['var'], arg['var'], arg['var'])
 				)
 				code.append('\t\t\tshift 1;;')
