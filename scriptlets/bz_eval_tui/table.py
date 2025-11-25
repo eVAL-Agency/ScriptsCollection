@@ -70,6 +70,9 @@ class Table:
 		else:
 			col_lengths = [0] * len(self.data[0])
 
+		if self.borders and self.header is not None:
+			rows.append(['-BORDER-'] * len(self.header))
+
 		for row_data in self.data:
 			row = []
 			for i in range(len(row_data)):
@@ -80,6 +83,10 @@ class Table:
 
 		for row in rows:
 			vals = []
+			is_border = False
+			if self.borders and self.header and row[0] == '-BORDER-':
+				is_border = True
+
 			for i in range(len(row)):
 				if i < len(self.align):
 					align = self.align[i] if self.align[i] != '' else 'l'
@@ -88,16 +95,27 @@ class Table:
 
 				# Adjust the width of the total column width by the difference of icons within the text
 				# This is required because icons are 2-characters in visual width.
-				width = col_lengths[i] - (self._text_width(row[i]) - len(row[i]))
-
-				if align == 'r':
-					vals.append(row[i].rjust(width))
-				elif align == 'c':
-					vals.append(row[i].center(width))
+				if is_border:
+					width = col_lengths[i]
+					if align == 'r':
+						vals.append(' %s:' % ('-' * width,))
+					elif align == 'c':
+						vals.append(':%s:' % ('-' * width,))
+					else:
+						vals.append(' %s ' % ('-' * width,))
 				else:
-					vals.append(row[i].ljust(width))
+					width = col_lengths[i] - (self._text_width(row[i]) - len(row[i]))
+					if align == 'r':
+						vals.append(row[i].rjust(width))
+					elif align == 'c':
+						vals.append(row[i].center(width))
+					else:
+						vals.append(row[i].ljust(width))
 
 			if self.borders:
-				print('| %s |' % ' | '.join(vals))
+				if is_border:
+					print('|%s|' % '|'.join(vals))
+				else:
+					print('| %s |' % ' | '.join(vals))
 			else:
 				print('  %s' % '  '.join(vals))
