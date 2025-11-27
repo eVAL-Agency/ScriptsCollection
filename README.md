@@ -392,3 +392,18 @@ Will generate a "usage()" function with the description and syntax arguments.
 ```bash
 # compile:usage
 ```
+
+
+## Scriptlets
+
+Scriptlets are small pieces of reusable code that can be included in scripts during compilation.
+This system provides a number of scripts, and more can be added by adding a `compile.sources` file in the root of the project
+with the format:
+
+```
+scriptlet_type=github:repo_owner/repo_name
+```
+
+Where `scriptlet_type` is the directory that contains the scriptlets to include.
+
+By default `main` is used to download sources, but a different branch can be specified by appending `:branch_name`.
