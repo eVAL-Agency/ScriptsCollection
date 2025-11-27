@@ -32,7 +32,7 @@ def parse_scriptlet_url(include_path: str):
 	if source_data[0] == 'github':
 		repo = source_data[1]
 		branch = 'main' if len(source_data) == 2 else source_data[2]
-		url = 'https://raw.githubusercontent.com/%s/refs/head/%s/scriptlets/%s' % (repo, branch, include_path)
+		url = 'https://raw.githubusercontent.com/%s/refs/heads/%s/scriptlets/%s' % (repo, branch, include_path)
 		return url
 	else:
 		print('Unknown source type: %s' % source_data[0])
