@@ -33,6 +33,27 @@ while [ "$#" -gt 0 ]; do
 done
 
 ##
+# Simple wrapper to emulate `which -s`
+#
+# The -s flag is not available on all systems, so this function
+# provides a consistent way to check for command existence
+# without having to include '&>/dev/null' everywhere.
+#
+# Returns 0 on success, 1 on failure
+#
+# Arguments:
+#   $1 - Command to check
+#
+# CHANGELOG:
+#   2025.12.15 - Initial version (for a regression fix)
+#
+function cmd_exists() {
+	local CMD="$1"
+	which "$CMD" &>/dev/null
+	return $?
+}
+
+##
 # Get which firewall is enabled,
 # or "none" if none located
 function get_enabled_firewall() {
@@ -52,11 +73,12 @@ function get_enabled_firewall() {
 # or "none" if none located
 #
 # CHANGELOG:
+#   2025.12.15 - Use cmd_exists to fix regression bug
 #   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if which firewall-cmd &>/dev/null; then
+	if cmd_exists firewall-cmd; then
 		echo "firewalld"
-	elif which ufw &>/dev/null; then
+	elif cmd_exists ufw; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"

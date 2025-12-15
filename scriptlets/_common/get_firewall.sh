@@ -1,3 +1,5 @@
+# scriptlet:_common/cmd_exists.sh
+
 ##
 # Get which firewall is enabled,
 # or "none" if none located
@@ -18,11 +20,12 @@ function get_enabled_firewall() {
 # or "none" if none located
 #
 # CHANGELOG:
+#   2025.12.15 - Use cmd_exists to fix regression bug
 #   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if which -s firewall-cmd; then
+	if cmd_exists firewall-cmd; then
 		echo "firewalld"
-	elif which -s ufw; then
+	elif cmd_exists ufw; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"

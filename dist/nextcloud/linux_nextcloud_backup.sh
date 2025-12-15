@@ -78,61 +78,61 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--base=*)
 			NEXTCLOUD_DIR="${1#*=}";
-			if [ "${NEXTCLOUD_DIR:0:1}" == "'" -a "${NEXTCLOUD_DIR:0-1}" == "'" ]; then NEXTCLOUD_DIR="${NEXTCLOUD_DIR:1:-1}"; fi;
-			if [ "${NEXTCLOUD_DIR:0:1}" == '"' -a "${NEXTCLOUD_DIR:0-1}" == '"' ]; then NEXTCLOUD_DIR="${NEXTCLOUD_DIR:1:-1}"; fi;
+			[ "${NEXTCLOUD_DIR:0:1}" == "'" ] && [ "${NEXTCLOUD_DIR:0-1}" == "'" ] && NEXTCLOUD_DIR="${NEXTCLOUD_DIR:1:-1}"
+			[ "${NEXTCLOUD_DIR:0:1}" == '"' ] && [ "${NEXTCLOUD_DIR:0-1}" == '"' ] && NEXTCLOUD_DIR="${NEXTCLOUD_DIR:1:-1}"
 			shift 1;;
 		--exclude-db) EXCLUDE_DB=1; shift 1;;
 		--exclude-files) EXCLUDE_FILES=1; shift 1;;
 		--exclude-config) EXCLUDE_CONFIG=1; shift 1;;
 		--www-user=*)
 			WWW_USER="${1#*=}";
-			if [ "${WWW_USER:0:1}" == "'" -a "${WWW_USER:0-1}" == "'" ]; then WWW_USER="${WWW_USER:1:-1}"; fi;
-			if [ "${WWW_USER:0:1}" == '"' -a "${WWW_USER:0-1}" == '"' ]; then WWW_USER="${WWW_USER:1:-1}"; fi;
+			[ "${WWW_USER:0:1}" == "'" ] && [ "${WWW_USER:0-1}" == "'" ] && WWW_USER="${WWW_USER:1:-1}"
+			[ "${WWW_USER:0:1}" == '"' ] && [ "${WWW_USER:0-1}" == '"' ] && WWW_USER="${WWW_USER:1:-1}"
 			shift 1;;
 		--db-name=*)
 			DB_NAME="${1#*=}";
-			if [ "${DB_NAME:0:1}" == "'" -a "${DB_NAME:0-1}" == "'" ]; then DB_NAME="${DB_NAME:1:-1}"; fi;
-			if [ "${DB_NAME:0:1}" == '"' -a "${DB_NAME:0-1}" == '"' ]; then DB_NAME="${DB_NAME:1:-1}"; fi;
+			[ "${DB_NAME:0:1}" == "'" ] && [ "${DB_NAME:0-1}" == "'" ] && DB_NAME="${DB_NAME:1:-1}"
+			[ "${DB_NAME:0:1}" == '"' ] && [ "${DB_NAME:0-1}" == '"' ] && DB_NAME="${DB_NAME:1:-1}"
 			shift 1;;
 		--db-user=*)
 			DB_USER="${1#*=}";
-			if [ "${DB_USER:0:1}" == "'" -a "${DB_USER:0-1}" == "'" ]; then DB_USER="${DB_USER:1:-1}"; fi;
-			if [ "${DB_USER:0:1}" == '"' -a "${DB_USER:0-1}" == '"' ]; then DB_USER="${DB_USER:1:-1}"; fi;
+			[ "${DB_USER:0:1}" == "'" ] && [ "${DB_USER:0-1}" == "'" ] && DB_USER="${DB_USER:1:-1}"
+			[ "${DB_USER:0:1}" == '"' ] && [ "${DB_USER:0-1}" == '"' ] && DB_USER="${DB_USER:1:-1}"
 			shift 1;;
 		--db-pass=*)
 			DB_PASS="${1#*=}";
-			if [ "${DB_PASS:0:1}" == "'" -a "${DB_PASS:0-1}" == "'" ]; then DB_PASS="${DB_PASS:1:-1}"; fi;
-			if [ "${DB_PASS:0:1}" == '"' -a "${DB_PASS:0-1}" == '"' ]; then DB_PASS="${DB_PASS:1:-1}"; fi;
+			[ "${DB_PASS:0:1}" == "'" ] && [ "${DB_PASS:0-1}" == "'" ] && DB_PASS="${DB_PASS:1:-1}"
+			[ "${DB_PASS:0:1}" == '"' ] && [ "${DB_PASS:0-1}" == '"' ] && DB_PASS="${DB_PASS:1:-1}"
 			shift 1;;
 		--db-prefix=*)
 			DB_PREFIX="${1#*=}";
-			if [ "${DB_PREFIX:0:1}" == "'" -a "${DB_PREFIX:0-1}" == "'" ]; then DB_PREFIX="${DB_PREFIX:1:-1}"; fi;
-			if [ "${DB_PREFIX:0:1}" == '"' -a "${DB_PREFIX:0-1}" == '"' ]; then DB_PREFIX="${DB_PREFIX:1:-1}"; fi;
+			[ "${DB_PREFIX:0:1}" == "'" ] && [ "${DB_PREFIX:0-1}" == "'" ] && DB_PREFIX="${DB_PREFIX:1:-1}"
+			[ "${DB_PREFIX:0:1}" == '"' ] && [ "${DB_PREFIX:0-1}" == '"' ] && DB_PREFIX="${DB_PREFIX:1:-1}"
 			shift 1;;
 		--dest=*)
 			DEST="${1#*=}";
-			if [ "${DEST:0:1}" == "'" -a "${DEST:0-1}" == "'" ]; then DEST="${DEST:1:-1}"; fi;
-			if [ "${DEST:0:1}" == '"' -a "${DEST:0-1}" == '"' ]; then DEST="${DEST:1:-1}"; fi;
+			[ "${DEST:0:1}" == "'" ] && [ "${DEST:0-1}" == "'" ] && DEST="${DEST:1:-1}"
+			[ "${DEST:0:1}" == '"' ] && [ "${DEST:0-1}" == '"' ] && DEST="${DEST:1:-1}"
 			shift 1;;
 		--sftp-host=*)
 			SFTP_HOST="${1#*=}";
-			if [ "${SFTP_HOST:0:1}" == "'" -a "${SFTP_HOST:0-1}" == "'" ]; then SFTP_HOST="${SFTP_HOST:1:-1}"; fi;
-			if [ "${SFTP_HOST:0:1}" == '"' -a "${SFTP_HOST:0-1}" == '"' ]; then SFTP_HOST="${SFTP_HOST:1:-1}"; fi;
+			[ "${SFTP_HOST:0:1}" == "'" ] && [ "${SFTP_HOST:0-1}" == "'" ] && SFTP_HOST="${SFTP_HOST:1:-1}"
+			[ "${SFTP_HOST:0:1}" == '"' ] && [ "${SFTP_HOST:0-1}" == '"' ] && SFTP_HOST="${SFTP_HOST:1:-1}"
 			shift 1;;
 		--sftp-user=*)
 			SFTP_USER="${1#*=}";
-			if [ "${SFTP_USER:0:1}" == "'" -a "${SFTP_USER:0-1}" == "'" ]; then SFTP_USER="${SFTP_USER:1:-1}"; fi;
-			if [ "${SFTP_USER:0:1}" == '"' -a "${SFTP_USER:0-1}" == '"' ]; then SFTP_USER="${SFTP_USER:1:-1}"; fi;
+			[ "${SFTP_USER:0:1}" == "'" ] && [ "${SFTP_USER:0-1}" == "'" ] && SFTP_USER="${SFTP_USER:1:-1}"
+			[ "${SFTP_USER:0:1}" == '"' ] && [ "${SFTP_USER:0-1}" == '"' ] && SFTP_USER="${SFTP_USER:1:-1}"
 			shift 1;;
 		--sftp-port=*)
 			SFTP_PORT="${1#*=}";
-			if [ "${SFTP_PORT:0:1}" == "'" -a "${SFTP_PORT:0-1}" == "'" ]; then SFTP_PORT="${SFTP_PORT:1:-1}"; fi;
-			if [ "${SFTP_PORT:0:1}" == '"' -a "${SFTP_PORT:0-1}" == '"' ]; then SFTP_PORT="${SFTP_PORT:1:-1}"; fi;
+			[ "${SFTP_PORT:0:1}" == "'" ] && [ "${SFTP_PORT:0-1}" == "'" ] && SFTP_PORT="${SFTP_PORT:1:-1}"
+			[ "${SFTP_PORT:0:1}" == '"' ] && [ "${SFTP_PORT:0-1}" == '"' ] && SFTP_PORT="${SFTP_PORT:1:-1}"
 			shift 1;;
 		--sftp-dir=*)
 			SFTP_DIR="${1#*=}";
-			if [ "${SFTP_DIR:0:1}" == "'" -a "${SFTP_DIR:0-1}" == "'" ]; then SFTP_DIR="${SFTP_DIR:1:-1}"; fi;
-			if [ "${SFTP_DIR:0:1}" == '"' -a "${SFTP_DIR:0-1}" == '"' ]; then SFTP_DIR="${SFTP_DIR:1:-1}"; fi;
+			[ "${SFTP_DIR:0:1}" == "'" ] && [ "${SFTP_DIR:0-1}" == "'" ] && SFTP_DIR="${SFTP_DIR:1:-1}"
+			[ "${SFTP_DIR:0:1}" == '"' ] && [ "${SFTP_DIR:0-1}" == '"' ] && SFTP_DIR="${SFTP_DIR:1:-1}"
 			shift 1;;
 		-h|--help) usage;;
 	esac

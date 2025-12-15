@@ -483,6 +483,10 @@ function prompt_text() {
 ##
 # Print a header message
 #
+# CHANGELOG:
+#   2025.11.09 - Port from _common to bz_eval_tui
+#   2024.12.25 - Initial version
+#
 function print_header() {
 	local header="$1"
 	echo "================================================================================"
@@ -494,6 +498,7 @@ function print_header() {
 function random_password() {
 	< /dev/urandom tr -dc _cdefhjkmnprtvwxyACDEFGHJKLMNPQRTUVWXY2345689 | head -c${1:-24};echo;
 }
+
 # Variable setup
 ZABBIX_AGENT_CONFIGURATION="/etc/zabbix/zabbix_proxy.conf"
 
@@ -525,18 +530,18 @@ while [ "$#" -gt 0 ]; do
 		--noninteractive) NONINTERACTIVE=1; shift 1;;
 		--version=*)
 			VERSION="${1#*=}";
-			if [ "${VERSION:0:1}" == "'" -a "${VERSION:0-1}" == "'" ]; then VERSION="${VERSION:1:-1}"; fi;
-			if [ "${VERSION:0:1}" == '"' -a "${VERSION:0-1}" == '"' ]; then VERSION="${VERSION:1:-1}"; fi;
+			[ "${VERSION:0:1}" == "'" ] && [ "${VERSION:0-1}" == "'" ] && VERSION="${VERSION:1:-1}"
+			[ "${VERSION:0:1}" == '"' ] && [ "${VERSION:0-1}" == '"' ] && VERSION="${VERSION:1:-1}"
 			shift 1;;
 		--server=*)
 			ZABBIX_SERVER="${1#*=}";
-			if [ "${ZABBIX_SERVER:0:1}" == "'" -a "${ZABBIX_SERVER:0-1}" == "'" ]; then ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"; fi;
-			if [ "${ZABBIX_SERVER:0:1}" == '"' -a "${ZABBIX_SERVER:0-1}" == '"' ]; then ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"; fi;
+			[ "${ZABBIX_SERVER:0:1}" == "'" ] && [ "${ZABBIX_SERVER:0-1}" == "'" ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
+			[ "${ZABBIX_SERVER:0:1}" == '"' ] && [ "${ZABBIX_SERVER:0-1}" == '"' ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
 			shift 1;;
 		--hostname=*)
 			ZABBIX_AGENT_HOSTNAME="${1#*=}";
-			if [ "${ZABBIX_AGENT_HOSTNAME:0:1}" == "'" -a "${ZABBIX_AGENT_HOSTNAME:0-1}" == "'" ]; then ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"; fi;
-			if [ "${ZABBIX_AGENT_HOSTNAME:0:1}" == '"' -a "${ZABBIX_AGENT_HOSTNAME:0-1}" == '"' ]; then ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"; fi;
+			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == "'" ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == "'" ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
+			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == '"' ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == '"' ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
 			shift 1;;
 		-h|--help) usage;;
 	esac

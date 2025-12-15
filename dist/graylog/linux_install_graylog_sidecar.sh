@@ -58,8 +58,8 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--server=*)
 			SERVER="${1#*=}";
-			if [ "${SERVER:0:1}" == "'" -a "${SERVER:0-1}" == "'" ]; then SERVER="${SERVER:1:-1}"; fi;
-			if [ "${SERVER:0:1}" == '"' -a "${SERVER:0-1}" == '"' ]; then SERVER="${SERVER:1:-1}"; fi;
+			[ "${SERVER:0:1}" == "'" ] && [ "${SERVER:0-1}" == "'" ] && SERVER="${SERVER:1:-1}"
+			[ "${SERVER:0:1}" == '"' ] && [ "${SERVER:0-1}" == '"' ] && SERVER="${SERVER:1:-1}"
 			shift 1;;
 		-h|--help) usage;;
 	esac

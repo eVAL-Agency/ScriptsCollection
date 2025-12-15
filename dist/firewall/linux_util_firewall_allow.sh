@@ -20,6 +20,27 @@
 #   2025.04.10 - Initial version
 
 ##
+# Simple wrapper to emulate `which -s`
+#
+# The -s flag is not available on all systems, so this function
+# provides a consistent way to check for command existence
+# without having to include '&>/dev/null' everywhere.
+#
+# Returns 0 on success, 1 on failure
+#
+# Arguments:
+#   $1 - Command to check
+#
+# CHANGELOG:
+#   2025.12.15 - Initial version (for a regression fix)
+#
+function cmd_exists() {
+	local CMD="$1"
+	which "$CMD" &>/dev/null
+	return $?
+}
+
+##
 # Get which firewall is enabled,
 # or "none" if none located
 function get_enabled_firewall() {
@@ -39,11 +60,12 @@ function get_enabled_firewall() {
 # or "none" if none located
 #
 # CHANGELOG:
+#   2025.12.15 - Use cmd_exists to fix regression bug
 #   2025.04.10 - Switch from "systemctl list-unit-files" to "which" to support older systems
 function get_available_firewall() {
-	if which firewall-cmd &>/dev/null; then
+	if cmd_exists firewall-cmd; then
 		echo "firewalld"
-	elif which ufw &>/dev/null; then
+	elif cmd_exists ufw; then
 		echo "ufw"
 	elif systemctl list-unit-files iptables.service &>/dev/null; then
 		echo "iptables"
@@ -65,6 +87,7 @@ function get_available_firewall() {
 # Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
 #
 # CHANGELOG:
+#   2025.11.23 - Use return codes instead of exit to allow the caller to handle errors
 #   2025.04.10 - Add "--proto" argument as alternative to "--tcp|--udp"
 #
 function firewall_allow() {
@@ -109,17 +132,17 @@ function firewall_allow() {
 
 	if [ "$PORT" == "" -a "$ZONE" != "trusted" ]; then
 		echo "firewall_allow: No port specified!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$PORT" != "" -a "$ZONE" == "trusted" ]; then
 		echo "firewall_allow: Trusted zones do not use ports!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$ZONE" == "trusted" -a "$SOURCE" == "any" ]; then
 		echo "firewall_allow: Trusted zones require a source!" >&2
-		exit 1
+		return 2
 	fi
 
 	if [ "$FIREWALL" == "ufw" ]; then
@@ -133,6 +156,7 @@ function firewall_allow() {
 			echo "firewall_allow/UFW: Allowing $PORT/$PROTO from $SOURCE..."
 			ufw allow from $SOURCE proto $PROTO to any port $PORT comment "$COMMENT"
 		fi
+		return 0
 	elif [ "$FIREWALL" == "firewalld" ]; then
 		if [ "$SOURCE" != "any" ]; then
 			# Firewalld uses Zones to specify sources
@@ -159,6 +183,7 @@ function firewall_allow() {
 		fi
 
 		firewall-cmd --reload
+		return 0
 	elif [ "$FIREWALL" == "iptables" ]; then
 		echo "firewall_allow/iptables: WARNING - iptables is untested"
 		# iptables doesn't natively support multiple ports, so we have to get creative
@@ -178,13 +203,14 @@ function firewall_allow() {
 			iptables -A INPUT -p $PROTO $DPORTS -s $SOURCE -j ACCEPT
 		fi
 		iptables-save > /etc/iptables/rules.v4
+		return 0
 	elif [ "$FIREWALL" == "none" ]; then
 		echo "firewall_allow: No firewall detected" >&2
-		exit 1
+		return 1
 	else
 		echo "firewall_allow: Unsupported or unknown firewall" >&2
 		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
-		exit 1
+		return 1
 	fi
 }
 function usage() {
@@ -211,23 +237,23 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--ip=*)
 			SOURCE="${1#*=}";
-			if [ "${SOURCE:0:1}" == "'" -a "${SOURCE:0-1}" == "'" ]; then SOURCE="${SOURCE:1:-1}"; fi;
-			if [ "${SOURCE:0:1}" == '"' -a "${SOURCE:0-1}" == '"' ]; then SOURCE="${SOURCE:1:-1}"; fi;
+			[ "${SOURCE:0:1}" == "'" ] && [ "${SOURCE:0-1}" == "'" ] && SOURCE="${SOURCE:1:-1}"
+			[ "${SOURCE:0:1}" == '"' ] && [ "${SOURCE:0-1}" == '"' ] && SOURCE="${SOURCE:1:-1}"
 			shift 1;;
 		--port=*)
 			PORT="${1#*=}";
-			if [ "${PORT:0:1}" == "'" -a "${PORT:0-1}" == "'" ]; then PORT="${PORT:1:-1}"; fi;
-			if [ "${PORT:0:1}" == '"' -a "${PORT:0-1}" == '"' ]; then PORT="${PORT:1:-1}"; fi;
+			[ "${PORT:0:1}" == "'" ] && [ "${PORT:0-1}" == "'" ] && PORT="${PORT:1:-1}"
+			[ "${PORT:0:1}" == '"' ] && [ "${PORT:0-1}" == '"' ] && PORT="${PORT:1:-1}"
 			shift 1;;
 		--proto=*)
 			PROTO="${1#*=}";
-			if [ "${PROTO:0:1}" == "'" -a "${PROTO:0-1}" == "'" ]; then PROTO="${PROTO:1:-1}"; fi;
-			if [ "${PROTO:0:1}" == '"' -a "${PROTO:0-1}" == '"' ]; then PROTO="${PROTO:1:-1}"; fi;
+			[ "${PROTO:0:1}" == "'" ] && [ "${PROTO:0-1}" == "'" ] && PROTO="${PROTO:1:-1}"
+			[ "${PROTO:0:1}" == '"' ] && [ "${PROTO:0-1}" == '"' ] && PROTO="${PROTO:1:-1}"
 			shift 1;;
 		--comment=*)
 			COMMENT="${1#*=}";
-			if [ "${COMMENT:0:1}" == "'" -a "${COMMENT:0-1}" == "'" ]; then COMMENT="${COMMENT:1:-1}"; fi;
-			if [ "${COMMENT:0:1}" == '"' -a "${COMMENT:0-1}" == '"' ]; then COMMENT="${COMMENT:1:-1}"; fi;
+			[ "${COMMENT:0:1}" == "'" ] && [ "${COMMENT:0-1}" == "'" ] && COMMENT="${COMMENT:1:-1}"
+			[ "${COMMENT:0:1}" == '"' ] && [ "${COMMENT:0-1}" == '"' ] && COMMENT="${COMMENT:1:-1}"
 			shift 1;;
 		-h|--help) usage;;
 	esac

@@ -26,8 +26,8 @@ while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--threshold=*)
 			THRESHOLD="${1#*=}";
-			if [ "${THRESHOLD:0:1}" == "'" -a "${THRESHOLD:0-1}" == "'" ]; then THRESHOLD="${THRESHOLD:1:-1}"; fi;
-			if [ "${THRESHOLD:0:1}" == '"' -a "${THRESHOLD:0-1}" == '"' ]; then THRESHOLD="${THRESHOLD:1:-1}"; fi;
+			[ "${THRESHOLD:0:1}" == "'" ] && [ "${THRESHOLD:0-1}" == "'" ] && THRESHOLD="${THRESHOLD:1:-1}"
+			[ "${THRESHOLD:0:1}" == '"' ] && [ "${THRESHOLD:0-1}" == '"' ] && THRESHOLD="${THRESHOLD:1:-1}"
 			shift 1;;
 	esac
 done
