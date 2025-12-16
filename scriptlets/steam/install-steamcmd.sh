@@ -4,6 +4,15 @@
 
 ##
 # Install SteamCMD
+#
+# CHANGELOG:
+#
+#   2025.12.16 - Ensure steam GPG key is readable by apt
+#   2025.11.09 - Switch to using download to support curl/wget abstraction
+#   2025.11.03 - Add support for Debian 13
+#   2024.12.23 - Add support for non-interactive acceptance of Steam license
+#   2024.12.22 - Initial version
+#
 function install_steamcmd() {
 	echo "Installing SteamCMD..."
 
@@ -56,6 +65,7 @@ function install_steamcmd() {
 
 		# Install steam repo
 		download http://repo.steampowered.com/steam/archive/stable/steam.gpg /usr/share/keyrings/steam.gpg
+		chmod +r /usr/share/keyrings/steam.gpg
 		echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] http://repo.steampowered.com/steam/ stable steam" > /etc/apt/sources.list.d/steam.list
 
 		# By using this script, you agree to the Steam license agreement at https://store.steampowered.com/subscriber_agreement/
