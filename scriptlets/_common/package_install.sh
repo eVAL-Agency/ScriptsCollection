@@ -1,4 +1,5 @@
 # scriptlet: _common/os_like.sh
+# scriptlet: _common/os_version.sh
 
 ##
 # Install a package with the system's package manager.
@@ -16,30 +17,29 @@
 #
 #
 # CHANGELOG:
+#   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
 #   2025.04.10 - Set Debian frontend to noninteractive
 #
 function package_install (){
 	echo "package_install: Installing $*..."
 
-	TYPE_BSD="$(os_like_bsd)"
-	TYPE_DEBIAN="$(os_like_debian)"
-	TYPE_RHEL="$(os_like_rhel)"
-	TYPE_ARCH="$(os_like_arch)"
-	TYPE_SUSE="$(os_like_suse)"
-
-	if [ "$TYPE_BSD" == 1 ]; then
+	if os_like_bsd -q; then
 		pkg install -y $*
-	elif [ "$TYPE_DEBIAN" == 1 ]; then
+	elif os_like_debian -q; then
 		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
-	elif [ "$TYPE_RHEL" == 1 ]; then
-		yum install -y $*
-	elif [ "$TYPE_ARCH" == 1 ]; then
+	elif os_like_rhel -q; then
+		if [ "$(os_version)" -ge 9 ]; then
+			dnf install -y $*
+		else
+			yum install -y $*
+		fi
+	elif os_like_arch -q; then
 		pacman -Syu --noconfirm $*
-	elif [ "$TYPE_SUSE" == 1 ]; then
+	elif os_like_suse -q; then
 		zypper install -y $*
 	else
 		echo 'package_install: Unsupported or unknown OS' >&2
-		echo 'Please report this at https://github.com/cdp1337/ScriptsCollection/issues' >&2
+		echo 'Please report this at https://github.com/eVAL-Agency/ScriptsCollection/issues' >&2
 		exit 1
 	fi
 }

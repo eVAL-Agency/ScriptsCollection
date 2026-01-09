@@ -258,54 +258,6 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "34329a67-0b76-bb70-5458-654db9ef67ec",
-        "filename": "game-arksurvivalascended/linux_install_game_arksurvivalascended.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install ARK Survival Ascended Dedicated Server",
-        "syntax": [],
-        "default_timeout": "600",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Game Server"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "b4ac1b0d-8171-6a7b-ba3f-7f1800426340",
-        "filename": "game-palworld/linux_install_game_palworld.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Drew Wort <drew@worttechnologies.tech>",
-        "name": "Install Palworld",
-        "syntax": [],
-        "default_timeout": "600",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Game Server"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "9f3cd88c-29f6-efee-524c-41a56c268866",
-        "filename": "game-projectzomboid/linux_install_game_zomboid.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Install Project Zomboid",
-        "syntax": [],
-        "default_timeout": "600",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Game Server"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
         "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],
@@ -519,6 +471,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "363c4616-e0f8-9c3f-db29-7b6695bb8db9",
+        "filename": "virtualmin/renew-all-letsencrypt-certs.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Virtualmin Renew All SSL [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "f87f6937-29e7-920f-e2d1-0ea2870b8b6a",
         "filename": "windows/windows_debloat_win10.ps1",
         "args": [],
@@ -532,6 +500,54 @@
             "windows"
         ],
         "category": "System Cleanup"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "5a1ea78b-51bd-c047-ca12-6290641f9c77",
+        "filename": "7zip/linux_install_7zip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install 7zip [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "System"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "c070a359-f88d-5967-af7f-a6f87dea9086",
+        "filename": "rar/linux_install_unrar.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install unrar [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "System"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "b0a0dc19-dbf8-96ad-db89-bb8743d4b46a",
+        "filename": "zip/linux_install_unzip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install unzip [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "System"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
