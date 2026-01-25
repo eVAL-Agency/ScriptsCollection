@@ -421,6 +421,7 @@ function os_version() {
 #
 #
 # CHANGELOG:
+#   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
 #   2025.04.10 - Set Debian frontend to noninteractive
 #
 function package_install (){
