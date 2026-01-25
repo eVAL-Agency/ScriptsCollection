@@ -33,8 +33,10 @@ A collection of useful scripts for various Linux distributions
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Virtualmin Renew All SSL [Linux]](dist/virtualmin/renew-all-letsencrypt-certs.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [System Cleanup / Remove Bloatware in Win10 [Windows]](dist/windows/windows_debloat_win10.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install 7zip [Linux]](dist/7zip/linux_install_7zip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install rar [Linux]](dist/rar/linux_install_rar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install unrar [Linux]](dist/rar/linux_install_unrar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install unzip [Linux]](dist/zip/linux_install_unzip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install zip [Linux]](dist/zip/linux_install_zip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Updates / Check if Reboot Required [Linux]](dist/updates/linux_check_reboot_required.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Updates / Check if Reboot Required [Windows]](dist/updates/windows_check_reboot_required.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Authorize SSH Key [Linux]](dist/ssh/linux_util_ssh_authorize.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |

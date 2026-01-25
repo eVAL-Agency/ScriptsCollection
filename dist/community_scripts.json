@@ -519,6 +519,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "68c6bf13-ea43-c50b-d0fc-9804566e6cbc",
+        "filename": "rar/linux_install_rar.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install rar [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "System"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c070a359-f88d-5967-af7f-a6f87dea9086",
         "filename": "rar/linux_install_unrar.sh",
         "args": [],
@@ -541,6 +557,22 @@
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install unzip [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "System"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "e886d401-13e0-fbf2-707b-d5ac08114b74",
+        "filename": "zip/linux_install_zip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install zip [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
