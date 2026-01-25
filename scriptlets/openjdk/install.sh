@@ -36,7 +36,8 @@ function install_openjdk() {
 	  | grep jre_x64_linux \
 	  | grep 'tar\.gz"' \
 	  | cut -d : -f 2,3 \
-	  | tr -d \")"
+	  | tr -d \"\
+	  | sed 's:\s*::')"
 
 	local JDK_TGZ="$(basename "$DOWNLOAD_URL")"
 
@@ -53,3 +54,4 @@ function install_openjdk() {
 
 	echo "/opt/script-collection/$JDK_TGZ"
 }
+
