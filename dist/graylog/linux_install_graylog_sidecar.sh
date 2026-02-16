@@ -56,8 +56,8 @@ EOD
 SERVER=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
-		--server=*)
-			SERVER="${1#*=}";
+		--server=*|--server)
+			[ "$1" == "--server" ] && shift 1 && SERVER="$1" || SERVER="${1#*=}"
 			[ "${SERVER:0:1}" == "'" ] && [ "${SERVER:0-1}" == "'" ] && SERVER="${SERVER:1:-1}"
 			[ "${SERVER:0:1}" == '"' ] && [ "${SERVER:0-1}" == '"' ] && SERVER="${SERVER:1:-1}"
 			;;

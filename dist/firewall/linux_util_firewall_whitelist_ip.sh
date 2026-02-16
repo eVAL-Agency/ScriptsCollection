@@ -229,13 +229,13 @@ SOURCE=""
 COMMENT=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
-		--ip=*)
-			SOURCE="${1#*=}";
+		--ip=*|--ip)
+			[ "$1" == "--ip" ] && shift 1 && SOURCE="$1" || SOURCE="${1#*=}"
 			[ "${SOURCE:0:1}" == "'" ] && [ "${SOURCE:0-1}" == "'" ] && SOURCE="${SOURCE:1:-1}"
 			[ "${SOURCE:0:1}" == '"' ] && [ "${SOURCE:0-1}" == '"' ] && SOURCE="${SOURCE:1:-1}"
 			;;
-		--comment=*)
-			COMMENT="${1#*=}";
+		--comment=*|--comment)
+			[ "$1" == "--comment" ] && shift 1 && COMMENT="$1" || COMMENT="${1#*=}"
 			[ "${COMMENT:0:1}" == "'" ] && [ "${COMMENT:0-1}" == "'" ] && COMMENT="${COMMENT:1:-1}"
 			[ "${COMMENT:0:1}" == '"' ] && [ "${COMMENT:0-1}" == '"' ] && COMMENT="${COMMENT:1:-1}"
 			;;

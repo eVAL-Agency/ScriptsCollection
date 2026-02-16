@@ -656,18 +656,18 @@ ZABBIX_AGENT_HOSTNAME=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		--noninteractive) NONINTERACTIVE=1;;
-		--version=*)
-			VERSION="${1#*=}";
+		--version=*|--version)
+			[ "$1" == "--version" ] && shift 1 && VERSION="$1" || VERSION="${1#*=}"
 			[ "${VERSION:0:1}" == "'" ] && [ "${VERSION:0-1}" == "'" ] && VERSION="${VERSION:1:-1}"
 			[ "${VERSION:0:1}" == '"' ] && [ "${VERSION:0-1}" == '"' ] && VERSION="${VERSION:1:-1}"
 			;;
-		--server=*)
-			ZABBIX_SERVER="${1#*=}";
+		--server=*|--server)
+			[ "$1" == "--server" ] && shift 1 && ZABBIX_SERVER="$1" || ZABBIX_SERVER="${1#*=}"
 			[ "${ZABBIX_SERVER:0:1}" == "'" ] && [ "${ZABBIX_SERVER:0-1}" == "'" ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
 			[ "${ZABBIX_SERVER:0:1}" == '"' ] && [ "${ZABBIX_SERVER:0-1}" == '"' ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
 			;;
-		--hostname=*)
-			ZABBIX_AGENT_HOSTNAME="${1#*=}";
+		--hostname=*|--hostname)
+			[ "$1" == "--hostname" ] && shift 1 && ZABBIX_AGENT_HOSTNAME="$1" || ZABBIX_AGENT_HOSTNAME="${1#*=}"
 			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == "'" ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == "'" ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
 			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == '"' ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == '"' ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
 			;;

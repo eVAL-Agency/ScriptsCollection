@@ -624,7 +624,8 @@ class Script:
 		for arg in self.syntax_arg_map:
 			if arg['type'] == '=':
 				# --version=*) VERSION="${1#*=}"
-				code.append('\t\t%s=*)\n\t\t\t%s="${1#*=}";' % (arg['name'], arg['var']))
+				code.append('\t\t%s=*|%s)' % (arg['name'], arg['name']))
+				code.append('\t\t\t[ "$1" == "%s" ] && shift 1 && %s="$1" || %s="${1#*=}"' % (arg['name'], arg['var'], arg['var']))
 				code.append(
 					'\t\t\t[ "${%s:0:1}" == "\'" ] && [ "${%s:0-1}" == "\'" ] && %s="${%s:1:-1}"' %
 					(arg['var'], arg['var'], arg['var'], arg['var'])

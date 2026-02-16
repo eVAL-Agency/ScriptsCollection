@@ -24,8 +24,8 @@
 THRESHOLD="20"
 while [ "$#" -gt 0 ]; do
 	case "$1" in
-		--threshold=*)
-			THRESHOLD="${1#*=}";
+		--threshold=*|--threshold)
+			[ "$1" == "--threshold" ] && shift 1 && THRESHOLD="$1" || THRESHOLD="${1#*=}"
 			[ "${THRESHOLD:0:1}" == "'" ] && [ "${THRESHOLD:0-1}" == "'" ] && THRESHOLD="${THRESHOLD:1:-1}"
 			[ "${THRESHOLD:0:1}" == '"' ] && [ "${THRESHOLD:0-1}" == '"' ] && THRESHOLD="${THRESHOLD:1:-1}"
 			;;
