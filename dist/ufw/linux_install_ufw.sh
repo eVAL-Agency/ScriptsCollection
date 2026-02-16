@@ -29,7 +29,9 @@ EOD
 while [ "$#" -gt 0 ]; do
 	case "$1" in
 		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
 	esac
+	shift 1
 done
 
 ##

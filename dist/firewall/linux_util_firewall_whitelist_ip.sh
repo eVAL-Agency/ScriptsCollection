@@ -233,14 +233,16 @@ while [ "$#" -gt 0 ]; do
 			SOURCE="${1#*=}";
 			[ "${SOURCE:0:1}" == "'" ] && [ "${SOURCE:0-1}" == "'" ] && SOURCE="${SOURCE:1:-1}"
 			[ "${SOURCE:0:1}" == '"' ] && [ "${SOURCE:0-1}" == '"' ] && SOURCE="${SOURCE:1:-1}"
-			shift 1;;
+			;;
 		--comment=*)
 			COMMENT="${1#*=}";
 			[ "${COMMENT:0:1}" == "'" ] && [ "${COMMENT:0-1}" == "'" ] && COMMENT="${COMMENT:1:-1}"
 			[ "${COMMENT:0:1}" == '"' ] && [ "${COMMENT:0-1}" == '"' ] && COMMENT="${COMMENT:1:-1}"
-			shift 1;;
+			;;
 		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
 	esac
+	shift 1
 done
 if [ -z "$SOURCE" ]; then
 	usage

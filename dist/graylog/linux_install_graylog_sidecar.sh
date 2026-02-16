@@ -60,9 +60,11 @@ while [ "$#" -gt 0 ]; do
 			SERVER="${1#*=}";
 			[ "${SERVER:0:1}" == "'" ] && [ "${SERVER:0-1}" == "'" ] && SERVER="${SERVER:1:-1}"
 			[ "${SERVER:0:1}" == '"' ] && [ "${SERVER:0-1}" == '"' ] && SERVER="${SERVER:1:-1}"
-			shift 1;;
+			;;
 		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
 	esac
+	shift 1
 done
 if [ -z "$SERVER" ]; then
 	usage

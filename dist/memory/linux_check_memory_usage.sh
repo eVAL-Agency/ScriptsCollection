@@ -28,8 +28,10 @@ while [ "$#" -gt 0 ]; do
 			THRESHOLD="${1#*=}";
 			[ "${THRESHOLD:0:1}" == "'" ] && [ "${THRESHOLD:0-1}" == "'" ] && THRESHOLD="${THRESHOLD:1:-1}"
 			[ "${THRESHOLD:0:1}" == '"' ] && [ "${THRESHOLD:0-1}" == '"' ] && THRESHOLD="${THRESHOLD:1:-1}"
-			shift 1;;
+			;;
+		*) echo "Unknown argument: $1" >&2; usage;;
 	esac
+	shift 1
 done
 
 

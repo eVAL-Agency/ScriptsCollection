@@ -651,24 +651,26 @@ ZABBIX_SERVER=""
 ZABBIX_AGENT_HOSTNAME=""
 while [ "$#" -gt 0 ]; do
 	case "$1" in
-		--noninteractive) NONINTERACTIVE=1; shift 1;;
+		--noninteractive) NONINTERACTIVE=1;;
 		--version=*)
 			VERSION="${1#*=}";
 			[ "${VERSION:0:1}" == "'" ] && [ "${VERSION:0-1}" == "'" ] && VERSION="${VERSION:1:-1}"
 			[ "${VERSION:0:1}" == '"' ] && [ "${VERSION:0-1}" == '"' ] && VERSION="${VERSION:1:-1}"
-			shift 1;;
+			;;
 		--server=*)
 			ZABBIX_SERVER="${1#*=}";
 			[ "${ZABBIX_SERVER:0:1}" == "'" ] && [ "${ZABBIX_SERVER:0-1}" == "'" ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
 			[ "${ZABBIX_SERVER:0:1}" == '"' ] && [ "${ZABBIX_SERVER:0-1}" == '"' ] && ZABBIX_SERVER="${ZABBIX_SERVER:1:-1}"
-			shift 1;;
+			;;
 		--hostname=*)
 			ZABBIX_AGENT_HOSTNAME="${1#*=}";
 			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == "'" ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == "'" ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
 			[ "${ZABBIX_AGENT_HOSTNAME:0:1}" == '"' ] && [ "${ZABBIX_AGENT_HOSTNAME:0-1}" == '"' ] && ZABBIX_AGENT_HOSTNAME="${ZABBIX_AGENT_HOSTNAME:1:-1}"
-			shift 1;;
+			;;
 		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
 	esac
+	shift 1
 done
 
 

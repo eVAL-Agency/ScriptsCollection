@@ -623,7 +623,7 @@ class Script:
 		code.append('\tcase "$1" in')
 		for arg in self.syntax_arg_map:
 			if arg['type'] == '=':
-				# --version=*) VERSION="${1#*=}"; shift 1;;
+				# --version=*) VERSION="${1#*=}"
 				code.append('\t\t%s=*)\n\t\t\t%s="${1#*=}";' % (arg['name'], arg['var']))
 				code.append(
 					'\t\t\t[ "${%s:0:1}" == "\'" ] && [ "${%s:0-1}" == "\'" ] && %s="${%s:1:-1}"' %
@@ -633,15 +633,19 @@ class Script:
 					'\t\t\t[ "${%s:0:1}" == \'"\' ] && [ "${%s:0-1}" == \'"\' ] && %s="${%s:1:-1}"' %
 					(arg['var'], arg['var'], arg['var'], arg['var'])
 				)
-				code.append('\t\t\tshift 1;;')
+				code.append('\t\t\t;;')
 			else:
-				# --noninteractive) NONINTERACTIVE=1; shift 1;;
-				code.append('\t\t%s) %s=1; shift 1;;' % (arg['name'], arg['var']))
+				# --noninteractive) NONINTERACTIVE=1
+				code.append('\t\t%s) %s=1;;' % (arg['name'], arg['var']))
 
 		# Include a "help" option if usage() was generated
 		if self._generated_usage:
 			code.append('\t\t-h|--help) usage;;')
+		# Include default catch-all for unknown arguments
+		code.append('\t\t*) echo "Unknown argument: $1" >&2; usage;;')
 		code.append('\tesac')
+		# Shift to the next argument
+		code.append('\tshift 1')
 		code.append('done')
 		for arg in self.syntax_arg_map:
 			if arg['required']:
