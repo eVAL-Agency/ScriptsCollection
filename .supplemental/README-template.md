@@ -6,6 +6,24 @@ A collection of useful scripts for various Linux distributions
 
 %%SCRIPTS_TABLE%%
 
+## Install as Python Package
+
+This project can be installed as a Python package directly from GitHub, providing access to some Python libraries.
+
+### Installation
+
+```bash
+pip install git+https://github.com/eVAL-Agency/ScriptsCollection.git
+```
+
+For development/editable installation:
+
+```bash
+git clone https://github.com/eVAL-Agency/ScriptsCollection.git
+cd ScriptsCollection
+pip install -e .
+```
+
 ## Compile all scripts
 
 Will compile each script into a single distributable file with all dependencies included within.
@@ -374,3 +392,5 @@ scriptlet_type=github:repo_owner/repo_name
 Where `scriptlet_type` is the directory that contains the scriptlets to include.
 
 By default `main` is used to download sources, but a different branch can be specified by appending `:branch_name`.
+
+%%SCRIPTLETS%%

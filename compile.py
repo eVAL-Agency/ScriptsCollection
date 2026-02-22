@@ -39,6 +39,96 @@ def parse_scriptlet_url(include_path: str):
 		return None
 
 
+class Scriptlet:
+	def __init__(self, name: str, type: str):
+		self.name = name
+		self.type = type
+		self.functions = []
+
+	def parse(self):
+		"""
+		Parse a scriptlet file to retrieve the contained functions and documentation
+		:return:
+		"""
+		file_path = self.name
+		if not os.path.exists(file_path):
+			return
+		with open(file_path, 'r', encoding='utf-8') as f:
+			content = f.read()
+
+		if self.type == 'python':
+			# Python: Find def <name>(...) and docstrings, handle indented docstrings and left-align
+			func_pattern = re.compile(r'^\s*def\s+(\w+)\s*\(.*?\):', re.MULTILINE)
+			# Match triple-quoted docstrings, possibly indented
+			doc_pattern = re.compile(r'^\s*def\s+(\w+)\s*\(.*?\):\s*(?:\n\s*)?("""|\'\'\')([\s\S]*?)(\2)', re.MULTILINE)
+			for match in func_pattern.finditer(content):
+				name = match.group(1)
+				# Find docstring after function definition
+				doc_match = doc_pattern.search(content, match.start())
+				body = ''
+				if doc_match and doc_match.group(1) == name:
+					body_raw = doc_match.group(3)
+					lines = body_raw.splitlines()
+					# Remove first line if empty
+					if lines and lines[0].strip() == '':
+						lines = lines[1:]
+					# Find minimum indentation (ignore empty lines)
+					min_indent = None
+					for line in lines:
+						stripped = line.lstrip()
+						if stripped:
+							indent = len(line) - len(stripped)
+							if min_indent is None or indent < min_indent:
+								min_indent = indent
+					# Remove min_indent from all lines
+					if min_indent is not None and min_indent > 0:
+						lines = [line[min_indent:] if len(line) >= min_indent else line for line in lines]
+					body = '\n'.join([line.rstrip() for line in lines])
+				func = ScriptletFunction()
+				func.name = name
+				func.body = body
+				self.functions.append(func)
+
+		elif self.type == 'shell':
+			# Bash: Find function <name> or <name>() {, capture contiguous preceding # comments (no blank lines)
+			func_pattern = re.compile(r'(?:^|\n)((?:#.*\n)+)?(?:function\s+)?(\w+)\s*\(\)\s*\{', re.MULTILINE)
+			for match in func_pattern.finditer(content):
+				name = match.group(2)
+				comments = match.group(1) or ''
+				# Only include contiguous comment block (no blank lines)
+				comment_lines = []
+				for line in comments.splitlines():
+					if line.strip().startswith('#'):
+						comment_lines.append(line.strip('#').strip())
+					elif line.strip() == '':
+						break  # Stop at first blank line
+				body = '\n'.join(comment_lines)
+				func = ScriptletFunction()
+				func.name = name
+				func.body = body
+				self.functions.append(func)
+
+		elif self.type == 'powershell':
+			# PowerShell: Find function <name>, capture preceding <# ... #> or # comments
+			func_pattern = re.compile(r'(?:<#[\s\S]*?#>|(?:#.*\n)*)\s*function\s+(\w+)\s*\{', re.MULTILINE)
+			for match in func_pattern.finditer(content):
+				name = match.group(1)
+				# Extract preceding block comment or line comments
+				block_comment = re.search(r'<#([\s\S]*?)#>', content[:match.start()])
+				line_comments = '\n'.join([line.strip('#').strip() for line in content[:match.start()].splitlines() if line.strip().startswith('#')])
+				body = block_comment.group(1).strip() if block_comment else line_comments
+				func = ScriptletFunction()
+				func.name = name
+				func.body = body
+				self.functions.append(func)
+
+
+class ScriptletFunction:
+	def __init__(self):
+		self.name = None
+		self.body = ''
+
+
 class Script:
 	def __init__(self, file: str, type: str):
 		self.repo = None
@@ -66,6 +156,10 @@ class Script:
 		self.description = ''
 		self.content_header = ''
 		self.content_body = ''
+		self.is_python_module = False
+		"""
+		Set to True if this script is located within a Python module, (generally indicates that it's not a self-contained script).
+		"""
 		self._generated_usage = False
 		self._argparser_var = None
 		"""
@@ -88,6 +182,13 @@ class Script:
 
 		if os.path.exists(os.path.join(os.path.dirname(self.file), 'README.md')):
 			self.readme = os.path.join(os.path.dirname(self.file), 'README.md')
+
+		# Check if this file is __init__.py or __init__.py is contained within the path.
+		if self.type == 'python':
+			self.is_python_module = (
+				os.path.basename(self.file) == '__init__.py' or
+				os.path.exists(os.path.join(os.path.dirname(self.file), '__init__.py'))
+			)
 
 		with open(self.file, 'r') as f:
 			for line in f:
@@ -749,6 +850,7 @@ if os.path.exists('dist'):
 	shutil.rmtree('dist')
 
 scripts = []
+scriptlets = []
 
 #s = Script('src/github/linux_install_github_runner.sh', 'shell')
 #s.parse()
@@ -769,6 +871,21 @@ if os.path.exists('.git/config'):
 					source_type = 'github'
 					source_repo = repo_url.strip()[repo_url.index('github.com') + 11:-4]
 				break
+
+for file in glob('scriptlets/**/*.sh', recursive=True):
+	scriptlet = Scriptlet(file, 'shell')
+	scriptlet.parse()
+	scriptlets.append(scriptlet)
+
+for file in glob('scriptlets/**/*.py', recursive=True):
+	scriptlet = Scriptlet(file, 'python')
+	scriptlet.parse()
+	scriptlets.append(scriptlet)
+
+for file in glob('scriptlets/**/*.ps1', recursive=True):
+	scriptlet = Scriptlet(file, 'powershell')
+	scriptlet.parse()
+	scriptlets.append(scriptlet)
 
 # Parse and compile any script files
 for file in glob('src/**/*.sh', recursive=True):
@@ -805,13 +922,15 @@ for file in glob('src/**/README.md', recursive=True):
 
 	shutil.copy(file, dest_file)
 
-# Generate project README
+# Generate list of scripts for the README, sorted by category and then title
 scripts.sort(key=lambda x: '-'.join([x.category if x.category else 'ZZZ', x.title if x.title else x.file]))
 scripts_table = []
 scripts_table.append('| Category / Script | Supports |')
 scripts_table.append('|-------------------|----------|')
 for script in scripts:
 	if script.draft:
+		continue
+	if script.is_python_module:
 		continue
 	title = script.title if script.title else script.file
 	readme = script.readme if script.readme else None
@@ -848,9 +967,29 @@ for script in scripts:
 		os_support.append('![%s](.supplemental/images/icons/%s.svg "%s")' % (support[0], support[0], support[1]))
 	scripts_table.append('| %s [%s / %s](%s) %s | %s |' % (type, category, title, href, readme, ' '.join(os_support)))
 
+# Iterate through scriptlets to generate documentation about the included scriptlet functions available
+scriptlets_text = ''
+for scriptlet in scriptlets:
+	scriptlets_text += '### [%s](%s)\n\n' % (scriptlet.name[11:], scriptlet.name)
+	scriptlets_text += 'To include this scriptlet:\n\n'
+
+	if scriptlet.type == 'shell':
+		scriptlets_text += '```bash\n# scriptlet:%s\n```\n\n' % scriptlet.name[11:]
+	elif scriptlet.type == 'powershell':
+		scriptlets_text += '```powershell\n# scriptlet:%s\n```\n\n' % scriptlet.name[11:]
+	elif scriptlet.type == 'python':
+		scriptlets_text += '```python\n# from scriptlets.%s import *\n```\n\n' % scriptlet.name[11:-3].replace('/', '.')
+	#if scriptlet.description:
+	#	scriptlets_text += '%s\n\n' % scriptlet.description
+	if len(scriptlet.functions) > 0:
+		for function in scriptlet.functions:
+			scriptlets_text += '#### function %s:\n\n%s\n\n' % (function.name, function.body.strip())
+		scriptlets_text += '\n'
+
 if os.path.exists('.supplemental/README-template.md'):
 	replacements = {
 		'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),
+		'%%SCRIPTLETS%%': scriptlets_text
 	}
 	with open('.supplemental/README-template.md', 'r') as f:
 		template = f.read()
@@ -865,6 +1004,8 @@ with open('dist/community_scripts.json', 'w') as f:
 	meta = []
 	for script in scripts:
 		if script.draft:
+			continue
+		if script.is_python_module:
 			continue
 		data = script.as_trmm_meta()
 		data['filename'] = script.file[4:]
@@ -892,3 +1033,4 @@ with open('dist/warlock.yaml', 'w') as f:
 			f.write('  icon: %s\n' % (script.warlock_icon if script.warlock_icon else ''))
 			f.write('  thumbnail: %s\n' % (script.warlock_thumbnail if script.warlock_thumbnail else ''))
 			f.write('\n')
+

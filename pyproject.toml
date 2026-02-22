@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eval_scripts_collection"
+version = "0.1.0"
+description = "A collection of useful Python utilities including TUI helpers and firewall management"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Scripts Collection Contributors" }
+]
+license = { text = "MIT" }
+keywords = ["scripts", "utilities", "tui", "firewall", "linux"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+    "mypy>=1.0",
+]
+
+[project.urls]
+Repository = "https://github.com/eVAL-Agency/ScriptsCollection"
+Documentation = "https://github.com/eVAL-Agency/ScriptsCollection/blob/main/README.md"
+
+[tool.setuptools]
+package-dir = {"" = "dist"}
+packages = ["eval_scripts_collection"]
+
+[tool.setuptools.package-data]
+scripts_collection = ["py.typed"]
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
