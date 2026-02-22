@@ -47,7 +47,10 @@ Documentation = "https://github.com/eVAL-Agency/ScriptsCollection/blob/main/READ
 package-dir = {"" = "dist"}
 
 [tool.setuptools.package-data]
-scripts_collection = ["py.typed"]
+eval_scripts_collection = ["py.typed"]
+
+[tool.setuptools.packages.find]
+where = ["dist"]
 
 [tool.black]
 line-length = 100
