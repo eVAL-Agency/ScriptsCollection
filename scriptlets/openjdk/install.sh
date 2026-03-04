@@ -12,6 +12,7 @@
 # Will print the directory where OpenJDK was installed.
 #
 # CHANGELOG:
+#   2026.03.03 - Bugfix, return the correct JDK directory.
 #   2026.01.13 - Initial version
 #
 function install_openjdk() {
@@ -52,6 +53,6 @@ function install_openjdk() {
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$JDK_TGZ"
 	fi
 
-	echo "/opt/script-collection/$JDK_TGZ"
+	echo "/opt/script-collection/$JDK_DIR"
 }
 
