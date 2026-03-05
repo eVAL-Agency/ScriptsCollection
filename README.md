@@ -558,6 +558,8 @@ https://github.com/adoptium
 Will print the directory where OpenJDK was installed.
 
 CHANGELOG:
+2026.03.05 - Add support for update-alternatives / alternatives.
+2026.03.03 - Bugfix, return the correct JDK directory.
 2026.01.13 - Initial version
 
 
