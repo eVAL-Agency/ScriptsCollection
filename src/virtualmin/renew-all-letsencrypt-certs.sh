@@ -17,9 +17,10 @@
 #   Charlie Powell <cdp1337@bitsnbytes.dev>
 #
 # Changelog:
+#   20260307 - Only pull ENABLED domains, saves some time in processing
 #   20251211 - Initial release
 
-doms=`virtualmin list-domains --name-only --with-feature letsencrypt_renew`;
+doms=`virtualmin list-domains --name-only --with-feature letsencrypt_renew --enabled`;
 for dom in $doms; do
     virtualmin generate-letsencrypt-cert --domain $dom --renew ;
 done
