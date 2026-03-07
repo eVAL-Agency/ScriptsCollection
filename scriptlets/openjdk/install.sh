@@ -13,6 +13,7 @@
 # Will print the directory where OpenJDK was installed.
 #
 # CHANGELOG:
+#   2026.03.07 - Bugfix to fix 'path-jre//bin/java'
 #   2026.03.05 - Add support for update-alternatives / alternatives.
 #   2026.03.03 - Bugfix, return the correct JDK directory.
 #   2026.01.13 - Initial version
@@ -50,6 +51,8 @@ function install_openjdk() {
 	fi
 
 	local JDK_DIR="$(tar -zf "/opt/script-collection/$JDK_TGZ" --list | head -1)"
+	# Remove any trailing '/'
+	JDK_DIR="${JDK_DIR%/}"
 
 	if [ ! -e "/opt/script-collection/$JDK_DIR" ]; then
 		tar -x -C /opt/script-collection/ -f "/opt/script-collection/$JDK_TGZ"
