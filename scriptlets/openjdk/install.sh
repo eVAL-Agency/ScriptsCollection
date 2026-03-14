@@ -13,6 +13,7 @@
 # Will print the directory where OpenJDK was installed.
 #
 # CHANGELOG:
+#   2026.04.13 - Mute curl output
 #   2026.03.07 - Bugfix to fix 'path-jre//bin/java'
 #   2026.03.05 - Add support for update-alternatives / alternatives.
 #   2026.03.03 - Bugfix, return the correct JDK directory.
@@ -35,7 +36,7 @@ function install_openjdk() {
 	# We will use this directory as a working directory for source files that need downloaded.
 	[ -d /opt/script-collection ] || mkdir -p /opt/script-collection
 
-	local DOWNLOAD_URL="$(curl https://api.github.com/repos/adoptium/temurin${VERSION}-binaries/releases/latest \
+	local DOWNLOAD_URL="$(curl -s https://api.github.com/repos/adoptium/temurin${VERSION}-binaries/releases/latest \
 	  | grep browser_download_url \
 	  | grep jre_x64_linux \
 	  | grep 'tar\.gz"' \
