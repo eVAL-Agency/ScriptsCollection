@@ -258,6 +258,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "acb36740-1dc3-478b-6afa-444cdf309f2b",
+        "filename": "firewall/linux_install_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Install Firewall [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Firewall"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
         "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],

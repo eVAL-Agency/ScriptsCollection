@@ -19,6 +19,7 @@ A collection of useful scripts for various Linux distributions
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Firewall / Check Firewall Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Firewall - Allow IP/Port [Linux]](dist/firewall/linux_util_firewall_allow.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Licensing / Get Windows License Information](dist/windows/windows_inventory_get_windows_license.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 8, 10, 11, Server 2016, Server 2019") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Memory / Check Memory Usage [Linux]](dist/memory/linux_check_memory_usage.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Memory / Check Memory Usage [Windows]](dist/memory/windows_check_memory_usage.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
@@ -558,6 +559,8 @@ https://github.com/adoptium
 Will print the directory where OpenJDK was installed.
 
 CHANGELOG:
+2026.04.13 - Mute curl output
+2026.03.07 - Bugfix to fix 'path-jre//bin/java'
 2026.03.05 - Add support for update-alternatives / alternatives.
 2026.03.03 - Bugfix, return the correct JDK directory.
 2026.01.13 - Initial version
@@ -595,6 +598,9 @@ To include this scriptlet:
 #### function install_firewalld:
 
 Install firewalld
+
+CHANGELOG:
+2026.03.16 - Switch awk to use $NF for better support
 
 
 ### [bz_eval_tui/print_header.sh](scriptlets/bz_eval_tui/print_header.sh)
@@ -768,6 +774,24 @@ To include this scriptlet:
 ```bash
 # scriptlet:_common/print_header.sh
 ```
+
+### [_common/firewall_install.sh](scriptlets/_common/firewall_install.sh)
+
+To include this scriptlet:
+
+```bash
+# scriptlet:_common/firewall_install.sh
+```
+
+#### function firewall_install:
+
+Install the system default firewall based on the OS type
+
+For Debian/Ubuntu, this installs UFW
+For RHEL/CentOS, this installs firewalld
+For SUSE, this installs firewalld
+For other OS types, this defaults to installing UFW
+
 
 ### [_common/require_root.sh](scriptlets/_common/require_root.sh)
 
