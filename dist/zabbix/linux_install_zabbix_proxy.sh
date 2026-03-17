@@ -7,7 +7,6 @@
 # Generated with info from
 # https://www.zabbix.com/download?zabbix=7.0&os_distribution=debian&os_version=12&components=agent_2&db=&ws=
 #
-#
 # Syntax:
 #   --noninteractive  - Run in non-interactive mode, (will not ask for prompts)
 #   --version=<string> - Version of Zabbix to install DEFAULT=7.0
@@ -27,9 +26,18 @@
 #   CentOS 8, 9
 #   RHEL 8, 9
 #
-# @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
-# @CATEGORY Monitoring
+# Category:
+#   Monitoring
+#
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
 # @TRMM-TIMEOUT 120
 #
 # Changelog:

@@ -16,6 +16,15 @@
 #   PROTO=--proto=<tcp|udp>    Protocol to allow DEFAULT=tcp
 #   COMMENT=--comment=<comment>  Optional comment for the rule
 #
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
 # Changelog:
 #   2025.04.10 - Initial version
 

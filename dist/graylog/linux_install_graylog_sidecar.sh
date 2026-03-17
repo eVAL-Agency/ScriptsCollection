@@ -2,7 +2,6 @@
 #
 # Install Graylog Sidecar [Linux]
 #
-#
 # Syntax:
 #   --server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
 #   GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)
@@ -13,6 +12,10 @@
 # TRMM Environment:
 #   GRAYLOG_TOKEN={{client.graylog_token}}
 #
+# TRMM Custom Fields:
+#   site.graylog_server - Fully resolved URL of Graylog server, including http(s)://, port, and /api
+#   site.graylog_token - API token for the Graylog server
+#
 # Supports:
 #   Debian 12
 #   Ubuntu 24.04
@@ -20,19 +23,19 @@
 #   CentOS 8, 9
 #   RHEL 8, 9
 #
-# Category: Monitoring
+# Category:
+#   Monitoring
 #
-# @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
 # @TRMM-TIMEOUT 120
-#
-# Requirements:
-#   N/A
-#
-# TRMM Custom Fields:
-#   site.graylog_server - Fully resolved URL of Graylog server, including http(s)://, port, and /api
-#   site.graylog_token - API token for the Graylog server
-#
 #
 # Changelog:
 # 	2025.04.09 - Original Release

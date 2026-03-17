@@ -12,7 +12,10 @@
 #   AGPLv3
 #
 # Author:
-#   Charlie Powell <cdp1337@veraciousnetwork.com>
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
 #
 # Syntax:
 #   THRESHOLD=--threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20

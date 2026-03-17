@@ -10,13 +10,18 @@
 #   RHEL-All
 #   Arch
 #
-# Category: Disks
+#
+# Category:
+#   Disks
 #
 # License:
 #   AGPLv3
 #
 # Author:
-#   Charlie Powell <cdp1337@veraciousnetwork.com>
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
 #
 # @TRMM-TIMEOUT 120
 #

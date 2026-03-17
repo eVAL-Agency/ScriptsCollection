@@ -23,10 +23,21 @@
 # Supports:
 #   Linux-All
 #
-# @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
-# @CATEGORY Backup
+#
+# Category:
+#   Backup
+#
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
 # @TRMM-TIMEOUT 600
+#
 
 # scriptlet:_common/require_root.sh
 # compile:usage

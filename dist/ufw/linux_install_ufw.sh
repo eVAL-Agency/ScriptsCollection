@@ -7,9 +7,18 @@
 # Supports:
 #   Linux-All
 #
-# @LICENSE AGPLv3
-# @AUTHOR  Charlie Powell <cdp1337@veraciousnetwork.com>
-# @CATEGORY Security
+# Category:
+#   Security
+#
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
 # @TRMM-TIMEOUT 60
 #
 # Changelog:

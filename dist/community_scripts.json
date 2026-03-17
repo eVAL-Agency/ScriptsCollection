@@ -87,7 +87,7 @@
         "filename": "nextcloud/linux_nextcloud_backup.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Backup Nextcloud Server [Linux]",
         "syntax": [
             "--base=<str> - Location where Nextcloud is installed DEFAULT=/var/www/nextcloud",
@@ -118,7 +118,7 @@
         "filename": "disk/linux_check_disk_health.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Check Disk Health [Linux]",
         "syntax": [],
         "default_timeout": "120",
@@ -190,7 +190,7 @@
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],
         "env": [],
-        "submittedBy": "",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Check Firewall Status [Linux]",
         "syntax": [],
         "default_timeout": "60",
@@ -222,7 +222,7 @@
         "filename": "firewall/linux_util_firewall_allow.sh",
         "args": [],
         "env": [],
-        "submittedBy": "",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Firewall - Allow IP/Port [Linux]",
         "syntax": [
             "--ip=<string> - IP address or CIDR network to allow DEFAULT=any",
@@ -243,7 +243,7 @@
         "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
         "args": [],
         "env": [],
-        "submittedBy": "",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Firewall - Whitelist IP",
         "syntax": [
             "--ip=<ip> - IP address to whitelist (REQUIRED)",
@@ -262,7 +262,7 @@
         "filename": "firewall/linux_install_firewall.sh",
         "args": [],
         "env": [],
-        "submittedBy": "",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Firewall [Linux]",
         "syntax": [],
         "default_timeout": "60",
@@ -294,7 +294,7 @@
         "filename": "memory/linux_check_memory_usage.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Check Memory Usage [Linux]",
         "syntax": [
             "--threshold=<integer> - Threshold of memory used before an error is dispatched DEFAULT=20"
@@ -334,7 +334,7 @@
         "env": [
             "GRAYLOG_TOKEN={{client.graylog_token}}"
         ],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Graylog Sidecar [Linux]",
         "syntax": [
             "--server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)",
@@ -358,7 +358,7 @@
             "--hostname={{agent.fqdn}}"
         ],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Zabbix Agent2 [Linux]",
         "syntax": [
             "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
@@ -384,7 +384,7 @@
             "--hostname={{agent.fqdn}}"
         ],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Zabbix Proxy [Linux]",
         "syntax": [
             "--noninteractive  - Run in non-interactive mode, (will not ask for prompts)",
@@ -405,7 +405,7 @@
         "filename": "net-diag/linux_install_net_diag.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install net-diag utilities [Linux]",
         "syntax": [],
         "default_timeout": "60",
@@ -440,7 +440,7 @@
         "filename": "proxmox/linux_manage_proxmox_repo_community.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Switch Repo to Community [Proxmox]",
         "syntax": [],
         "default_timeout": "60",
@@ -475,7 +475,7 @@
         "filename": "ufw/linux_install_ufw.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Firewall (UFW) [Linux]",
         "syntax": [],
         "default_timeout": "60",
@@ -603,7 +603,7 @@
         "filename": "updates/linux_check_reboot_required.sh",
         "args": [],
         "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Check if Reboot Required [Linux]",
         "syntax": [],
         "default_timeout": "60",
