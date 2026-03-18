@@ -8,6 +8,7 @@ import os
 import stat
 import json
 import urllib.request
+import urllib.error as urllib_error
 
 def parse_scriptlet_url(include_path: str):
 	"""
@@ -37,6 +38,54 @@ def parse_scriptlet_url(include_path: str):
 	else:
 		print('Unknown source type: %s' % source_data[0])
 		return None
+
+
+def maybe_download_scriptlet(filename, url):
+	"""
+	Check if a scriptlet is already downloaded AND has not been modified.
+
+	If modified or doesn't exist, attempt to download the file and store the cache tag.
+
+	Returns True if successful or no download required.
+	Returns False if unsuccessful.
+
+	:param filename:
+	:param url:
+	:return:
+	"""
+
+	# Translate the file to the cache file; it should be in the same directory
+	# but with '.etag.(filename)' instead.
+	etag_path = os.path.join(os.path.dirname(filename), '.etag.' + os.path.basename(filename))
+	headers = {}
+	if os.path.exists(etag_path) and os.path.exists(filename):
+		with open(etag_path, 'r') as f:
+			etag = f.read().strip()
+			headers['If-None-Match'] = etag
+
+	# Try to auto-download scripts from the repository
+	if not os.path.exists(os.path.dirname(filename)):
+		os.makedirs(os.path.dirname(filename))
+
+	try:
+		req = urllib.request.Request(url, headers=headers)
+		with urllib.request.urlopen(req) as response:
+			if response.status == 304:
+				return True
+
+			with open(filename, 'wb') as f:
+				f.write(response.read())
+			# Store the ETag for future caching
+			with open(etag_path, 'w') as f:
+				f.write(response.getheader('ETag', ''))
+			print('Downloaded %s scriptlet' % filename)
+			return True
+	except urllib_error.HTTPError as e:
+		if e.code == 304:
+			return True
+	except Exception as e:
+		print('Could not download %s' % filename)
+		return False
 
 
 class Scriptlet:
@@ -446,19 +495,7 @@ class Script:
 		if include not in self.scriptlets:
 			self.scriptlets.append(include)
 			file = os.path.join('scriptlets', include)
-			if not os.path.exists(file):
-				# Try to auto-download scripts from the repository
-				if not os.path.exists(os.path.dirname(file)):
-					os.makedirs(os.path.dirname(file))
-				try:
-					print('Trying to auto-download %s scriptlet' % include)
-					url_path = parse_scriptlet_url(include)
-					if url_path is None:
-						print('ERROR - script %s not found' % include)
-					else:
-						urllib.request.urlretrieve(url_path, file)
-				except Exception as e:
-					print('Could not download scriptlet %s' % include)
+			maybe_download_scriptlet(file, parse_scriptlet_url(include))
 
 			if os.path.exists(file):
 				script = Script(file, self.type)
@@ -760,8 +797,6 @@ class Script:
 		code.append('')
 		code.append('')
 		return '\n'.join(code)
-
-		# @todo Support #-p) pidfile="$2"; shift 2;;
 
 	def _generate_argparse_python(self) -> str:
 		code = []
