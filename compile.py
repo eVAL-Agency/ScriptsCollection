@@ -69,7 +69,7 @@ def maybe_download_scriptlet(filename, url):
 
 	try:
 		req = urllib.request.Request(url, headers=headers)
-		with urllib.request.urlopen(req) as response:
+		with urllib.request.urlopen(req, timeout=5) as response:
 			if response.status == 304:
 				return True
 
