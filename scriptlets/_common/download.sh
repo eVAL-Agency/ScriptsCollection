@@ -14,6 +14,7 @@
 #   --no-overwrite       Skip download if destination file already exists
 #
 # CHANGELOG:
+#   2026.04.21 - Add retry in curl to retry on connection issues, (looking at you Github)
 #   2025.12.15 - Use cmd_exists to fix regression bug
 #   2025.12.04 - Add --no-overwrite option to allow skipping download if the destination file exists
 #   2025.11.23 - Download to a temp location to verify download was successful
@@ -48,7 +49,7 @@ function download() {
 	fi
 
 	if cmd_exists curl; then
-		if curl -fsL "$SOURCE" -o "$TMP"; then
+		if curl --connect-timeout 10 --retry 3 --retry-delay 10 -fsL "$SOURCE" -o "$TMP"; then
 			mv $TMP "$DESTINATION"
 			return 0
 		else
