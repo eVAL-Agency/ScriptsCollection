@@ -13,6 +13,7 @@
 # Will print the directory where OpenJDK was installed.
 #
 # CHANGELOG:
+#   2026.04.26 - Supress command output on Ubuntu
 #   2026.04.13 - Mute curl output
 #   2026.03.07 - Bugfix to fix 'path-jre//bin/java'
 #   2026.03.05 - Add support for update-alternatives / alternatives.
@@ -61,11 +62,11 @@ function install_openjdk() {
 
 	# Update distro registrations for alternative software.
 	if os_like debian; then
-		update-alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1
+		update-alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1 >&2
 	elif os_like rhel; then
-		alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1
+		alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1 >&2
 	elif os_like suse; then
-		update-alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1
+		update-alternatives --install "/usr/bin/java" "java" "/opt/script-collection/$JDK_DIR/bin/java" 1 >&2
 	fi
 
 	echo "/opt/script-collection/$JDK_DIR"
