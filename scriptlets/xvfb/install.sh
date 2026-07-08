@@ -1,4 +1,5 @@
 # scriptlet:_common/package_install.sh
+# scriptlet: _common/os_like.sh
 
 ##
 # Install Xvfb and (optionally) a daemon helper
@@ -7,6 +8,7 @@
 #   install_xvfb [--no-daemon] [--display <int>] [--service <name>]
 #
 # Changelog:
+#   20260708 - Add support for Arch
 #   20260216 - Initial version
 #
 function install_xvfb() {
@@ -23,7 +25,11 @@ function install_xvfb() {
 		shift
 	done
 
-	package_install xvfb
+	if os_like_arch -q;	then
+		package_install xorg-server-xvfb
+	else
+		package_install xvfb
+	fi
 
 	if [ "$NO_DAEMON" -eq 0 ]; then
 		# Install the daemon helper script

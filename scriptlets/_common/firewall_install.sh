@@ -25,6 +25,8 @@ function firewall_install() {
 		install_firewalld
 	elif os_like_suse -q; then
 		install_firewalld
+	elif os_like_arch -q; then
+		install_firewalld
 	else
 		install_ufw
 	fi

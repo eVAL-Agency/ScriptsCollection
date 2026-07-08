@@ -1,12 +1,14 @@
 # scriptlet:_common/os_like.sh
 # scriptlet:_common/os_version.sh
 # scriptlet:_common/download.sh
+# scriptlet:_common/package_install.sh
 
 ##
 # Install SteamCMD
 #
 # CHANGELOG:
 #
+#   2026.07.08 - Add support for Arch
 #   2025.12.16 - Ensure steam GPG key is readable by apt
 #   2025.11.09 - Switch to using download to support curl/wget abstraction
 #   2025.11.03 - Add support for Debian 13
@@ -18,6 +20,7 @@ function install_steamcmd() {
 
 	TYPE_DEBIAN="$(os_like_debian)"
 	TYPE_UBUNTU="$(os_like_ubuntu)"
+	TYPE_ARCH="$(os_like_arch)"
 	OS_VERSION="$(os_version)"
 
 	# Preliminary requirements
@@ -77,6 +80,9 @@ function install_steamcmd() {
 		# Install steam binary and steamcmd
 		apt update
 		apt install -y steamcmd
+	elif [ "$TYPE_ARCH" == 1 ]; then
+		# Steam is available in the AUR for Arch, so the default package_install can handle it.
+		package_install steamcmd
 	else
 		echo 'Unsupported or unknown OS' >&2
 		exit 1
