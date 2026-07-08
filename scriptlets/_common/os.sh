@@ -23,7 +23,7 @@ function os() {
 		echo 'freebsd'
 
 	elif [ -f '/etc/os-release' ]; then
-		local DISTRO="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
+		local DISTRO="$(grep -E '^ID=' /etc/os-release | sed 's:ID=::')"
 
 		if [[ "$DISTRO" =~ '"' ]]; then
 			# Strip quotes around the OS name

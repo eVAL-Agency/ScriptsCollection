@@ -13,7 +13,7 @@ function os_version() {
 		fi
 
 	elif [ -f '/etc/os-release' ]; then
-		local VERS="$(egrep '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
+		local VERS="$(grep -E '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
 
 		if [[ "$VERS" =~ '"' ]]; then
 			# Strip quotes around the OS name

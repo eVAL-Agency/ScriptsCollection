@@ -10,8 +10,8 @@ function os_like() {
 	local OS="$1"
 
 	if [ -f '/etc/os-release' ]; then
-		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
-		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
+		ID="$(grep -E '^ID=' /etc/os-release | sed 's:ID=::')"
+		LIKE="$(grep -E '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
 		if [[ "$LIKE" =~ "$OS" ]] || [ "$ID" == "$OS" ]; then
 			return 0;
