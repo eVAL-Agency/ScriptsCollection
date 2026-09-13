@@ -2,6 +2,8 @@
 # scriptlet: _common/os_version.sh
 # scriptlet: _common/cmd_exists.sh
 
+_PACKAGE_INSTALL_UPDATED=0
+
 ##
 # Install a package with the system's package manager.
 #
@@ -18,12 +20,36 @@
 #
 #
 # CHANGELOG:
+#   2026.09.12 - Revert paru; it requires NOT root access, which is counter to these scripts
+#              - Add update support to issue a repo update once per execution
 #   2026.07.08 - Add paru support for Arch's AUR
 #   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
 #   2025.04.10 - Set Debian frontend to noninteractive
 #
 function package_install (){
 	echo "package_install: Installing $*..."
+
+	if [ $_PACKAGE_INSTALL_UPDATED -eq 0 ]; then
+		# Perform a system update before requesting the install.
+		# This is cached in the runtime so it's only executed once per run
+		if os_like_bsd -q; then
+			pkg update -y
+		elif os_like_debian -q; then
+			DEBIAN_FRONTEND="noninteractive" apt-get update -y
+		elif os_like_rhel -q; then
+			if [ "$(os_version)" -ge 9 ]; then
+				dnf makecache
+			else
+				yum makecache
+			fi
+		elif os_like_arch -q; then
+			pacman -Sy --noconfirm
+		elif os_like_suse -q; then
+			zypper refresh
+		fi
+
+		_PACKAGE_INSTALL_UPDATED=1
+	fi
 
 	if os_like_bsd -q; then
 		pkg install -y $*
@@ -36,11 +62,7 @@ function package_install (){
 			yum install -y $*
 		fi
 	elif os_like_arch -q; then
-		if ! cmd_exists paru; then
-			# Install paru before handling the user packages
-			_package_install_paru
-		fi
-		paru -Syu --noconfirm $*
+		pacman -S --noconfirm $*
 	elif os_like_suse -q; then
 		zypper install -y $*
 	else
@@ -51,19 +73,37 @@ function package_install (){
 }
 
 ##
-# Special handler to ensure paru is installed on an Arch system.
+# Perform a package installation IF the requested binary is not located
 #
-# Useful to allow packages to install from the AUR by default.
+# If one argument is requested, the argument is used for both binary check and install package.
+# When two arguments are provided, the first is the binary to check and the second is the package name.
 #
-function _package_install_paru() {
-	pacman -S git base-devel make
-
-	[ -e /opt/script-collection/ ] || mkdir -p /opt/script-collection
-	if [ ! -e /opt/script-collection/paru ]; then
-		git clone https://aur.archlinux.org/paru.git /opt/script-collection/paru
+# Examples:
+#
+# Simple check
+#   package_install_if jq
+#
+# Varying package name vs binary
+#   package_install_if php php8.4
+#
+# CHANGELOG:
+#   2026.09.12 - Initial version
+#
+function package_install_if() {
+	local PKG_NAME=""
+	local PKG_BIN=""
+	if [ $# -ge 2 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$2"
+	elif [ $# -eq 1 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$1"
+	else
+		echo "package_install_if: Requires at least one argument" >&2
+		exit 1
 	fi
 
-	cd /opt/script-collection/paru
-	makepkg -si
-	cd -
+	if ! cmd_exists "$PKG_BIN"; then
+		package_install "$PKG_NAME"
+	fi
 }
