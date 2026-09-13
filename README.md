@@ -1,8 +1,10 @@
 # Scripts Collection
 
-A collection of useful scripts for various Linux distributions
+A collection of system administration scripts for Linux and Windows administrators.
 
 ## Scripts
+
+List of scripts available within this collection.
 
 | Category / Script | Supports |
 |-------------------|----------|
@@ -26,6 +28,7 @@ A collection of useful scripts for various Linux distributions
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Network Utility / Install net-diag utilities [Linux]](dist/net-diag/linux_install_net_diag.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Repo / Switch Repo to Community [Proxmox]](dist/proxmox/linux_manage_proxmox_repo_community.sh)  | ![proxmox](.supplemental/images/icons/proxmox.svg "Proxmox") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Block Bad IPs [Linux]](dist/firewall/linux_util_firewall_badips.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Block Bad IPs [Windows]](dist/firewall/windows_util_firewall_badips.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Defender Status [Windows]](dist/defender/windows_check_defender_status.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Check Firewall Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Firewall Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
@@ -44,383 +47,12 @@ A collection of useful scripts for various Linux distributions
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Authorize SSH Key [Linux]](dist/ssh/linux_util_ssh_authorize.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Get SSH Public Key [Linux]](dist/ssh/linux_util_ssh_get_key.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 
-## Install as Python Package
-
-This project can be installed as a Python package directly from GitHub, providing access to some Python libraries.
-
-### Installation
-
-```bash
-pip install git+https://github.com/eVAL-Agency/ScriptsCollection.git
-```
-
-For development/editable installation:
-
-```bash
-git clone https://github.com/eVAL-Agency/ScriptsCollection.git
-cd ScriptsCollection
-pip install -e .
-```
-
-## Compile all scripts
-
-Will compile each script into a single distributable file with all dependencies included within.
-
-```bash
-python3 compile.py
-```
-
-## Script Metadata
-
-Most of the metadata is collected from the file header.
-To ensure rendering, please ensure all file headers start with `# `,
-and separating lines contain a `#`.
-
-Header scanning will stop as soon as an empty line is encountered.
-
-Example, this will **not** see the "Supports" section as a header field, and thus will not include it.
-
-```bash
-#!/bin/bash
-#
-# Some title
-
-# Supports:
-#    Debian 12
-```
-
-Correct form includes a '#' to ensure the entire block is seen as the file header.
-
-```bash
-#!/bin/bash
-#
-# Some title
-#
-# Supports:
-#    Debian 12
-```
-
-### Script Header
-
-The first non-empty line retrieved from the script will be used as the title, (one line only).
-
-### Syntax
-
-Lists how to run the application to the end user, and gets saved in the help icon in TRMM.
-
-```bash
-#/bin/bash
-# ...
-# Syntax:
-#   --option1 - Short description of option 1
-#   --option2=... - Short description of option 2
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-Syntax:
-	--option1 - Short description of option 1
-	--option2=... - Short description of option 2
-"""
-```
-
-#### Argument Parsing
-
-Adding `# compile:argparse` to the script will generate a dynamic argument parser for the script.
-
-(BASH only) Optionally, you can include the destination variable name before each argument
-to allow for dynamic generation of the argument parsing via `compile:argparse`.
-
-In this example, passing `--noninteractive` will set the variable `NONINTERACTIVE` to `1`.
-
-(The compiler will filter out the prefix)
-
-```bash
-#/bin/bash
-# ...
-# Syntax:
-#   NONINTERACTIVE=--noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   VERSION=--version=... - Version of Zabbix to install DEFAULT=7.0
-#   ZABBIX_SERVER=--server=... - Hostname or IP of Zabbix server
-#   ZABBIX_AGENT_HOSTNAME=--hostname=... - Hostname of local device for matching with a Zabbix host entry
-# ...
-
-# compile:argparse
-```
-
-Generates:
-
-```bash
-#/bin/bash
-# ...
-# Syntax:
-#   --noninteractive - Run in non-interactive mode, (will not ask for prompts)
-#   --version=... - Version of Zabbix to install DEFAULT=7.0
-#   --server=... - Hostname or IP of Zabbix server
-#   --hostname=... - Hostname of local device for matching with a Zabbix host entry
-# ...
-
-# Parse arguments
-NONINTERACTIVE="0"
-VERSION="7.0"
-ZABBIX_SERVER=""
-ZABBIX_AGENT_HOSTNAME=""
-while [ "$#" -gt 0 ]; do
-	case "$1" in
-		--noninteractive) NONINTERACTIVE=1; shift 1;;
-		--version=*) VERSION="${1#*=}"; shift 1;;
-		--server=*) ZABBIX_SERVER="${1#*=}"; shift 1;;
-		--hostname=*) ZABBIX_AGENT_HOSTNAME="${1#*=}"; shift 1;;
-		-h|--help) usage;;
-	esac
-done
-if [ -z "$SOURCE" ]; then
-	usage
-fi
-```
-
-```python
-#!/usr/bin/env python3
-"""
-Do something
-
-Syntax:
-	--arg1=<str> - Some parameter DEFAULT=yup
-	--arg2=<int> - The SSH key to authorize DEFAULT=42
-"""
-
-import argparse
-
-# ...
-
-parser = argparse.ArgumentParser(
-	prog='scriptname.py',
-	description='Does a thing')
-# compile:argparse
-args = parser.parse_args()
-```
-
-#### Variable Type
-
-To support Python, ensure a variable type is specified, like so:
-
-```python
-#!/usr/bin/env python3
-"""
-Syntax:
-	--option1=<str> - Short description of option 1
-	--option2=<int> - Short description of option 2
-"""
-```
-
-Argument types in Bash are ignored and are for reference only.
-
-#### Defaults
-
-The default value can be specified by appending `DEFAULT=(value)` to the argument, like so:
-
-```bash
-#/bin/bash
-# ...
-# Syntax:
-#   --option1=<str> - Short description of option 1 DEFAULT=default_value
-#   --option2=<int> - Short description of option 2 DEFAULT=42
-```
-
-
-
-### TRMM Arguments
-
-Lists the default arguments and their values to be used when running the script in TRMM.
-
-DOES support TRMM variable replacement for site, client, and agent.
-To use these, wrap the variable in double curly braces, like so: `{{client.zabbix_hostname}}`
-
-```bash
-#/bin/bash
-# ...
-# TRMM Arguments:
-#   --option1
-#   --option2=something
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-Syntax:
-	--option1 - Short description of option 1
-	--option2=... - Short description of option 2
-"""
-```
-
-### TRMM Environment
-
-Behaves the same as TRMM Arguments, but is used for environment variables.
-
-```bash
-#/bin/bash
-# ...
-# TRMM Environment:
-#   VAR1=something
-#   VAR2={{client.zabbix_hostname}}
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-TRMM Environment:
-	VAR1=something
-	VAR2={{client.zabbix_hostname}}
-"""
-```
-
-### Supports
-
-Lists the OS support for the script.
-
-```bash
-#/bin/bash
-# ...
-# Supports:
-#   Debian 12
-#   Ubuntu 24.04
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-Supports:
-	Debian 12
-	Ubuntu 24.04
-"""
-```
-
-Distros can be listed individually, or one of the group declarations for multiple distros.
-
-* Linux-All - All Linux-based distros (completely os-agnostic script)
-* Debian-All - Any Debian-based distro (Debian, Ubuntu, Mint, etc)
-* RHEL-All - Any Red Hat-based distro (RHEL, CentOS, Fedora, etc)
-* ArchLinux / arch
-* CentOS
-* Debian
-* Fedora
-* LinuxMint
-* RedHat / RHEL
-* Rocky / RockyLinux
-* SuSE / OpenSuSE
-* Ubuntu
-* Windows
-
-### Author Tag
-
-```bash
-#/bin/bash
-# ...
-# Author:
-#   Some Name <some-email@domain.tld>
-```
-
-alternative syntax:
-
-```bash
-#/bin/bash
-# ...
-# @AUTHOR  Some Name <some-email@domain.tld>
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-@AUTHOR  Some Name <some-email@domain.tld>
-"""
-```
-
-### Category Tag
-
-```bash
-#/bin/bash
-# ...
-# Category:
-#   Some Category
-```
-
-alternative syntax:
-
-```bash
-#/bin/bash
-# ...
-# @CATEGORY  Some Category
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-Category:
-	Some Category
-"""
-```
-
-### TRMM Timeout Setting
-
-```bash
-#/bin/bash
-# ...
-# @TRMM-TIMEOUT  120
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-@TRMM-TIMEOUT  120
-"""
-```
-
-### Draft
-
-Set to true to skip finalizing of the script.
-The script will still be generated to dist/, but will not be recorded in the README and TRMM metafile.
-
-```bash
-#/bin/bash
-# ...
-# Draft:
-#   True
-```
-
-```python
-#!/usr/bin/env python3
-"""
-...
-Draft:
-	True
-"""
-```
-
-## Generative Code
-
-The compiler can generate dynamic code based on script comments, notably for usage and arguments
-
-### Compile usage()
-
-Will generate a "usage()" function with the description and syntax arguments.
-
-```bash
-# compile:usage
-```
 
 
 ## Scriptlets
 
 Scriptlets are small pieces of reusable code that can be included in scripts during compilation.
-This system provides a number of scripts, and more can be added by adding a `compile.sources` file in the root of the project
+This system provides a number of snippets, and more can be added by adding a `compile.sources` file in the root of the project
 with the format:
 
 ```
@@ -1711,4 +1343,13 @@ To include this scriptlet:
 ```python
 # from scriptlets.ssh.get_user_authorized_keys import *
 ```
+
+### [_common/require_root.ps1](scriptlets/_common/require_root.ps1)
+
+To include this scriptlet:
+
+```powershell
+# scriptlet:_common/require_root.ps1
+```
+
 
