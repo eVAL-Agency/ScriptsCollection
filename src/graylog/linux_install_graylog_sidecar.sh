@@ -17,7 +17,7 @@
 #   site.graylog_token - API token for the Graylog server
 #
 # Supports:
-#   Debian 12
+#   Debian 12, 13
 #   Ubuntu 24.04
 #   Rocky 8, 9
 #   CentOS 8, 9
@@ -38,6 +38,9 @@
 # @TRMM-TIMEOUT 120
 #
 # Changelog:
+#   2026.09.13 - Switch to using log_* functions for messages
+#              - Switch to using download function for downloading
+#   2026.04.08 - Bump Graylog repo version to 1.6
 # 	2025.04.09 - Original Release
 #
 
@@ -48,66 +51,52 @@
 # scriptlet:_common/setconfigfile_orappend.sh
 # scriptlet:_common/os_like.sh
 # scriptlet:_common/package_install.sh
+# scriptlet:_common/download.sh
+# scriptlet:bz_eval_log/log.sh
 
 if [ -z "$GRAYLOG_TOKEN" ]; then
-	echo "ERROR - missing Graylog token in environment variable GRAYLOG_TOKEN" >&2
+	log_error "Missing Graylog token in environment variable GRAYLOG_TOKEN"
 	exit 1
 fi
 
-if [ -z "$(which wget)" ]; then
-	package_install wget
-fi
-
-SRC="https://packages.graylog2.org/repo/packages"
+SRC="https://downloads.graylog.org/repo/packages"
 
 [ -e /opt/script-collection ] || mkdir -p /opt/script-collection
 
-if [ $(os_like_debian) -eq 1 ]; then
-	FILE="graylog-sidecar-repository_1-5_all.deb"
+if os_like_debian -q; then
+	FILE="graylog-sidecar-repository_1-6_all.deb"
 
-	if [ ! -e /opt/script-collection/$FILE ]; then
-		wget $SRC/$FILE -O /opt/script-collection/$FILE
-		if [ $? -ne 0 ]; then
-			echo "Failed to download $SRC/$FILE" >&2
-			exit 1
-		fi
-
-		export DEBIAN_FRONTEND="noninteractive"
-		dpkg -i /opt/script-collection/$FILE
-		apt-get update
-		package_install graylog-sidecar
+	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
+		log_error "Failed to download $SRC/$FILE"
+		exit 1
 	fi
-elif [ $(os_like_rhel) -eq 1 ]; then
-	FILE="graylog-sidecar-repository-1-5.noarch.rpm"
 
-	if [ ! -e /opt/script-collection/$FILE ]; then
-		wget $SRC/$FILE -O /opt/script-collection/$FILE
-		if [ $? -ne 0 ]; then
-			echo "Failed to download $SRC/$FILE" >&2
-			exit 1
-		fi
+	export DEBIAN_FRONTEND="noninteractive"
+	dpkg -i /opt/script-collection/$FILE
+	package_install graylog-sidecar
+elif os_like_rhel -q; then
+	FILE="graylog-sidecar-repository-1-6.noarch.rpm"
 
-		rpm -Uvh /opt/script-collection/$FILE
-		dnf clean all
-		package_install graylog-sidecar
+	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
+		log_error "Failed to download $SRC/$FILE"
+		exit 1
 	fi
-elif [ $(os_like_suse) -eq 1 ]; then
-	FILE="graylog-sidecar-repository-1-5.noarch.rpm"
 
-	if [ ! -e /opt/script-collection/$FILE ]; then
-		wget $SRC/$FILE -O /opt/script-collection/$FILE
-		if [ $? -ne 0 ]; then
-			echo "Failed to download $SRC/$FILE" >&2
-			exit 1
-		fi
+	rpm -Uvh /opt/script-collection/$FILE
+	package_install graylog-sidecar
+elif os_like_suse -q; then
+	FILE="graylog-sidecar-repository-1-6.noarch.rpm"
 
-		rpm -Uvh /opt/script-collection/$FILE
-		mv /etc/yum.repos.d/* /etc/zypp/repos.d/
-		zypper up
-		package_install graylog-sidecar
+	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
+		log_error "Failed to download $SRC/$FILE"
+		exit 1
 	fi
+
+	rpm -Uvh /opt/script-collection/$FILE
+	mv /etc/yum.repos.d/* /etc/zypp/repos.d/
+	package_install graylog-sidecar
 else
-	echo "Unable to install Graylog Sidecar, unsupported or unknown OS" >&2
+	log_error "Unable to install Graylog Sidecar, unsupported or unknown OS"
 	exit 1
 fi
 
