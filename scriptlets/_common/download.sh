@@ -14,6 +14,16 @@
 # Arguments:
 #   --no-overwrite       Skip download if destination file already exists
 #
+# Examples:
+#
+# Download URL to local file
+#   download "https://example.tld/file.dat" "file.dat"
+#
+# Test downloading was successful
+#   if download "https://example.tld/file.dat" "file.dat"; then
+#     # download was successful; do some operation
+#   fi
+#
 # CHANGELOG:
 #   2026.04.30 - Use logging with new logging interface
 #   2026.04.21 - Add retry in curl to retry on connection issues, (looking at you Github)
@@ -32,13 +42,13 @@ function download() {
 	shift 2
 
 	while [ $# -ge 1 ]; do
-    		case $1 in
-    			--no-overwrite)
-    				OVERWRITE=0
-    				;;
-    		esac
-    		shift
-    	done
+		case $1 in
+			--no-overwrite)
+				OVERWRITE=0
+				;;
+		esac
+		shift
+	done
 
 	if [ -z "$SOURCE" ] || [ -z "$DESTINATION" ]; then
 		log_error "download: Missing required parameters!"
