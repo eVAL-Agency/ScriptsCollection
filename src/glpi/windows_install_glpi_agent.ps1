@@ -1,11 +1,27 @@
-# Install GLPI agent on a Windows system
-#
-# Server Arguments:
-#  -Tag {{tagname}}
-#  -Server {{serverurl}}
-#
-# Where tagname is the Entity tag to associate with in GLPI
-# and serverurl is the FQDN of the GLPI server to deploy to
+<#
+.TITLE
+	Install GLPI Agent [Windows]
+
+.DESCRIPTION
+	Install GLPI agent on a Windows system
+
+.SUPPORTS
+	Windows 10, 11, Server 2019
+
+.CATEGORY
+	Monitoring
+
+.LICENSE
+	AGPLv3
+
+.ARGUMENTS
+	-Tag {{tagname}} - The Entity tag to associate within GLPI
+	-Server {{serverurl}} - The FQDN of the GLPI server
+
+.CHANGELOG
+	2026.09.13 - Initial release
+
+#>
 
 [CmdletBinding()]
 param (

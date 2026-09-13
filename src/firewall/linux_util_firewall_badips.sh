@@ -17,7 +17,7 @@
 #   Linux-All
 #
 # Category:
-#   Firewall
+#   Security
 #
 # License:
 #   AGPLv3

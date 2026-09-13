@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   Firewall
+#   Security
 #
 # Syntax:
 #   SOURCE=--ip=<string>        IP address or CIDR network to allow DEFAULT=any
