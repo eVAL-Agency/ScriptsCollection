@@ -15,24 +15,25 @@ A collection of useful scripts for various Linux distributions
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Disks / Check Disk Health [Windows]](dist/disk/windows_check_disk_health.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [Disks / Check Disk Space [Linux]](dist/disk/linux_check_disk_space.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Disks / Check Disk Space [Windows]](dist/disk/windows_check_disk_space.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows (All)") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Check Firewall Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Firewall / Check Firewall Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Firewall - Allow IP/Port [Linux]](dist/firewall/linux_util_firewall_allow.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Firewall / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Licensing / Get Windows License Information](dist/windows/windows_inventory_get_windows_license.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 8, 10, 11, Server 2016, Server 2019") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Memory / Check Memory Usage [Linux]](dist/memory/linux_check_memory_usage.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Memory / Check Memory Usage [Windows]](dist/memory/windows_check_memory_usage.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install Graylog Sidecar [Linux]](dist/graylog/linux_install_graylog_sidecar.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install GLPI Agent [Linux]](dist/glpi/linux_install_glpi_agent.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12, 13") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Monitoring / Install GLPI Agent [Windows]](dist/glpi/windows_install_glpi_agent.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11, Server 2019") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install Graylog Sidecar [Linux]](dist/graylog/linux_install_graylog_sidecar.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12, 13") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install Zabbix Agent2 [Linux]](dist/zabbix/linux_install_zabbix_agent2.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install Zabbix Proxy [Linux]](dist/zabbix/linux_install_zabbix_proxy.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Network Utility / Install net-diag utilities [Linux]](dist/net-diag/linux_install_net_diag.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Networking / Set Hostname and Restart [Windows]](dist/hostname/windows_set_hostname.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Repo / Switch Repo to Community [Proxmox]](dist/proxmox/linux_manage_proxmox_repo_community.sh)  | ![proxmox](.supplemental/images/icons/proxmox.svg "Proxmox") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Block Bad IPs [Linux]](dist/firewall/linux_util_firewall_badips.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Defender Status [Windows]](dist/defender/windows_check_defender_status.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Check Firewall Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Firewall Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Allow IP/Port [Linux]](dist/firewall/linux_util_firewall_allow.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall (UFW) [Linux]](dist/ufw/linux_install_ufw.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Virtualmin Renew All SSL [Linux]](dist/virtualmin/renew-all-letsencrypt-certs.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [System Cleanup / Remove Bloatware in Win10 [Windows]](dist/windows/windows_debloat_win10.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install 7zip [Linux]](dist/7zip/linux_install_7zip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install rar [Linux]](dist/rar/linux_install_rar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install unrar [Linux]](dist/rar/linux_install_unrar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
@@ -430,6 +431,27 @@ Where `scriptlet_type` is the directory that contains the scriptlets to include.
 
 By default `main` is used to download sources, but a different branch can be specified by appending `:branch_name`.
 
+### [ipset/ipset.sh](scriptlets/ipset/ipset.sh)
+
+To include this scriptlet:
+
+```bash
+# scriptlet:ipset/ipset.sh
+```
+
+#### function ipset_create:
+
+Create an ipset of the requested type
+
+Will silently exit if the ipset already exists.
+
+#### function ipset_swap:
+
+Swap the contents of an ipset into another
+
+Will ensure the first exists and will auto-remove the temp list on migration
+
+
 ### [ufw/install.sh](scriptlets/ufw/install.sh)
 
 To include this scriptlet:
@@ -559,6 +581,7 @@ https://github.com/adoptium
 Will print the directory where OpenJDK was installed.
 
 CHANGELOG:
+2026.04.26 - Supress command output on Ubuntu
 2026.04.13 - Mute curl output
 2026.03.07 - Bugfix to fix 'path-jre//bin/java'
 2026.03.05 - Add support for update-alternatives / alternatives.
@@ -580,6 +603,7 @@ Install SteamCMD
 
 CHANGELOG:
 
+2026.07.08 - Add support for Arch
 2025.12.16 - Ensure steam GPG key is readable by apt
 2025.11.09 - Switch to using download to support curl/wget abstraction
 2025.11.03 - Add support for Debian 13
@@ -601,6 +625,38 @@ Install firewalld
 
 CHANGELOG:
 2026.03.16 - Switch awk to use $NF for better support
+
+
+### [bz_eval_log/log.sh](scriptlets/bz_eval_log/log.sh)
+
+To include this scriptlet:
+
+```bash
+# scriptlet:bz_eval_log/log.sh
+```
+
+#### function bz_eval_log:
+
+Print a header message
+
+CHANGELOG:
+2026.04.30 - Initial version
+
+#### function log_error:
+
+Helper wrappers for convenience
+
+#### function log_warning:
+
+
+
+#### function log_info:
+
+
+
+#### function log_debug:
+
+
 
 
 ### [bz_eval_tui/print_header.sh](scriptlets/bz_eval_tui/print_header.sh)
@@ -700,6 +756,7 @@ Syntax:
 install_xvfb [--no-daemon] [--display <int>] [--service <name>]
 
 Changelog:
+20260708 - Add support for Arch
 20260216 - Initial version
 
 
@@ -792,6 +849,11 @@ For RHEL/CentOS, this installs firewalld
 For SUSE, this installs firewalld
 For other OS types, this defaults to installing UFW
 
+CHANGELOG
+2026.09.12 - Auto-install ipset along with firewall for working with sets of ips
+2026.07.08 - Add support for Arch
+2026.03.16 - Initial port from firewall-specific scripts
+
 
 ### [_common/require_root.sh](scriptlets/_common/require_root.sh)
 
@@ -800,6 +862,60 @@ To include this scriptlet:
 ```bash
 # scriptlet:_common/require_root.sh
 ```
+
+### [_common/firewall_action.sh](scriptlets/_common/firewall_action.sh)
+
+To include this scriptlet:
+
+```bash
+# scriptlet:_common/firewall_action.sh
+```
+
+#### function firewall_action:
+
+Add a rule to the firewall in the INPUT chain
+This action can be "ALLOW" (default), DROP, or REJECT.
+
+General Arguments:
+--action <allow|drop|reject> Action to perform (default: allow)
+--comment <comment>          (only UFW) Comment for the rule
+
+Source Arguments (only 1 allowed):
+--port <port>                Port(s) to allow/block
+--source <source>            Source IP to allow/block
+--ipset <name_of_rule>       Name of ipset to allow/block
+
+Port-Sourced Arguments (only apply when --port is used)
+--protocol <tcp|udp>         Port protocol to allow/block (default: tcp)
+--tcp                        Alias of --protocol tcp
+--udp                        Alias of --protocol udp
+--proto <tcp|udp>            Alias of --protocol (tcp/udp)
+
+Specify multiple ports with `--port '#,#,#'` or a range `--port '#:#'`
+
+EXAMPLES:
+
+Allow port 80 from all
+firewall_action --port 80
+
+Allow DNS lookups from all
+firewall_action --port 53 --udp
+
+Whitelist an IP address
+firewall_action --source 1.2.3.4
+
+Block access from a specific IP
+firewall_action --source 8.7.6.5 --action drop
+
+Block access from a list of ips
+firewall_action --ipset blocklist --action drop
+
+CHANGELOG:
+2026.09.13 - Switch to using log_* functions
+2026.09.10 - Modify function to accept action rules for drop/reject support
+2025.11.23 - Use return codes instead of exit to allow the caller to handle errors
+2025.04.10 - Add "--proto" argument as alternative to "--tcp|--udp"
+
 
 ### [_common/get_wan_ip.sh](scriptlets/_common/get_wan_ip.sh)
 
@@ -937,7 +1053,19 @@ Returns 0 on success, 1 on failure
 Arguments:
 --no-overwrite       Skip download if destination file already exists
 
+Examples:
+
+Download URL to local file
+download "https://example.tld/file.dat" "file.dat"
+
+Test downloading was successful
+if download "https://example.tld/file.dat" "file.dat"; then
+# download was successful; do some operation
+fi
+
 CHANGELOG:
+2026.04.30 - Use logging with new logging interface
+2026.04.21 - Add retry in curl to retry on connection issues, (looking at you Github)
 2025.12.15 - Use cmd_exists to fix regression bug
 2025.12.04 - Add --no-overwrite option to allow skipping download if the destination file exists
 2025.11.23 - Download to a temp location to verify download was successful
@@ -1145,8 +1273,29 @@ Package, (or packages), to install.  Accepts multiple packages at once.
 
 
 CHANGELOG:
+2026.09.12 - Revert paru; it requires NOT root access, which is counter to these scripts
+- Add update support to issue a repo update once per execution
+2026.07.08 - Add paru support for Arch's AUR
 2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
 2025.04.10 - Set Debian frontend to noninteractive
+
+#### function package_install_if:
+
+Perform a package installation IF the requested binary is not located
+
+If one argument is requested, the argument is used for both binary check and install package.
+When two arguments are provided, the first is the binary to check and the second is the package name.
+
+Examples:
+
+Simple check
+package_install_if jq
+
+Varying package name vs binary
+package_install_if php php8.4
+
+CHANGELOG:
+2026.09.12 - Initial version
 
 
 ### [_common/prompt_yn.sh](scriptlets/_common/prompt_yn.sh)
@@ -1190,6 +1339,8 @@ with its pfx directory in /opt/script-collection/GE-Proton${VERSION}/files/share
 @arg $1 string Proton version to install
 
 CHANGELOG:
+2026.04.26 - Supress command output on Ubuntu
+2026.04.23 - Register proton path in alternatives to /usr/local/bin/proton
 2025.11.23 - Use download scriptlet for downloading
 2024.12.22 - Initial version
 

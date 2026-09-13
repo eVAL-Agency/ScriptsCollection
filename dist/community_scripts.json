@@ -186,94 +186,6 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "90d2f788-20b9-51cf-dba1-9af20e3eee6d",
-        "filename": "firewall/linux_check_firewall.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Check Firewall Status [Linux]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Firewall"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
-        "filename": "firewall/windows_check_firewall.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": "Check Firewall Status [Windows]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [
-            "windows"
-        ],
-        "category": "Firewall"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
-        "filename": "firewall/linux_util_firewall_allow.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Firewall - Allow IP/Port [Linux]",
-        "syntax": [
-            "--ip=<string> - IP address or CIDR network to allow DEFAULT=any",
-            "--port=<int> - Port(s) to allow (REQUIRED)",
-            "--proto=<tcp|udp> - Protocol to allow DEFAULT=tcp",
-            "--comment=<comment> - Optional comment for the rule"
-        ],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Firewall"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "1d682aba-8ce0-fddc-3abb-3ae9cf23e790",
-        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Firewall - Whitelist IP",
-        "syntax": [
-            "--ip=<ip> - IP address to whitelist (REQUIRED)",
-            "--comment=<comment> - Optional comment for the rule"
-        ],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Firewall"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "acb36740-1dc3-478b-6afa-444cdf309f2b",
-        "filename": "firewall/linux_install_firewall.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Install Firewall [Linux]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Firewall"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
         "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],
@@ -323,6 +235,44 @@
             "windows"
         ],
         "category": "Memory"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "fc69adae-5e9e-82ab-42e8-fadd9a7d1231",
+        "filename": "glpi/linux_install_glpi_agent.sh",
+        "args": [
+            "--server={{client.glpi_hostname}}"
+        ],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install GLPI Agent [Linux]",
+        "syntax": [
+            "--server=<string> - Hostname or IP of GLIP server to push inventory to",
+            "--version=<string> - Optional version to download; DEFAULT=latest",
+            "--tag=<string> - Tag is the Entity tag to associate with in GLPI"
+        ],
+        "default_timeout": "120",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Monitoring"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "155ee1a0-4bed-c483-01d2-19c7f88cc4b0",
+        "filename": "glpi/windows_install_glpi_agent.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Install GLPI Agent [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Monitoring"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -417,25 +367,6 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "cdc7a4ef-498a-87d7-56d6-ca8be2bcbde3",
-        "filename": "hostname/windows_set_hostname.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@veraciousnetwork.com>",
-        "name": "Set Hostname and Restart [Windows]",
-        "syntax": [
-            "-Hostname <string> - New hostname to set",
-            "-Workgroup <string> - Workgroup to set (optional)"
-        ],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [
-            "windows"
-        ],
-        "category": "Networking"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "cebfec3b-f016-1b0f-8ba8-cf8a3ad5776d",
         "filename": "proxmox/linux_manage_proxmox_repo_community.sh",
         "args": [],
@@ -447,6 +378,22 @@
         "shell": "shell",
         "supported_platforms": [],
         "category": "Repo"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "c61023ba-8dea-257a-5f08-eaa0b1535027",
+        "filename": "firewall/linux_util_firewall_badips.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Block Bad IPs [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
@@ -471,12 +418,100 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "90d2f788-20b9-51cf-dba1-9af20e3eee6d",
+        "filename": "firewall/linux_check_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Check Firewall Status [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
+        "filename": "firewall/windows_check_firewall.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Check Firewall Status [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
+        "filename": "firewall/linux_util_firewall_allow.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Firewall - Allow IP/Port [Linux]",
+        "syntax": [
+            "--ip=<string> - IP address or CIDR network to allow DEFAULT=any",
+            "--port=<int> - Port(s) to allow (REQUIRED)",
+            "--proto=<tcp|udp> - Protocol to allow DEFAULT=tcp",
+            "--comment=<comment> - Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "1d682aba-8ce0-fddc-3abb-3ae9cf23e790",
+        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Firewall - Whitelist IP",
+        "syntax": [
+            "--ip=<ip> - IP address to whitelist (REQUIRED)",
+            "--comment=<comment> - Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "b8be8ca8-8365-47fc-b069-7d0c8dd87ca9",
         "filename": "ufw/linux_install_ufw.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
         "name": "Install Firewall (UFW) [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "acb36740-1dc3-478b-6afa-444cdf309f2b",
+        "filename": "firewall/linux_install_firewall.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Install Firewall [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
@@ -500,22 +535,6 @@
             "linux"
         ],
         "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f87f6937-29e7-920f-e2d1-0ea2870b8b6a",
-        "filename": "windows/windows_debloat_win10.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "Richard Newton (https://github.com/Sycnex)",
-        "name": "Remove Bloatware in Win10 [Windows]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [
-            "windows"
-        ],
-        "category": "System Cleanup"
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",

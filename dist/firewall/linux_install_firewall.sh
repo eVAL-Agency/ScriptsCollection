@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   Firewall
+#   Security
 #
 # License:
 #   AGPLv3
@@ -88,8 +88,8 @@ function os_like() {
 	local OS="$1"
 
 	if [ -f '/etc/os-release' ]; then
-		ID="$(egrep '^ID=' /etc/os-release | sed 's:ID=::')"
-		LIKE="$(egrep '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
+		ID="$(grep -E '^ID=' /etc/os-release | sed 's:ID=::')"
+		LIKE="$(grep -E '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
 
 		if [[ "$LIKE" =~ "$OS" ]] || [ "$ID" == "$OS" ]; then
 			return 0;
@@ -329,7 +329,7 @@ function os_version() {
 		fi
 
 	elif [ -f '/etc/os-release' ]; then
-		local VERS="$(egrep '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
+		local VERS="$(grep -E '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
 
 		if [[ "$VERS" =~ '"' ]]; then
 			# Strip quotes around the OS name
@@ -355,6 +355,8 @@ function os_version() {
 	fi
 }
 
+_PACKAGE_INSTALL_UPDATED=0
+
 ##
 # Install a package with the system's package manager.
 #
@@ -371,11 +373,36 @@ function os_version() {
 #
 #
 # CHANGELOG:
+#   2026.09.12 - Revert paru; it requires NOT root access, which is counter to these scripts
+#              - Add update support to issue a repo update once per execution
+#   2026.07.08 - Add paru support for Arch's AUR
 #   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
 #   2025.04.10 - Set Debian frontend to noninteractive
 #
 function package_install (){
 	echo "package_install: Installing $*..."
+
+	if [ $_PACKAGE_INSTALL_UPDATED -eq 0 ]; then
+		# Perform a system update before requesting the install.
+		# This is cached in the runtime so it's only executed once per run
+		if os_like_bsd -q; then
+			pkg update -y
+		elif os_like_debian -q; then
+			DEBIAN_FRONTEND="noninteractive" apt-get update -y
+		elif os_like_rhel -q; then
+			if [ "$(os_version)" -ge 9 ]; then
+				dnf makecache
+			else
+				yum makecache
+			fi
+		elif os_like_arch -q; then
+			pacman -Sy --noconfirm
+		elif os_like_suse -q; then
+			zypper refresh
+		fi
+
+		_PACKAGE_INSTALL_UPDATED=1
+	fi
 
 	if os_like_bsd -q; then
 		pkg install -y $*
@@ -388,13 +415,49 @@ function package_install (){
 			yum install -y $*
 		fi
 	elif os_like_arch -q; then
-		pacman -Syu --noconfirm $*
+		pacman -S --noconfirm $*
 	elif os_like_suse -q; then
 		zypper install -y $*
 	else
 		echo 'package_install: Unsupported or unknown OS' >&2
 		echo 'Please report this at https://github.com/eVAL-Agency/ScriptsCollection/issues' >&2
 		exit 1
+	fi
+}
+
+##
+# Perform a package installation IF the requested binary is not located
+#
+# If one argument is requested, the argument is used for both binary check and install package.
+# When two arguments are provided, the first is the binary to check and the second is the package name.
+#
+# Examples:
+#
+# Simple check
+#   package_install_if jq
+#
+# Varying package name vs binary
+#   package_install_if php php8.4
+#
+# CHANGELOG:
+#   2026.09.12 - Initial version
+#
+function package_install_if() {
+	local PKG_NAME=""
+	local PKG_BIN=""
+	if [ $# -ge 2 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$2"
+	elif [ $# -eq 1 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$1"
+	else
+		echo "package_install_if: Requires at least one argument" >&2
+		exit 1
+	fi
+
+	if ! cmd_exists "$PKG_BIN"; then
+		package_install "$PKG_NAME"
 	fi
 }
 
@@ -446,23 +509,30 @@ function install_firewalld() {
 # For SUSE, this installs firewalld
 # For other OS types, this defaults to installing UFW
 #
+# CHANGELOG
+#  2026.09.12 - Auto-install ipset along with firewall for working with sets of ips
+#  2026.07.08 - Add support for Arch
+#  2026.03.16 - Initial port from firewall-specific scripts
+#
 function firewall_install() {
-	local FIREWALL
+	if [ "$(get_available_firewall)" == "none" ]; then
+		# No firewall installed yet, install the distro default one
 
-	FIREWALL=$(get_available_firewall)
-	if [ "$FIREWALL" != "none" ]; then
-		return
+		if os_like_debian -q; then
+			install_ufw
+		elif os_like_rhel -q; then
+			install_firewalld
+		elif os_like_suse -q; then
+			install_firewalld
+		elif os_like_arch -q; then
+			install_firewalld
+		else
+			install_ufw
+		fi
 	fi
 
-	if os_like_debian -q; then
-		install_ufw
-	elif os_like_rhel -q; then
-		install_firewalld
-	elif os_like_suse -q; then
-		install_firewalld
-	else
-		install_ufw
-	fi
+	# Ensure ipset is installed; useful for blocklists
+	package_install_if ipset
 }
 
 firewall_install

@@ -8,7 +8,7 @@
 #   Linux-All
 #
 # Category:
-#   Firewall
+#   Security
 #
 # Syntax:
 #   --ip=<ip> - IP address to whitelist (REQUIRED)

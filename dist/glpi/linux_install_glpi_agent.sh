@@ -1,20 +1,19 @@
 #!/bin/bash
 #
-# Install Graylog Sidecar [Linux]
+# Install GLPI Agent [Linux]
+#
+# Install the GLPI inventory agent
+#
+# Generated with info from
+# https://glpi-agent.readthedocs.io/en/version-1.17/installation/index.html#linux-installer
 #
 # Syntax:
-#   --server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
-#   GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)
+#   --server=<string> - Hostname or IP of GLIP server to push inventory to
+#   --version=<string> - Optional version to download; DEFAULT=latest
+#   --tag=<string> - Tag is the Entity tag to associate with in GLPI
 #
 # TRMM Arguments:
-#   --server={{client.graylog_server}}
-#
-# TRMM Environment:
-#   GRAYLOG_TOKEN={{client.graylog_token}}
-#
-# TRMM Custom Fields:
-#   site.graylog_server - Fully resolved URL of Graylog server, including http(s)://, port, and /api
-#   site.graylog_token - API token for the Graylog server
+#   --server={{client.glpi_hostname}}
 #
 # Supports:
 #   Debian 12, 13
@@ -22,6 +21,7 @@
 #   Rocky 8, 9
 #   CentOS 8, 9
 #   RHEL 8, 9
+#
 #
 # Category:
 #   Monitoring
@@ -38,43 +38,8 @@
 # @TRMM-TIMEOUT 120
 #
 # Changelog:
-#   2026.09.13 - Switch to using log_* functions for messages
-#              - Switch to using download function for downloading
-#   2026.04.08 - Bump Graylog repo version to 1.6
-# 	2025.04.09 - Original Release
-#
-
-
-function usage() {
-  cat >&2 <<EOD
-Usage: $0 [options]
-
-Options:
-    --server=<string> - ... - Fully resolved URL of Graylog server, including http(s)://, port, and /api (REQUIRED)
-    GRAYLOG_TOKEN (environmental variable) - API token for the Graylog server (REQUIRED)
-
-
-EOD
-  exit 1
-}
-
-# Parse arguments
-SERVER=""
-while [ "$#" -gt 0 ]; do
-	case "$1" in
-		--server=*|--server)
-			[ "$1" == "--server" ] && shift 1 && SERVER="$1" || SERVER="${1#*=}"
-			[ "${SERVER:0:1}" == "'" ] && [ "${SERVER:0-1}" == "'" ] && SERVER="${SERVER:1:-1}"
-			[ "${SERVER:0:1}" == '"' ] && [ "${SERVER:0-1}" == '"' ] && SERVER="${SERVER:1:-1}"
-			;;
-		-h|--help) usage;;
-		*) echo "Unknown argument: $1" >&2; usage;;
-	esac
-	shift 1
-done
-if [ -z "$SERVER" ]; then
-	usage
-fi
+#   2026.09.13 - Switch to using log_* functions
+#   2026.07.01 - Initial release
 
 ##
 # Simple check to enforce the script to be run as root
@@ -82,41 +47,6 @@ if [ $(id -u) -ne 0 ]; then
 	echo "This script must be run as root or with sudo!" >&2
 	exit 1
 fi
-##
-# Use sed to set a line in a config file
-#
-# If the target line does not exist, it will simply get appended to the end
-#
-# Arguments:
-#   $1 Line match
-#   $2 Line replace
-#   $3 filename
-#
-# Example:
-#   setconfigfile_orappend "^Password=.*" "Password=1234" "/etc/myapp/myapp.conf"
-#
-#
-# CHANGELOG:
-#   2025.04.10 - Escape '?' characters in the sed search
-function setconfigfile_orappend() {
-  # Swap '/' with '\/' since sed here uses '/' as the delimiter
-  # Additionally, '?' characters in the SED search need escaped
-  SED_SEARCH="$(echo "$1" | sed 's:/:\\/:g' | sed 's:?:\\\?:g')"
-  SED_REPLACE="$(echo "$2" | sed 's:/:\\/:g')"
-  GREP_SEARCH="$1"
-  GREP_REPLACE="$2"
-  FILENAME="$3"
-
-  if grep -Eq "$GREP_SEARCH" "$FILENAME"; then
-    if [ "$OSFAMILY" == "bsd" ]; then
-      sed -i '' "s/$SED_SEARCH/$SED_REPLACE/" "$FILENAME"
-    else
-      sed -i "s/$SED_SEARCH/$SED_REPLACE/" "$FILENAME"
-    fi
-  else
-    echo "$GREP_REPLACE" >> "$FILENAME"
-  fi
-}
 ##
 # Check if the OS is "like" a certain type
 #
@@ -356,46 +286,6 @@ function os_like_macos() {
 	fi
 }
 ##
-# Get the operating system version
-#
-# Just the major version number is returned
-#
-function os_version() {
-	if [ "$(uname -s)" == 'FreeBSD' ]; then
-		local _V="$(uname -K)"
-		if [ ${#_V} -eq 6 ]; then
-			echo "${_V:0:1}"
-		elif [ ${#_V} -eq 7 ]; then
-			echo "${_V:0:2}"
-		fi
-
-	elif [ -f '/etc/os-release' ]; then
-		local VERS="$(grep -E '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
-
-		if [[ "$VERS" =~ '"' ]]; then
-			# Strip quotes around the OS name
-			VERS="$(echo "$VERS" | sed 's:"::g')"
-		fi
-
-		if [[ "$VERS" =~ \. ]]; then
-			# Remove the decimal point and everything after
-			# Trims "24.04" down to "24"
-			VERS="${VERS/\.*/}"
-		fi
-
-		if [[ "$VERS" =~ "v" ]]; then
-			# Remove the "v" from the version
-			# Trims "v24" down to "24"
-			VERS="${VERS/v/}"
-		fi
-
-		echo "$VERS"
-
-	else
-		echo 0
-	fi
-}
-##
 # Simple wrapper to emulate `which -s`
 #
 # The -s flag is not available on all systems, so this function
@@ -414,112 +304,6 @@ function cmd_exists() {
 	local CMD="$1"
 	which "$CMD" &>/dev/null
 	return $?
-}
-
-_PACKAGE_INSTALL_UPDATED=0
-
-##
-# Install a package with the system's package manager.
-#
-# Uses Redhat's yum, Debian's apt-get, and SuSE's zypper.
-#
-# Usage:
-#
-# ```syntax-shell
-# package_install apache2 php7.0 mariadb-server
-# ```
-#
-# @param $1..$N string
-#        Package, (or packages), to install.  Accepts multiple packages at once.
-#
-#
-# CHANGELOG:
-#   2026.09.12 - Revert paru; it requires NOT root access, which is counter to these scripts
-#              - Add update support to issue a repo update once per execution
-#   2026.07.08 - Add paru support for Arch's AUR
-#   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
-#   2025.04.10 - Set Debian frontend to noninteractive
-#
-function package_install (){
-	echo "package_install: Installing $*..."
-
-	if [ $_PACKAGE_INSTALL_UPDATED -eq 0 ]; then
-		# Perform a system update before requesting the install.
-		# This is cached in the runtime so it's only executed once per run
-		if os_like_bsd -q; then
-			pkg update -y
-		elif os_like_debian -q; then
-			DEBIAN_FRONTEND="noninteractive" apt-get update -y
-		elif os_like_rhel -q; then
-			if [ "$(os_version)" -ge 9 ]; then
-				dnf makecache
-			else
-				yum makecache
-			fi
-		elif os_like_arch -q; then
-			pacman -Sy --noconfirm
-		elif os_like_suse -q; then
-			zypper refresh
-		fi
-
-		_PACKAGE_INSTALL_UPDATED=1
-	fi
-
-	if os_like_bsd -q; then
-		pkg install -y $*
-	elif os_like_debian -q; then
-		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
-	elif os_like_rhel -q; then
-		if [ "$(os_version)" -ge 9 ]; then
-			dnf install -y $*
-		else
-			yum install -y $*
-		fi
-	elif os_like_arch -q; then
-		pacman -S --noconfirm $*
-	elif os_like_suse -q; then
-		zypper install -y $*
-	else
-		echo 'package_install: Unsupported or unknown OS' >&2
-		echo 'Please report this at https://github.com/eVAL-Agency/ScriptsCollection/issues' >&2
-		exit 1
-	fi
-}
-
-##
-# Perform a package installation IF the requested binary is not located
-#
-# If one argument is requested, the argument is used for both binary check and install package.
-# When two arguments are provided, the first is the binary to check and the second is the package name.
-#
-# Examples:
-#
-# Simple check
-#   package_install_if jq
-#
-# Varying package name vs binary
-#   package_install_if php php8.4
-#
-# CHANGELOG:
-#   2026.09.12 - Initial version
-#
-function package_install_if() {
-	local PKG_NAME=""
-	local PKG_BIN=""
-	if [ $# -ge 2 ]; then
-		PKG_BIN="$1"
-		PKG_NAME="$2"
-	elif [ $# -eq 1 ]; then
-		PKG_BIN="$1"
-		PKG_NAME="$1"
-	else
-		echo "package_install_if: Requires at least one argument" >&2
-		exit 1
-	fi
-
-	if ! cmd_exists "$PKG_BIN"; then
-		package_install "$PKG_NAME"
-	fi
 }
 ##
 # log helper by eval.bz
@@ -684,65 +468,77 @@ function download() {
 	fi
 }
 
-if [ -z "$GRAYLOG_TOKEN" ]; then
-	log_error "Missing Graylog token in environment variable GRAYLOG_TOKEN"
-	exit 1
+function usage() {
+  cat >&2 <<EOD
+Usage: $0 [options]
+
+Options:
+    --server=<string> - Hostname or IP of GLIP server to push inventory to
+    --version=<string> - Optional version to download; DEFAULT=latest
+    --tag=<string> - Tag is the Entity tag to associate with in GLPI
+
+Install the GLPI inventory agent
+
+Generated with info from
+https://glpi-agent.readthedocs.io/en/version-1.17/installation/index.html#linux-installer
+EOD
+  exit 1
+}
+
+# Parse arguments
+GLPI_SERVER=""
+VERSION="latest"
+TAG=""
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--server=*|--server)
+			[ "$1" == "--server" ] && shift 1 && GLPI_SERVER="$1" || GLPI_SERVER="${1#*=}"
+			[ "${GLPI_SERVER:0:1}" == "'" ] && [ "${GLPI_SERVER:0-1}" == "'" ] && GLPI_SERVER="${GLPI_SERVER:1:-1}"
+			[ "${GLPI_SERVER:0:1}" == '"' ] && [ "${GLPI_SERVER:0-1}" == '"' ] && GLPI_SERVER="${GLPI_SERVER:1:-1}"
+			;;
+		--version=*|--version)
+			[ "$1" == "--version" ] && shift 1 && VERSION="$1" || VERSION="${1#*=}"
+			[ "${VERSION:0:1}" == "'" ] && [ "${VERSION:0-1}" == "'" ] && VERSION="${VERSION:1:-1}"
+			[ "${VERSION:0:1}" == '"' ] && [ "${VERSION:0-1}" == '"' ] && VERSION="${VERSION:1:-1}"
+			;;
+		--tag=*|--tag)
+			[ "$1" == "--tag" ] && shift 1 && TAG="$1" || TAG="${1#*=}"
+			[ "${TAG:0:1}" == "'" ] && [ "${TAG:0-1}" == "'" ] && TAG="${TAG:1:-1}"
+			[ "${TAG:0:1}" == '"' ] && [ "${TAG:0-1}" == '"' ] && TAG="${TAG:1:-1}"
+			;;
+		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
+	esac
+	shift 1
+done
+if [ -z "$GLPI_SERVER" ]; then
+	usage
+fi
+if [ -z "$TAG" ]; then
+	usage
 fi
 
-SRC="https://downloads.graylog.org/repo/packages"
-
-[ -e /opt/script-collection ] || mkdir -p /opt/script-collection
 
 if os_like_debian -q; then
-	FILE="graylog-sidecar-repository_1-6_all.deb"
-
-	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
-		log_error "Failed to download $SRC/$FILE"
-		exit 1
-	fi
-
-	export DEBIAN_FRONTEND="noninteractive"
-	dpkg -i /opt/script-collection/$FILE
-	package_install graylog-sidecar
-elif os_like_rhel -q; then
-	FILE="graylog-sidecar-repository-1-6.noarch.rpm"
-
-	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
-		log_error "Failed to download $SRC/$FILE"
-		exit 1
-	fi
-
-	rpm -Uvh /opt/script-collection/$FILE
-	package_install graylog-sidecar
-elif os_like_suse -q; then
-	FILE="graylog-sidecar-repository-1-6.noarch.rpm"
-
-	if ! download "$SRC/$FILE" "/opt/script-collection/$FILE" --no-overwrite; then
-		log_error "Failed to download $SRC/$FILE"
-		exit 1
-	fi
-
-	rpm -Uvh /opt/script-collection/$FILE
-	mv /etc/yum.repos.d/* /etc/zypp/repos.d/
-	package_install graylog-sidecar
-else
-	log_error "Unable to install Graylog Sidecar, unsupported or unknown OS"
-	exit 1
+	# Debian should ensure that apt is up to date, as IP addresses or hostnames may change.
+	apt update;
 fi
 
-
-# Configure Graylog Sidecar
-setconfigfile_orappend "^[#]?server_url:.*" "server_url: \"$SERVER\"" "/etc/graylog/sidecar/sidecar.yml"
-setconfigfile_orappend "^[#]?server_api_token:.*" "server_api_token: \"$GRAYLOG_TOKEN\"" "/etc/graylog/sidecar/sidecar.yml"
-setconfigfile_orappend "^[#]?node_name:.*" "node_name: \"$(hostname -f)\"" "/etc/graylog/sidecar/sidecar.yml"
-
-
-# Install the systemd service
-graylog-sidecar -service install
-if [ $? -ne 0 ]; then
-	# Failed to install the service, probably already installed.
-	systemctl restart graylog-sidecar
-else
-	systemctl enable graylog-sidecar
-    systemctl start graylog-sidecar
+if [ "$VERSION" == "latest" ]; then
+	# Use curl to check the latest version.
+	VERSION="$(curl -s -o /dev/null -w "%{redirect_url}" https://github.com/glpi-project/glpi-agent/releases/latest)"
+	VERSION="${VERSION##*/}"
 fi
+
+SRC="https://github.com/glpi-project/glpi-agent/releases/download/${VERSION}/glpi-agent-${VERSION}-linux-installer.pl"
+FILE="glpi-agent-${VERSION}-linux-installer.pl"
+
+# We will use this directory as a working directory for source files that need downloaded.
+[ -d /opt/script-collection ] || mkdir -p /opt/script-collection
+
+if ! download "$SRC" "/opt/script-collection/$FILE" --no-overwrite; then
+	log_error "install_glpi_agent: Cannot download GLPI Agent from ${SRC}!"
+	return 1
+fi
+
+perl /opt/script-collection/$FILE --no-question --server="$GLPI_SERVER" --tag="$TAG" --no-httpd --runnow
