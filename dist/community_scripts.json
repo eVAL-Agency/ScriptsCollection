@@ -397,6 +397,22 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "124cef8c-e5f4-f016-37c9-10459f0a4757",
+        "filename": "firewall/windows_util_firewall_badips.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Block Bad IPs [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c682e175-acf5-b885-1855-a597ef6dc15b",
         "filename": "defender/windows_check_defender_status.ps1",
         "args": [],
