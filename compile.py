@@ -1003,28 +1003,46 @@ for script in scripts:
 	scripts_table.append('| %s [%s / %s](%s) %s | %s |' % (type, category, title, href, readme, ' '.join(os_support)))
 
 # Iterate through scriptlets to generate documentation about the included scriptlet functions available
-scriptlets_text = ''
+scriptlets.sort(key=lambda x: x.name)
+scritplets_table = []
+scritplets_table.append('| Function          | Include           |')
+scritplets_table.append('|-------------------|-------------------|')
 for scriptlet in scriptlets:
-	scriptlets_text += '### [%s](%s)\n\n' % (scriptlet.name[11:], scriptlet.name)
-	scriptlets_text += 'To include this scriptlet:\n\n'
+	href = scriptlet.name
+	# Fix windows-style directory separators
+	href = href.replace('\\', '/')
+	# Swap src/ with dist/ for the href target, (folks usually want to see the compiled version, not the source)
+	href = href.replace('src/', 'dist/')
 
 	if scriptlet.type == 'shell':
-		scriptlets_text += '```bash\n# scriptlet:%s\n```\n\n' % scriptlet.name[11:]
+		type = '![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell")'
 	elif scriptlet.type == 'powershell':
-		scriptlets_text += '```powershell\n# scriptlet:%s\n```\n\n' % scriptlet.name[11:]
+		type = '![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell")'
 	elif scriptlet.type == 'python':
-		scriptlets_text += '```python\n# from scriptlets.%s import *\n```\n\n' % scriptlet.name[11:-3].replace('/', '.')
-	#if scriptlet.description:
-	#	scriptlets_text += '%s\n\n' % scriptlet.description
+		type = '![Python](.supplemental/images/icons/python.svg "Python")'
+	else:
+		type = ''
+
+	if scriptlet.type == 'shell':
+		scriptlet_include = '# scriptlet:%s' % scriptlet.name[11:]
+	elif scriptlet.type == 'powershell':
+		scriptlet_include = '# scriptlet:%s' % scriptlet.name[11:]
+	elif scriptlet.type == 'python':
+		scriptlet_include = 'from scriptlets.%s import *' % scriptlet.name[11:-3].replace('/', '.')
+	else:
+		scriptlet_include = ''
+
 	if len(scriptlet.functions) > 0:
 		for function in scriptlet.functions:
-			scriptlets_text += '#### function %s:\n\n%s\n\n' % (function.name, function.body.strip())
-		scriptlets_text += '\n'
+			if not function.name.startswith('_'):
+				scritplets_table.append('| %s [%s](%s) | %s |' % (type, function.name, href, scriptlet_include))
+	else:
+		scritplets_table.append('| %s [%s](%s) | %s |' % (type, 'N/A', href, scriptlet_include))
 
 if os.path.exists('.supplemental/README-template.md'):
 	replacements = {
 		'%%SCRIPTS_TABLE%%': '\n'.join(scripts_table),
-		'%%SCRIPTLETS%%': scriptlets_text
+		'%%SCRIPTLETS_TABLE%%': '\n'.join(scritplets_table)
 	}
 	with open('.supplemental/README-template.md', 'r') as f:
 		template = f.read()
