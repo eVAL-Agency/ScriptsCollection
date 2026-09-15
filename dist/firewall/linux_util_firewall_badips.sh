@@ -1025,7 +1025,7 @@ function ipset_create() {
 
 		if [ "$FIREWALL_AVAILABLE" == "firewalld" ]; then
 			if [ $IS_TEMP -eq 0 ]; then
-				firewall-cmd --permanent --add-ipset="$NAME"
+				firewall-cmd --permanent --new-ipset="$NAME" --type="$TYPE"
 				firewall-cmd --reload
 			fi
 		fi
