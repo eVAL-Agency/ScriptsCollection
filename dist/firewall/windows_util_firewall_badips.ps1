@@ -55,36 +55,90 @@ function Test-IsValidIP {
 	return $false
 }
 
+function Remove-NetFirewallRuleWithLog {
+	param([Parameter(ValueFromPipeline)]$Rule)
+	process {
+		if ($null -ne $Rule) {
+			Write-Host "Removing Firewall Rule: $($Rule.DisplayName)" -ForegroundColor Gray
+			$Rule | Remove-NetFirewallRule
+		}
+	}
+}
+
 function Update-FirewallRule {
 	param (
 		[string]$RuleName,
+		[string]$RuleDescription,
 		[string[]]$IPList
 	)
 
+	$chunkSize = 2000
+	$useChunks = $false
+	$chunks = @()
+
 	if ($IPList.Count -eq 0) {
 		Write-Warning "No valid IPs found for $RuleName. Removing existing rule if it exists."
-		if (Get-NetFirewallRule -Name $RuleName -ErrorAction SilentlyContinue) {
-			Remove-NetFirewallRule -Name $RuleName
-		}
+		Get-NetFirewallRule -DisplayName "$RuleName_*" -ErrorAction SilentlyContinue | Remove-NetFirewallRuleWithLog
+		Get-NetFirewallRule -DisplayName "$RuleName" -ErrorAction SilentlyContinue | Remove-NetFirewallRuleWithLog
 		return
 	}
 
-	Write-Host "Updating Firewall Rule: $RuleName ($($IPList.Count) IPs)" -ForegroundColor Cyan
+	Write-Host "Updating Firewall Rule: $RuleName ($( $IPList.Count ) IPs)" -ForegroundColor Cyan
 
-	# Check if rule exists
-	$existingRule = Get-NetFirewallRule -Name $RuleName -ErrorAction SilentlyContinue
+	if ($IPList.Count -gt $chunkSize) {
+		# This list contains more rules than allowed in each Windows Defender list.
+		# remove any non-chunked ruleset and create the new chunks.
+		Get-NetFirewallRule -DisplayName "$RuleName" -ErrorAction SilentlyContinue | Remove-NetFirewallRuleWithLog
+		$useChunks = $true
 
-	if ($null -eq $existingRule) {
-		# Create new rule to Drop incoming traffic from these remote addresses
-		New-NetFirewallRule -Name $RuleName `
-                            -DisplayName $RuleName `
+		for ($i = 0; $i -lt $IPList.Count; $i += $chunkSize) {
+			# Calculate the end of the current chunk
+			$endIndex = [Math]::Min($i + $chunkSize - 1, $IPList.Count - 1)
+
+			# Extract the slice of IPs for this batch
+			$currentChunk = $IPList[$i..$endIndex]
+
+			# Create a unique name for this specific chunk (e.g., Block_Spamhaus_DROP_0, _1, etc.)
+			$chunkIndex = [Math]::Floor($i / $chunkSize)
+			$currentRuleName = "$RuleName`_$chunkIndex"
+
+			$chunks += @{
+				Name = $currentRuleName
+				DisplayName = $currentRuleName
+				IPs = $currentChunk
+			}
+		}
+	}
+	else {
+		# List is smaller than the max chunksize.
+		# Just create the full list as a chunk.
+		Get-NetFirewallRule -DisplayName "${RuleName}_*" -ErrorAction SilentlyContinue | Remove-NetFirewallRuleWithLog
+		$useChunks = $false
+		$chunks += @{
+			Name = $RuleName
+			DisplayName = $RuleName
+			IPs = $IPList
+		}
+	}
+
+	# Iterate over the internal collection to create the rules
+	foreach ($chunk in $chunks) {
+		# Check if rule exists
+		$existingRule = Get-NetFirewallRule -Name $chunk.Name -ErrorAction SilentlyContinue
+
+		if ($null -eq $existingRule) {
+			# Create new rule to Drop incoming traffic from these remote addresses
+			New-NetFirewallRule -Name $chunk.Name `
+                            -DisplayName $chunk.DisplayName `
                             -Direction Inbound `
                             -Action Block `
-                            -RemoteAddress $IPList `
-                            -Description "Automatically updated bad IP list"
-	} else {
-		# Update existing rule with the new address list
-		Set-NetFirewallRule -Name $RuleName -RemoteAddress $IPList
+                            -RemoteAddress $chunk.IPs `
+                            -Description $RuleDescription
+		}
+		else {
+			# Update existing rule with the new address list
+			Set-NetFirewallRule -Name $chunk.Name -RemoteAddress $chunk.IPs
+		}
 	}
 }
 
@@ -105,7 +159,10 @@ try {
 			}
 		}
 	}
-	Update-FirewallRule -RuleName "Block_Tor_Exits" -IPList $torIPs
+	Update-FirewallRule `
+		-RuleName "Block_Tor_Exits" `
+		-RuleDescription "Blocklist of Tor exit nodes" `
+		-IPList $torIPs
 } catch {
 	Write-Error "Failed to update Tor exit nodes: $($_.Exception.Message)"
 }
@@ -118,12 +175,16 @@ try {
 
 	$spamIPs = @()
 	# Iterate through the JSON and find CIDR entries
-	foreach ($entry in $spamData) {
+	foreach ($line in ($spamData -Split "`r?`n")) {
+		$entry = $line | ConvertFrom-Json
 		if ($entry.cidr -and (Test-IsValidIP -IP $entry.cidr)) {
 			$spamIPs += $entry.cidr
 		}
 	}
-	Update-FirewallRule -RuleName "Block_Spamhaus_DROP" -IPList $spamIPs
+	Update-FirewallRule `
+		-RuleName "Block_Spamhaus_DROP" `
+		-RuleDescription "Spamhaus Dont-Route-Or-Peer list - (c) The Spamhaus Project SLU" `
+		-IPList $spamIPs
 } catch {
 	Write-Error "Failed to update Spamhaus DROP: $($_.Exception.Message)"
 }
@@ -141,7 +202,10 @@ try {
 	foreach ($ip in $cinsIPs) {
 		if (Test-IsValidIP -IP $ip) { $validCinsIPs += $ip }
 	}
-	Update-FirewallRule -RuleName "Block_CINS_Threats" -IPList $validCinsIPs
+	Update-FirewallRule `
+		-RuleName "Block_CINS_Threats" `
+		-RuleDescription "CINS Active Threat list - https://www.ciarmy.com/" `
+		-IPList $validCinsIPs
 } catch {
 	Write-Error "Failed to update CINS threat data: $($_.Exception.Message)"
 }
