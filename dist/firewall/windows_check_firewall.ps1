@@ -1,6 +1,6 @@
 <#
 .TITLE
-	Check Firewall Status [Windows]
+	Firewall - Check Status [Windows]
 
 .SUPPORTS
 	Windows

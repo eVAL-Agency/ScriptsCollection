@@ -381,38 +381,6 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c61023ba-8dea-257a-5f08-eaa0b1535027",
-        "filename": "firewall/linux_util_firewall_badips.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Block Bad IPs [Linux]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "124cef8c-e5f4-f016-37c9-10459f0a4757",
-        "filename": "firewall/windows_util_firewall_badips.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": "Block Bad IPs [Windows]",
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [
-            "windows"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "c682e175-acf5-b885-1855-a597ef6dc15b",
         "filename": "defender/windows_check_defender_status.ps1",
         "args": [],
@@ -434,12 +402,65 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
+        "filename": "firewall/linux_util_firewall_allow.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Firewall - Allow IP/Port [Linux]",
+        "syntax": [
+            "--ip=<string> - IP address or CIDR network to allow DEFAULT=\"\"",
+            "--port=<string> - Port(s) to allow DEFAULT=\"\"",
+            "--proto=<tcp|udp> - Protocol to allow DEFAULT=tcp",
+            "--comment=<comment> - Optional comment for the rule"
+        ],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "c61023ba-8dea-257a-5f08-eaa0b1535027",
+        "filename": "firewall/linux_util_firewall_badips.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
+        "name": "Firewall - Block Bad IPs [Linux]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [
+            "linux"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "124cef8c-e5f4-f016-37c9-10459f0a4757",
+        "filename": "firewall/windows_util_firewall_badips.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Firewall - Block Bad IPs [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "90d2f788-20b9-51cf-dba1-9af20e3eee6d",
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],
         "env": [],
         "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Check Firewall Status [Linux]",
+        "name": "Firewall - Check Status [Linux]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "shell",
@@ -455,52 +476,12 @@
         "args": [],
         "env": [],
         "submittedBy": "",
-        "name": "Check Firewall Status [Windows]",
+        "name": "Firewall - Check Status [Windows]",
         "syntax": [],
         "default_timeout": "60",
         "shell": "powershell",
         "supported_platforms": [
             "windows"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
-        "filename": "firewall/linux_util_firewall_allow.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Firewall - Allow IP/Port [Linux]",
-        "syntax": [
-            "--ip=<string> - IP address or CIDR network to allow DEFAULT=any",
-            "--port=<int> - Port(s) to allow (REQUIRED)",
-            "--proto=<tcp|udp> - Protocol to allow DEFAULT=tcp",
-            "--comment=<comment> - Optional comment for the rule"
-        ],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
-        ],
-        "category": "Security"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "1d682aba-8ce0-fddc-3abb-3ae9cf23e790",
-        "filename": "firewall/linux_util_firewall_whitelist_ip.sh",
-        "args": [],
-        "env": [],
-        "submittedBy": "Charlie Powell <cdp1337@bitsnbytes.dev>",
-        "name": "Firewall - Whitelist IP",
-        "syntax": [
-            "--ip=<ip> - IP address to whitelist (REQUIRED)",
-            "--comment=<comment> - Optional comment for the rule"
-        ],
-        "default_timeout": "60",
-        "shell": "shell",
-        "supported_platforms": [
-            "linux"
         ],
         "category": "Security"
     },

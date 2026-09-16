@@ -27,13 +27,12 @@ List of scripts available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Monitoring / Install Zabbix Proxy [Linux]](dist/zabbix/linux_install_zabbix_proxy.sh)  | ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 12") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 8, 9") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Network Utility / Install net-diag utilities [Linux]](dist/net-diag/linux_install_net_diag.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Repo / Switch Repo to Community [Proxmox]](dist/proxmox/linux_manage_proxmox_repo_community.sh)  | ![proxmox](.supplemental/images/icons/proxmox.svg "Proxmox") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Block Bad IPs [Linux]](dist/firewall/linux_util_firewall_badips.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Block Bad IPs [Windows]](dist/firewall/windows_util_firewall_badips.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Defender Status [Windows]](dist/defender/windows_check_defender_status.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Check Firewall Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Firewall Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Allow IP/Port [Linux]](dist/firewall/linux_util_firewall_allow.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Whitelist IP](dist/firewall/linux_util_firewall_whitelist_ip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Block Bad IPs [Linux]](dist/firewall/linux_util_firewall_badips.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Firewall - Block Bad IPs [Windows]](dist/firewall/windows_util_firewall_badips.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Check Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Firewall - Check Status [Windows]](dist/firewall/windows_check_firewall.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall (UFW) [Linux]](dist/ufw/linux_install_ufw.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Virtualmin Renew All SSL [Linux]](dist/virtualmin/renew-all-letsencrypt-certs.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
@@ -103,6 +102,7 @@ List of script snippets available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [prompt_yn](scriptlets/bz_eval_tui/prompt_yn.sh) | # scriptlet:bz_eval_tui/prompt_yn.sh |
 | ![Python](.supplemental/images/icons/python.svg "Python") [add](scriptlets/bz_eval_tui/table.py) | from scriptlets.bz_eval_tui.table import * |
 | ![Python](.supplemental/images/icons/python.svg "Python") [render](scriptlets/bz_eval_tui/table.py) | from scriptlets.bz_eval_tui.table import * |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_firewalld](scriptlets/firewalld/firewall_action_firewalld.sh) | # scriptlet:firewalld/firewall_action_firewalld.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_firewalld](scriptlets/firewalld/install.sh) | # scriptlet:firewalld/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ini_debug](scriptlets/io_github_lsferreira42/lib_ini.sh) | # scriptlet:io_github_lsferreira42/lib_ini.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ini_error](scriptlets/io_github_lsferreira42/lib_ini.sh) | # scriptlet:io_github_lsferreira42/lib_ini.sh |
@@ -128,9 +128,11 @@ List of script snippets available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ini_write_array](scriptlets/io_github_lsferreira42/lib_ini.sh) | # scriptlet:io_github_lsferreira42/lib_ini.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ipset_create](scriptlets/ipset/ipset.sh) | # scriptlet:ipset/ipset.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ipset_swap](scriptlets/ipset/ipset.sh) | # scriptlet:ipset/ipset.sh |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_iptables](scriptlets/iptables/firewall_action_iptables.sh) | # scriptlet:iptables/firewall_action_iptables.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_openjdk](scriptlets/openjdk/install.sh) | # scriptlet:openjdk/install.sh |
 | ![Python](.supplemental/images/icons/python.svg "Python") [N/A](scriptlets/org_python/venv_path_include.py) | from scriptlets.org_python.venv_path_include import * |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_proton](scriptlets/proton/install.sh) | # scriptlet:proton/install.sh |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_proxmox](scriptlets/proxmox/firewall_action_proxmox.sh) | # scriptlet:proxmox/firewall_action_proxmox.sh |
 | ![Python](.supplemental/images/icons/python.svg "Python") [N/A](scriptlets/ssh/get_user_authorized_keys.py) | from scriptlets.ssh.get_user_authorized_keys import * |
 | ![Python](.supplemental/images/icons/python.svg "Python") [N/A](scriptlets/ssh/get_user_public_key.py) | from scriptlets.ssh.get_user_public_key import * |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_steamcmd](scriptlets/steam/install-steamcmd.sh) | # scriptlet:steam/install-steamcmd.sh |
@@ -140,6 +142,7 @@ List of script snippets available within this collection.
 | ![Python](.supplemental/images/icons/python.svg "Python") [update](scriptlets/suitecrm/suitecrmsync.py) | from scriptlets.suitecrm.suitecrmsync import * |
 | ![Python](.supplemental/images/icons/python.svg "Python") [create](scriptlets/suitecrm/suitecrmsync.py) | from scriptlets.suitecrm.suitecrmsync import * |
 | ![Python](.supplemental/images/icons/python.svg "Python") [find](scriptlets/suitecrm/suitecrmsync.py) | from scriptlets.suitecrm.suitecrmsync import * |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_ufw](scriptlets/ufw/firewall_action_ufw.sh) | # scriptlet:ufw/firewall_action_ufw.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_ufw](scriptlets/ufw/install.sh) | # scriptlet:ufw/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_xvfb](scriptlets/xvfb/install.sh) | # scriptlet:xvfb/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [yum_repo_excludepkg](scriptlets/yum/repo_excludepkg.sh) | # scriptlet:yum/repo_excludepkg.sh |

@@ -1,6 +1,6 @@
 <#
 .TITLE
-	Block Bad IPs [Windows]
+	Firewall - Block Bad IPs [Windows]
 
 .SUPPORTS
 	Windows

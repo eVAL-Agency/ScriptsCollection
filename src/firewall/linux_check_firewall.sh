@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Check Firewall Status [Linux]
+# Firewall - Check Status [Linux]
 #
 # Check the status of the firewall on a Linux system and print any rules defined.
 #
@@ -43,12 +43,16 @@ else
 fi
 
 
-if [ "$FIREWALL_ENABLED" == "ufw" ]; then
-	ufw status verbose
-elif [ "$FIREWALL_ENABLED" == "firewalld" ]; then
-	for ZONE in $(firewall-cmd --get-zones); do
-		firewall-cmd --list-all --zone=$ZONE
-	done
-#elif [ "$FIREWALL_ENABLED" == "iptables" ]; then
-#	iptables -L -v
-fi
+case "$FIREWALL_ENABLED" in
+	"ufw")
+		ufw status verbose
+		;;
+	"firewalld")
+		for ZONE in $(firewall-cmd --get-zones); do
+    		firewall-cmd --list-all --zone=$ZONE
+    	done
+    	;;
+ 	"proxmox" | "iptables")
+ 		iptables -L -v -n
+ 		;;
+esac

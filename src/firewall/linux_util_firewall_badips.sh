@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Block Bad IPs [Linux]
+# Firewall - Block Bad IPs [Linux]
 #
 # Add firewall rules to block known bad-IPs on the system firewall
 #

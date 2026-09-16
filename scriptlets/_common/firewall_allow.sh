@@ -17,6 +17,9 @@
 #   2025.04.10 - Add "--proto" argument as alternative to "--tcp|--udp"
 #
 function firewall_allow() {
+
+	echo "firewall_allow is now deprecated in favor of firewall_action" >&2
+
 	# Defaults and argument processing
 	local PORT=""
 	local PROTO="tcp"
