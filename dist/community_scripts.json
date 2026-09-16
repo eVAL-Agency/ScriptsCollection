@@ -683,5 +683,19 @@
             "linux"
         ],
         "category": "User Management"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "ea1109a1-189b-efad-1d41-8790f0011f19",
+        "filename": "firewall/windows_util_firewall_allow.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": null,
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [],
+        "category": null
     }
 ]
