@@ -45,13 +45,13 @@ function firewall_action_iptables() {
 		# iptables doesn't natively support multiple ports, so we have to get creative
 		MSG+=("to" "$PORT/$PROTO")
 		if [[ "$PORT" =~ ":" ]] || [[ "$PORT" =~ "," ]]; then
-			CMD_ARGS+=("-m" "multiport" "--dports" "$PORT" "-p" "$PROTO")
+			CMD_ARGS+=("-p" "$PROTO" "-m" "multiport" "--dports" "$PORT")
 		else
-			CMD_ARGS+=("--dport" "$PORT" "-p" "$PROTO")
+			CMD_ARGS+=("-p" "$PROTO" "--dport" "$PORT")
 		fi
 	fi
 
-	CMD_ARGS+=("-j" "ACTION")
+	CMD_ARGS+=("-j" "$ACTION")
 
 	log_info "${MSG[*]}..."
 	iptables "${CMD_ARGS[@]}" || return 2
