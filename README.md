@@ -36,6 +36,7 @@ List of scripts available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall (UFW) [Linux]](dist/ufw/linux_install_ufw.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Virtualmin Renew All SSL [Linux]](dist/virtualmin/renew-all-letsencrypt-certs.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Software / Gitlab - Install Runner [Windows]](dist/gitlab/windows_install_gitlab_runner.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows Server 2022, Windows 10, Windows 11") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install 7zip [Linux]](dist/7zip/linux_install_7zip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install rar [Linux]](dist/rar/linux_install_rar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install unrar [Linux]](dist/rar/linux_install_unrar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
@@ -145,6 +146,9 @@ List of script snippets available within this collection.
 | ![Python](.supplemental/images/icons/python.svg "Python") [find](scriptlets/suitecrm/suitecrmsync.py) | from scriptlets.suitecrm.suitecrmsync import * |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_ufw](scriptlets/ufw/firewall_action_ufw.sh) | # scriptlet:ufw/firewall_action_ufw.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_ufw](scriptlets/ufw/install.sh) | # scriptlet:ufw/install.sh |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [N/A](scriptlets/windows/test_is_reboot_pending.ps1) | # scriptlet:windows/test_is_reboot_pending.ps1 |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [N/A](scriptlets/windows/test_windows_feature_installed.ps1) | # scriptlet:windows/test_windows_feature_installed.ps1 |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [WindowsInstallFeature](scriptlets/windows/windows_install_feature.ps1) | # scriptlet:windows/windows_install_feature.ps1 |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_xvfb](scriptlets/xvfb/install.sh) | # scriptlet:xvfb/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [yum_repo_excludepkg](scriptlets/yum/repo_excludepkg.sh) | # scriptlet:yum/repo_excludepkg.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [zabbix_repo_setup](scriptlets/zabbix/repo-setup.sh) | # scriptlet:zabbix/repo-setup.sh |

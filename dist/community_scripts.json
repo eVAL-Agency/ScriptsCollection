@@ -535,6 +535,25 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "f1c2e543-8a03-5dc7-faf5-0de2e995a5ae",
+        "filename": "gitlab/windows_install_gitlab_runner.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Gitlab - Install Runner [Windows]",
+        "syntax": [
+            "-Url - https://fully.resolved.url",
+            "ENV: GITLAB_TOKEN=runner-registration-token"
+        ],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [
+            "windows"
+        ],
+        "category": "Software"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "5a1ea78b-51bd-c047-ca12-6290641f9c77",
         "filename": "7zip/linux_install_7zip.sh",
         "args": [],
