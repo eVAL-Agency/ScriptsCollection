@@ -1,0 +1,767 @@
+#!/bin/bash
+#
+# Install Gitlab Runner [Linux]
+#
+# Syntax:
+#   --url=<string> - ... - Fully resolved URL of Gitlab server, including http(s)://
+#   GITLAB_TOKEN (environmental variable) - Registration token for the Gitlab server (REQUIRED)
+#
+# TRMM Arguments:
+#   --server={{client.gitlab_server}}
+#
+# TRMM Environment:
+#   GITLAB_TOKEN=some-generated-token-1234
+#
+# Supports:
+#   AmazonLinux 2, 2023, 2025
+#   CentOS 8, 9
+#   Debian 11, 12, 13
+#   LinuxMint
+#   Raspbian
+#   Rocky 8, 9
+#   RHEL 7, 8, 9, 10
+#   Ubuntu 24.04
+#
+# Category:
+#   Software
+#
+# License:
+#   AGPLv3
+#
+# Author:
+#   Charlie Powell <cdp1337@bitsnbytes.dev>
+#
+# Link:
+#   https://github.com/eVAL-Agency/ScriptsCollection
+#
+# @TRMM-TIMEOUT 120
+#
+# Changelog:
+#   2026.09.22 - Original Release
+#
+
+
+function usage() {
+  cat >&2 <<EOD
+Usage: $0 [options]
+
+Options:
+    --url=<string> - ... - Fully resolved URL of Gitlab server, including http(s)://
+    GITLAB_TOKEN (environmental variable) - Registration token for the Gitlab server (REQUIRED)
+
+
+EOD
+  exit 1
+}
+
+# Parse arguments
+SERVER=""
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		--url=*|--url)
+			[ "$1" == "--url" ] && shift 1 && SERVER="$1" || SERVER="${1#*=}"
+			[ "${SERVER:0:1}" == "'" ] && [ "${SERVER:0-1}" == "'" ] && SERVER="${SERVER:1:-1}"
+			[ "${SERVER:0:1}" == '"' ] && [ "${SERVER:0-1}" == '"' ] && SERVER="${SERVER:1:-1}"
+			;;
+		-h|--help) usage;;
+		*) echo "Unknown argument: $1" >&2; usage;;
+	esac
+	shift 1
+done
+if [ -z "$SERVER" ]; then
+	usage
+fi
+
+##
+# Simple check to enforce the script to be run as root
+if [ $(id -u) -ne 0 ]; then
+	echo "This script must be run as root or with sudo!" >&2
+	exit 1
+fi
+##
+# Check if the OS is "like" a certain type
+#
+# Returns 0 if true, 1 if false
+#
+# Usage:
+#   if os_like debian; then ... ; fi
+#
+function os_like() {
+	local OS="$1"
+
+	if [ -f '/etc/os-release' ]; then
+		ID="$(grep -E '^ID=' /etc/os-release | sed 's:ID=::')"
+		LIKE="$(grep -E '^ID_LIKE=' /etc/os-release | sed 's:ID_LIKE=::')"
+
+		if [[ "$LIKE" =~ "$OS" ]] || [ "$ID" == "$OS" ]; then
+			return 0;
+		fi
+	fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_debian)" -eq 1 ]; then ... ; fi
+#   if os_like_debian -q; then ... ; fi
+#
+function os_like_debian() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if os_like debian || os_like ubuntu; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	fi
+
+	if [ $QUIET -eq 0 ]; then echo 0; fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_ubuntu)" -eq 1 ]; then ... ; fi
+#   if os_like_ubuntu -q; then ... ; fi
+#
+function os_like_ubuntu() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if os_like ubuntu; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	fi
+
+	if [ $QUIET -eq 0 ]; then echo 0; fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_rhel)" -eq 1 ]; then ... ; fi
+#   if os_like_rhel -q; then ... ; fi
+#
+function os_like_rhel() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if os_like rhel || os_like fedora || os_like rocky || os_like centos; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	fi
+
+	if [ $QUIET -eq 0 ]; then echo 0; fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_suse)" -eq 1 ]; then ... ; fi
+#   if os_like_suse -q; then ... ; fi
+#
+function os_like_suse() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if os_like suse; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	fi
+
+	if [ $QUIET -eq 0 ]; then echo 0; fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_arch)" -eq 1 ]; then ... ; fi
+#   if os_like_arch -q; then ... ; fi
+#
+function os_like_arch() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if os_like arch; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	fi
+
+	if [ $QUIET -eq 0 ]; then echo 0; fi
+	return 1
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_bsd)" -eq 1 ]; then ... ; fi
+#   if os_like_bsd -q; then ... ; fi
+#
+function os_like_bsd() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if [ "$(uname -s)" == 'FreeBSD' ]; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	else
+		if [ $QUIET -eq 0 ]; then echo 0; fi
+		return 1
+	fi
+}
+
+##
+# Check if the OS is "like" a certain type
+#
+# ie: "ubuntu" will be like "debian"
+#
+# Returns 0 if true, 1 if false
+# Prints 1 if true, 0 if false
+#
+# Usage:
+#   if [ "$(os_like_macos)" -eq 1 ]; then ... ; fi
+#   if os_like_macos -q; then ... ; fi
+#
+function os_like_macos() {
+	local QUIET=0
+	while [ $# -ge 1 ]; do
+		case $1 in
+			-q)
+				QUIET=1;;
+		esac
+		shift
+	done
+
+	if [ "$(uname -s)" == 'Darwin' ]; then
+		if [ $QUIET -eq 0 ]; then echo 1; fi
+		return 0;
+	else
+		if [ $QUIET -eq 0 ]; then echo 0; fi
+		return 1
+	fi
+}
+##
+# Get the operating system version
+#
+# Just the major version number is returned
+#
+function os_version() {
+	if [ "$(uname -s)" == 'FreeBSD' ]; then
+		local _V="$(uname -K)"
+		if [ ${#_V} -eq 6 ]; then
+			echo "${_V:0:1}"
+		elif [ ${#_V} -eq 7 ]; then
+			echo "${_V:0:2}"
+		fi
+
+	elif [ -f '/etc/os-release' ]; then
+		local VERS="$(grep -E '^VERSION_ID=' /etc/os-release | sed 's:VERSION_ID=::')"
+
+		if [[ "$VERS" =~ '"' ]]; then
+			# Strip quotes around the OS name
+			VERS="$(echo "$VERS" | sed 's:"::g')"
+		fi
+
+		if [[ "$VERS" =~ \. ]]; then
+			# Remove the decimal point and everything after
+			# Trims "24.04" down to "24"
+			VERS="${VERS/\.*/}"
+		fi
+
+		if [[ "$VERS" =~ "v" ]]; then
+			# Remove the "v" from the version
+			# Trims "v24" down to "24"
+			VERS="${VERS/v/}"
+		fi
+
+		echo "$VERS"
+
+	else
+		echo 0
+	fi
+}
+##
+# Simple wrapper to emulate `which -s`
+#
+# The -s flag is not available on all systems, so this function
+# provides a consistent way to check for command existence
+# without having to include '&>/dev/null' everywhere.
+#
+# Returns 0 on success, 1 on failure
+#
+# Arguments:
+#   $1 - Command to check
+#
+# CHANGELOG:
+#   2025.12.15 - Initial version (for a regression fix)
+#
+function cmd_exists() {
+	local CMD="$1"
+	which "$CMD" &>/dev/null
+	return $?
+}
+
+_PACKAGE_INSTALL_UPDATED=0
+
+##
+# Install a package with the system's package manager.
+#
+# Uses Redhat's yum, Debian's apt-get, and SuSE's zypper.
+#
+# Usage:
+#
+# ```syntax-shell
+# package_install apache2 php7.0 mariadb-server
+# ```
+#
+# @param $1..$N string
+#        Package, (or packages), to install.  Accepts multiple packages at once.
+#
+#
+# CHANGELOG:
+#   2026.09.12 - Revert paru; it requires NOT root access, which is counter to these scripts
+#              - Add update support to issue a repo update once per execution
+#   2026.07.08 - Add paru support for Arch's AUR
+#   2026.01.09 - Cleanup os_like a bit and add support for RHEL 9's dnf
+#   2025.04.10 - Set Debian frontend to noninteractive
+#
+function package_install (){
+	echo "package_install: Installing $*..."
+
+	if [ $_PACKAGE_INSTALL_UPDATED -eq 0 ]; then
+		# Perform a system update before requesting the install.
+		# This is cached in the runtime so it's only executed once per run
+		if os_like_bsd -q; then
+			pkg update -y
+		elif os_like_debian -q; then
+			DEBIAN_FRONTEND="noninteractive" apt-get update -y
+		elif os_like_rhel -q; then
+			if [ "$(os_version)" -ge 9 ]; then
+				dnf makecache
+			else
+				yum makecache
+			fi
+		elif os_like_arch -q; then
+			pacman -Sy --noconfirm
+		elif os_like_suse -q; then
+			zypper refresh
+		fi
+
+		_PACKAGE_INSTALL_UPDATED=1
+	fi
+
+	if os_like_bsd -q; then
+		pkg install -y $*
+	elif os_like_debian -q; then
+		DEBIAN_FRONTEND="noninteractive" apt-get -o Dpkg::Options::="--force-confold" -o Dpkg::Options::="--force-confdef" install -y $*
+	elif os_like_rhel -q; then
+		if [ "$(os_version)" -ge 9 ]; then
+			dnf install -y $*
+		else
+			yum install -y $*
+		fi
+	elif os_like_arch -q; then
+		pacman -S --noconfirm $*
+	elif os_like_suse -q; then
+		zypper install -y $*
+	else
+		echo 'package_install: Unsupported or unknown OS' >&2
+		echo 'Please report this at https://github.com/eVAL-Agency/ScriptsCollection/issues' >&2
+		exit 1
+	fi
+}
+
+##
+# Perform a package installation IF the requested binary is not located
+#
+# If one argument is requested, the argument is used for both binary check and install package.
+# When two arguments are provided, the first is the binary to check and the second is the package name.
+#
+# Examples:
+#
+# Simple check
+#   package_install_if jq
+#
+# Varying package name vs binary
+#   package_install_if php php8.4
+#
+# CHANGELOG:
+#   2026.09.12 - Initial version
+#
+function package_install_if() {
+	local PKG_NAME=""
+	local PKG_BIN=""
+	if [ $# -ge 2 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$2"
+	elif [ $# -eq 1 ]; then
+		PKG_BIN="$1"
+		PKG_NAME="$1"
+	else
+		echo "package_install_if: Requires at least one argument" >&2
+		exit 1
+	fi
+
+	if ! cmd_exists "$PKG_BIN"; then
+		package_install "$PKG_NAME"
+	fi
+}
+##
+# log helper by eval.bz
+#
+# Facilitates a basic logging system for Bash to print messages to stderr
+#
+# Using:
+#
+# Include this file (or however your import system works)
+# # scriptlet: bz_eval_log/log.sh
+#
+# Change logging level
+# LOG_LEVEL=3 - Set logging level to DEBUG so all messages are displayed
+# LOG_LEVEL=2 - (DEFAULT) - Set logging to info, warnings, and errors
+# LOG_LEVEL=1 - Only display warnings and errors
+# LOG_LEVEL=0 - Only display errors
+#
+# Disable coloration
+# By default this script renders messages with colors.  Disable this with the following
+# LOG_COLORS=0
+#
+# Logging messages
+# log_debug "This is a debug statement"
+# log_info "This is an informational statement"
+# log_warning "This is a warning message"
+# log_error "This is an error message"
+#
+
+# Set the verbosity level: 0=ERROR, 1=WARN, 2=INFO, 3=DEBUG
+LOG_LEVEL=${LOG_LEVEL:-2}
+
+# Set to '0' to disable ANSI colors
+LOG_COLORS=1
+
+# ANSI Color Codes
+LOG_RED='\033[0;31m'
+LOG_GREEN='\033[0;32m'
+LOG_YELLOW='\033[1;33m'
+LOG_BLUE='\033[0;34m'
+LOG_NC='\033[0m' # No Color
+
+##
+# Print a header message
+#
+# CHANGELOG:
+#   2026.04.30 - Initial version
+#
+function bz_eval_log() {
+    local level_name="$1"
+    local color
+    local message="$2"
+    local numeric_level=0
+
+    # Map level names to numbers for comparison
+    case "${level_name^^}" in
+        "ERROR") numeric_level=0; color="$LOG_RED" ;;
+        "WARN")  numeric_level=1; color="$LOG_YELLOW" ;;
+        "INFO")  numeric_level=2; color="" ;;
+        "DEBUG") numeric_level=3; color="$LOG_BLUE" ;;
+    esac
+
+    # Only print if the current log level is high enough
+    if [ "$numeric_level" -le "$LOG_LEVEL" ]; then
+        local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+        # Print to stderr (&2)
+        if [ $LOG_COLORS -eq 1 ] && [ "$color" != "" ]; then
+        	printf "${color}[%s] [%s] %s${LOG_NC}\n" "$timestamp" "$level_name" "$message" >&2
+		else
+        	printf "[%s] [%s] %s\n" "$timestamp" "$level_name" "$message" >&2
+        fi
+    fi
+}
+
+# Helper wrappers for convenience
+function log_error()   { bz_eval_log "ERROR" "$1"; }
+function log_warning() { bz_eval_log "WARN"  "$1"; }
+function log_info()    { bz_eval_log "INFO"  "$1"; }
+function log_debug()   { bz_eval_log "DEBUG" "$1"; }
+
+##
+# Simple download utility function
+#
+# Uses either cURL or wget based on which is available
+#
+# Downloads the file to a temp location initially, then moves it to the final destination
+# upon a successful download to avoid partial files.
+#
+# Returns 0 on success, 1 on failure
+#
+# Arguments:
+#   --no-overwrite       Skip download if destination file already exists
+#
+# Examples:
+#
+# Download URL to local file
+#   download "https://example.tld/file.dat" "file.dat"
+#
+# Test downloading was successful
+#   if download "https://example.tld/file.dat" "file.dat"; then
+#     # download was successful; do some operation
+#   fi
+#
+# CHANGELOG:
+#   2026.04.30 - Use logging with new logging interface
+#   2026.04.21 - Add retry in curl to retry on connection issues, (looking at you Github)
+#   2025.12.15 - Use cmd_exists to fix regression bug
+#   2025.12.04 - Add --no-overwrite option to allow skipping download if the destination file exists
+#   2025.11.23 - Download to a temp location to verify download was successful
+#              - use which -s for cleaner checks
+#   2025.11.09 - Initial version
+#
+function download() {
+	# Argument parsing
+	local SOURCE="$1"
+	local DESTINATION="$2"
+	local OVERWRITE=1
+	local TMP=$(mktemp)
+	shift 2
+
+	while [ $# -ge 1 ]; do
+		case $1 in
+			--no-overwrite)
+				OVERWRITE=0
+				;;
+		esac
+		shift
+	done
+
+	if [ -z "$SOURCE" ] || [ -z "$DESTINATION" ]; then
+		log_error "download: Missing required parameters!"
+		return 1
+	fi
+
+	if [ -f "$DESTINATION" ] && [ $OVERWRITE -eq 0 ]; then
+		log_info "download: Destination file $DESTINATION already exists, skipping download."
+		return 0
+	fi
+
+	if cmd_exists curl; then
+		log_debug "download: Attempting to curl download $SOURCE"
+		if curl --connect-timeout 10 --retry 3 --retry-delay 10 -fsL "$SOURCE" -o "$TMP"; then
+			log_debug "download: Download successful, moving file to $DESTINATION"
+			mv $TMP "$DESTINATION"
+			return 0
+		else
+			log_error "download: curl failed to download $SOURCE"
+			return 1
+		fi
+	elif cmd_exists wget; then
+		log_debug "download: Attempting to wget download $SOURCE"
+		if wget -q "$SOURCE" -O "$TMP"; then
+			log_debug "download: Download successful, moving file to $DESTINATION"
+			mv $TMP "$DESTINATION"
+			return 0
+		else
+			log_error "download: wget failed to download $SOURCE"
+			return 1
+		fi
+	else
+		log_error "download: Neither curl nor wget is installed, cannot download!"
+		return 1
+	fi
+}
+##
+# Get the operating system codename
+#
+# This returns the name of the os, generally used in repositories
+#
+# Debian may return "trixie" or "bullseye".
+#
+function os_codename() {
+	if [ -f '/etc/os-release' ]; then
+		local VERS="$(grep -E '^VERSION_CODENAME=' /etc/os-release | sed 's:VERSION_CODENAME=::')"
+
+		if [[ "$VERS" =~ '"' ]]; then
+			# Strip quotes around the OS codename
+			VERS="$(echo "$VERS" | sed 's:"::g')"
+		fi
+
+		echo "$VERS"
+
+	else
+		echo ''
+	fi
+}
+
+
+##
+# Install Docker Engine
+#
+# Generated from https://docs.docker.com/engine/install/ubuntu/
+#
+# Changelog:
+#   2026.09.22 - Original Release
+#
+function install_docker_engine() {
+	if os_like_debian -q; then
+		local KEY_SRC="https://download.docker.com/linux/debian/gpg"
+		local DEB_SRC="https://download.docker.com/linux/debian"
+		local CODENAME="$(os_codename)"
+		if os_like_ubuntu -q; then
+			KEY_SRC="https://download.docker.com/linux/ubuntu/gpg"
+			DEB_SRC="https://download.docker.com/linux/ubuntu"
+    	fi
+
+    	package_install ca-certificates curl
+        install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL $KEY_SRC -o /etc/apt/keyrings/docker.asc
+        chmod a+r /etc/apt/keyrings/docker.asc
+
+        tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: $DEB_SRC
+Suites: $CODENAME
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+		apt update
+		package_install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+		return 0
+	elif os_like_fedora -q; then
+		dnf config-manager addrepo --from-repofile https://download.docker.com/linux/fedora/docker-ce.repo
+		package_install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+		systemctl enable --now docker
+		return 0
+	elif os_like_rhel -q; then
+		package_install dnf-plugins-core
+		dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+		package_install install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+		systemctl enable --now docker
+		return 0
+	else
+		log_error "Unable to determine OS for Docker Engine install"
+		return 1
+	fi
+}
+
+if [ -z "$GITLAB_TOKEN" ]; then
+	log_error "Missing Gitlab token in environment variable GITLAB_TOKEN"
+	exit 1
+fi
+
+# Install Docker as a dependency so Gitlab Runner has access to it.
+install_docker_engine
+
+# Generated from https://docs.gitlab.com/runner/install/linux-repository
+SRC=""
+FILE="gitlab-runner-repository.sh"
+
+[ -e /opt/script-collection ] || mkdir -p /opt/script-collection
+
+if os_like_debian -q; then
+	SRC="https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh"
+	if ! download "$SRC" "/opt/script-collection/$FILE" --no-overwrite; then
+		log_error "Failed to download $SRC/$FILE"
+		exit 1
+	fi
+elif os_like_rhel -q; then
+	SRC="https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh"
+	if ! download "$SRC" "/opt/script-collection/$FILE" --no-overwrite; then
+		log_error "Failed to download $SRC/$FILE"
+		exit 1
+	fi
+else
+	log_error "Unable to install Gitlab Runner, unsupported or unknown OS"
+	exit 1
+fi
+
+# Install the repo
+chmod +x /opt/script-collection/$FILE
+/opt/script-collection/$FILE
+
+# Install the runner
+package_install gitlab-runner
+
+gitlab-runner register \
+  --non-interactive \
+  --url "$SERVER" \
+  --token "$GITLAB_TOKEN" \
+  --executor "docker" \
+  --docker-image alpine:latest \
+  --docker-pull-policy "if-not-present"

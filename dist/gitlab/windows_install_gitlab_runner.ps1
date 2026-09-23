@@ -1,6 +1,6 @@
 <#
 .TITLE
-	Gitlab - Install Runner [Windows]
+	Install Gitlab Runner [Windows]
 
 .SYNOPSIS
 	Install Gitlab Runner on a Windows server or workstation

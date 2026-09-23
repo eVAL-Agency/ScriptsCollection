@@ -36,7 +36,8 @@ List of scripts available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall (UFW) [Linux]](dist/ufw/linux_install_ufw.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Install Firewall [Linux]](dist/firewall/linux_install_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Virtualmin Renew All SSL [Linux]](dist/virtualmin/renew-all-letsencrypt-certs.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Software / Gitlab - Install Runner [Windows]](dist/gitlab/windows_install_gitlab_runner.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows Server 2022, Windows 10, Windows 11") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Software / Install Gitlab Runner [Linux]](dist/gitlab/linux_install_gitlab_runner.sh)  | ![amazonlinux](.supplemental/images/icons/amazonlinux.svg "AmazonLinux 2, 2023, 2025") ![centos](.supplemental/images/icons/centos.svg "CentOS 8, 9") ![debian](.supplemental/images/icons/debian.svg "Debian 11, 12, 13") ![linuxmint](.supplemental/images/icons/linuxmint.svg "LinuxMint") ![raspbian](.supplemental/images/icons/raspbian.svg "Raspbian") ![redhat](.supplemental/images/icons/redhat.svg "RHEL 7, 8, 9, 10") ![rocky](.supplemental/images/icons/rocky.svg "Rocky 8, 9") ![ubuntu](.supplemental/images/icons/ubuntu.svg "Ubuntu 24.04") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Software / Install Gitlab Runner [Windows]](dist/gitlab/windows_install_gitlab_runner.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows Server 2022, Windows 10, Windows 11") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install 7zip [Linux]](dist/7zip/linux_install_7zip.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install rar [Linux]](dist/rar/linux_install_rar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [System / Install unrar [Linux]](dist/rar/linux_install_unrar.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
@@ -71,6 +72,7 @@ List of script snippets available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [get_wan_ip](scriptlets/_common/get_wan_ip.sh) | # scriptlet:_common/get_wan_ip.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [is_noninteractive](scriptlets/_common/is_noninteractive.sh) | # scriptlet:_common/is_noninteractive.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [os](scriptlets/_common/os.sh) | # scriptlet:_common/os.sh |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [os_codename](scriptlets/_common/os_codename.sh) | # scriptlet:_common/os_codename.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [os_like](scriptlets/_common/os_like.sh) | # scriptlet:_common/os_like.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [os_like_debian](scriptlets/_common/os_like.sh) | # scriptlet:_common/os_like.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [os_like_ubuntu](scriptlets/_common/os_like.sh) | # scriptlet:_common/os_like.sh |
@@ -104,6 +106,7 @@ List of script snippets available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [prompt_yn](scriptlets/bz_eval_tui/prompt_yn.sh) | # scriptlet:bz_eval_tui/prompt_yn.sh |
 | ![Python](.supplemental/images/icons/python.svg "Python") [add](scriptlets/bz_eval_tui/table.py) | from scriptlets.bz_eval_tui.table import * |
 | ![Python](.supplemental/images/icons/python.svg "Python") [render](scriptlets/bz_eval_tui/table.py) | from scriptlets.bz_eval_tui.table import * |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_docker_engine](scriptlets/docker/install_engine.sh) | # scriptlet:docker/install_engine.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_firewalld](scriptlets/firewalld/firewall_action_firewalld.sh) | # scriptlet:firewalld/firewall_action_firewalld.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_firewalld](scriptlets/firewalld/install.sh) | # scriptlet:firewalld/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [ini_debug](scriptlets/io_github_lsferreira42/lib_ini.sh) | # scriptlet:io_github_lsferreira42/lib_ini.sh |
