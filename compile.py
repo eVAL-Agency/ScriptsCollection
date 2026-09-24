@@ -215,9 +215,28 @@ class Script:
 		Argument parser variable name in Python, used to know what variable to use for parsing arguments
 		"""
 
-	def parse(self):
+	def _get_dependencies(self):
+		""" Returns paths to all files included via # scriptlet: or # script: """
+		deps = []
+		if not os.path.exists(self.file):
+			return deps
+		try:
+			with open(self.file, 'r', encoding='utf-8') as f:
+				for line in f:
+					if line.startswith('# scriptlet:'):
+						include = line[12:].strip()
+						deps.append(os.path.join('scriptlets', include))
+					elif line.startswith('# script:'):
+						include = line[9:].strip()
+						deps.append(os.path.join('scripts', include))
+		except Exception:
+			pass
+		return deps
+
+	def parse(self, metadata_only=False):
 		"""
 		Parse a script file to produce a single distributable file with all dependencies included
+		:param metadata_only: If True, skips processing includes/downloads but extracts header info for docs.
 		:return:
 		"""
 		print('Parsing file %s' % self.file)
@@ -239,59 +258,53 @@ class Script:
 				os.path.exists(os.path.join(os.path.dirname(self.file), '__init__.py'))
 			)
 
-		with open(self.file, 'r') as f:
+		with open(self.file, 'r', encoding='utf-8') as f:
 			for line in f:
 				line_number += 1
 				write = True
 
-				if line.startswith('# scriptlet:'):
-					"""
-					Most common command; load a script content in its entirety and integrate it into the parent script
-					
-					The loaded script is parsed and supports its own includes, imports, and so forth.
-					"""
-					# Check for "# scriptlet:..." replacements
-					in_header = False
-					include = line[12:].strip()
-					line = self._parse_include(self.file, line_number, include)
-				elif line.startswith('# script:'):
-					# Check for "# script:..." replacements
-					in_header = False
-					include = line[9:].strip()
-					line = self._parse_script(self.file, line_number, include)
-				elif line.startswith('import ') and self.type == 'python':
-					in_header = False
-					self._parse_import(line)
-					write = False
-				elif line.startswith('from scriptlets.') and self.type == 'python':
-					in_header = False
-					# Treat this as a scriptlet include
-					# Trim "from scriptlets." off the beginning to get the filename
-					line = line[16:].strip()
-					# Trim anything after "import..."; we'll just include the whole file
-					line = line[:line.index(' import')]
-					line = line.replace('.', '/') + '.py'
-					line = self._parse_include(self.file, line_number, line)
-				elif re.match(r'^from .* import .*', line) and self.type == 'python':
-					in_header = False
-					self._parse_import(line)
-					write = False
-				elif line.startswith('# import:') and self.type == 'python':
-					in_header = False
-					include = line[9:].strip()
-					line = self._parse_include(self.file, line_number, include)
-					self._parse_import(line)
-					write = False
-				elif line.strip() == '# compile:usage':
-					in_header = False
-					line = self.generate_usage()
-				elif line.strip() == '# compile:argparse':
-					in_header = False
-					line = self.generate_argparse()
-				elif self.type == 'python' and re.match(r'.* = argparse\.ArgumentParser.*', line):
-					in_header = False
-					self._argparser_var = line.split('=')[0].strip()
-				elif in_header and self.type == 'python' and line.strip() == '"""':
+				# If metadata_only is requested, we skip processing includes/scripts entirely
+				if not metadata_only:
+					if line.startswith('# scriptlet:'):
+						in_header = False
+						include = line[12:].strip()
+						line = self._parse_include(self.file, line_number, include)
+					elif line.startswith('# script:'):
+						in_header = False
+						include = line[9:].strip()
+						line = self._parse_script(self.file, line_number, include)
+					elif line.startswith('import ') and self.type == 'python':
+						in_header = False
+						self._parse_import(line)
+						write = False
+					elif line.startswith('from scriptlets.') and self.type == 'python':
+						in_header = False
+						line = line[16:].strip()
+						line = line[:line.index(' import')]
+						line = line.replace('.', '/') + '.py'
+						line = self._parse_include(self.file, line_number, line)
+					elif re.match(r'^from .* import .*', line) and self.type == 'python':
+						in_header = False
+						self._parse_import(line)
+						write = False
+					elif line.startswith('# import:') and self.type == 'python':
+						in_header = False
+						include = line[9:].strip()
+						line = self._parse_include(self.file, line_number, include)
+						self._parse_import(line)
+						write = False
+					elif line.strip() == '# compile:usage':
+						in_header = False
+						line = self.generate_usage()
+					elif line.strip() == '# compile:argparse':
+						in_header = False
+						line = self.generate_argparse()
+					elif self.type == 'python' and re.match(r'.* = argparse\.ArgumentParser.*', line):
+						in_header = False
+						self._argparser_var = line.split('=')[0].strip()
+
+				# Metadata extraction logic (always runs, even in metadata_only mode)
+				if in_header and self.type == 'python' and line.strip() == '"""':
 					multiline_header = not multiline_header
 				elif in_header and self.type == 'powershell' and line.strip() == '<#':
 					multiline_header = True
@@ -301,10 +314,8 @@ class Script:
 
 				if line_number > 1 and in_header and not multiline_header:
 					if self.type == 'python':
-						# Lines that do not start with '"""' indicate that we are no longer in the file header
 						in_header = line.startswith('"""') or line.startswith('#')
 					elif not line.startswith('#'):
-						# End of '#' lines indicate an end of the header
 						in_header = False
 
 				if in_header:
@@ -313,7 +324,6 @@ class Script:
 					# Process header tags
 					if self.title is None and self.type == 'python' and multiline_header and line.strip() != '':
 						if line.startswith('"""'):
-							# Allow the title to be placed on the first line of the docstring block
 							t = line[3:].strip()
 							self.title =  t if len(t) > 0 else None
 						else:
@@ -880,9 +890,9 @@ class Script:
 		}
 
 
-# Clean the dist directory
-if os.path.exists('dist'):
-	shutil.rmtree('dist')
+# Ensure dist directory exists, but do NOT purge it anymore
+if not os.path.exists('dist'):
+	os.makedirs('dist')
 
 scripts = []
 scriptlets = []
@@ -922,31 +932,40 @@ for file in glob('scriptlets/**/*.ps1', recursive=True):
 	scriptlet.parse()
 	scriptlets.append(scriptlet)
 
-# Parse and compile any script files
-for file in glob('src/**/*.sh', recursive=True):
-	script = Script(file, 'shell')
-	script.repo = repo_url
-	# Parse the source
-	script.parse()
-	script.write()
-	# Add to stack to update project docs
-	scripts.append(script)
 
-for file in glob('src/**/*.py', recursive=True):
-	script = Script(file, 'python')
-	# Parse the source
-	script.parse()
-	script.write()
-	# Add to stack to update project docs
-	scripts.append(script)
+def process_source_files(extension, file_type):
+	for file in glob(f'src/**/*.{extension}', recursive=True):
+		script = Script(file, file_type)
+		dest_file = 'dist/' + file[4:]
 
-for file in glob('src/**/*.ps1', recursive=True):
-	script = Script(file, 'powershell')
-	# Parse the source
-	script.parse()
-	script.write()
-	# Add to stack to update project docs
-	scripts.append(script)
+		# Determine if we need to rebuild
+		needs_rebuild = True
+		if os.path.exists(dest_file):
+			# Check source mtime vs dest mtime
+			if os.path.getmtime(file) <= os.path.getmtime(dest_file):
+				# Check if any dependencies have changed
+				deps = script._get_dependencies()
+				dep_stale = False
+				for dep in deps:
+					if os.path.exists(dep) and os.path.getmtime(dep) > os.path.getmtime(dest_file):
+						dep_stale = True
+						break
+				if not dep_stale:
+					needs_rebuild = False
+
+		if needs_rebuild:
+			script.parse(metadata_only=False) # Full rebuild
+			script.write()
+		else:
+			script.parse(metadata_only=True)  # Metadata only for documentation
+
+		scripts.append(script)
+
+# Run the optimized process
+process_source_files('sh', 'shell')
+process_source_files('py', 'python')
+process_source_files('ps1', 'powershell')
+
 
 # Locate and copy any README files
 for file in glob('src/**/README.md', recursive=True):
