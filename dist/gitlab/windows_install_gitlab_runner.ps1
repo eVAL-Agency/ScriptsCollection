@@ -28,6 +28,10 @@
 
 .SUPPORTS
 	Windows Server 2022, Windows 10, Windows 11
+
+.CHANGELOG
+	2026.09.24 - Fix bug with working directory for gitlab runner path
+	2026.09.22 - Initial build
 #>
 
 Param(
@@ -214,8 +218,8 @@ if (!(Test-Path "$runnerDir\gitlab-runner.exe")) {
 	$runnerExe = "$runnerDir\gitlab-runner.exe"
 	Invoke-WebRequest -Uri $runnerUrl -OutFile $runnerExe
 
-	& $runnerExe install
-	& $runnerExe start
+	Start-Process -FilePath $runnerExe -ArgumentList "install" -WorkingDirectory $runnerDir -Wait
+	Start-Process -FilePath $runnerExe -ArgumentList "start" -WorkingDirectory $runnerDir -Wait
 
 	$regArgs = @(
 		"register",
@@ -228,7 +232,7 @@ if (!(Test-Path "$runnerDir\gitlab-runner.exe")) {
 	)
 
 	try {
-		Start-Process -FilePath $runnerExe -ArgumentList $regArgs -Wait -NoNewWindow -ErrorAction Stop
+		Start-Process -FilePath $runnerExe -ArgumentList $regArgs -WorkingDirectory $runnerDir -Wait -NoNewWindow -ErrorAction Stop
 		Write-Host "Registration successful." -ForegroundColor Green
 	} catch {
 		Write-Error "Registration failed: $($_.Exception.Message)"
