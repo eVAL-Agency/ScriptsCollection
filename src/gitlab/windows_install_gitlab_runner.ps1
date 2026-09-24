@@ -31,6 +31,7 @@
 
 .CHANGELOG
 	2026.09.24 - Fix bug with working directory for gitlab runner path
+	           - Fix support for setting shell to default to powershell instead of pwsh
 	2026.09.22 - Initial build
 #>
 
@@ -46,6 +47,7 @@ $gitUrl = "https://github.com/git-for-windows/git/releases/download/v2.55.0.wind
 $gitInstallPath = Join-Path $env:ProgramFiles "Git"
 $runnerUrl = "https://s3.dualstack.us-east-1.amazonaws.com/gitlab-runner-downloads/latest/binaries/gitlab-runner-windows-amd64.exe"
 $runnerDir = "C:\GitLab-Runner"
+$runnerExe = "$runnerDir\gitlab-runner.exe"
 
 # scriptlet:_common/require_root.ps1
 # scriptlet:windows/test_is_reboot_pending.ps1
@@ -116,12 +118,15 @@ if ($currentPath -notlike "*$gitInstallPath*") {
 if (!(Test-Path "$runnerDir\gitlab-runner.exe")) {
 	Write-Host "Installing GitLab Runner..." -ForegroundColor Cyan
 	New-Item -ItemType Directory -Path $runnerDir -Force
-	$runnerExe = "$runnerDir\gitlab-runner.exe"
+
 	Invoke-WebRequest -Uri $runnerUrl -OutFile $runnerExe
 
 	Start-Process -FilePath $runnerExe -ArgumentList "install" -WorkingDirectory $runnerDir -Wait
 	Start-Process -FilePath $runnerExe -ArgumentList "start" -WorkingDirectory $runnerDir -Wait
+	Set-Service -Name 'gitlab-runner' -StartupType Automatic
+}
 
+if (!(Test-Path "$runnerDir\config.toml")) {
 	$regArgs = @(
 		"register",
 		"--non-interactive",
@@ -129,7 +134,8 @@ if (!(Test-Path "$runnerDir\gitlab-runner.exe")) {
 		"--token", $env:GITLAB_TOKEN,
 		"--executor", "docker-windows",
 		"--docker-image", "mcr.microsoft.com/windows/servercore:1809_amd64",
-		"--docker-pull-policy", "if-not-present"
+		"--docker-pull-policy", "if-not-present",
+		"--shell", "powershell"
 	)
 
 	try {
@@ -139,8 +145,6 @@ if (!(Test-Path "$runnerDir\gitlab-runner.exe")) {
 		Write-Error "Registration failed: $($_.Exception.Message)"
 		exit 1
 	}
-
-	Set-Service -Name 'gitlab-runner' -StartupType Automatic
 }
 
 Write-Host "Provisioning Complete!" -ForegroundColor Green

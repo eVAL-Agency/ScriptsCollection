@@ -191,6 +191,7 @@ class Script:
 		self.readme = None
 		self.author = None
 		self.guid = None
+		self.guid_str = None
 		self.category = None
 		self.draft = False
 		self.trmm_timeout = 60
@@ -655,6 +656,7 @@ class Script:
 		frame.append(0xff & hashedValueOdd >> 48)
 		frame.append(0xff & hashedValueOdd >> 56)
 		self.guid = uuid.UUID(bytes=bytes(frame)).__str__()
+		self.guid_str = hash_str
 
 
 	def _parse_author(self, line):
@@ -877,6 +879,7 @@ class Script:
 		return {
 			'$schema': 'https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json',
 			'guid': self.guid,
+			'_guid_str': self.guid_str,
 			'filename': filename,
 			'args': self.args,
 			'env': self.env,
