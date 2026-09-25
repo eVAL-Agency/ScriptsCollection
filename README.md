@@ -29,6 +29,7 @@ List of scripts available within this collection.
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Repo / Switch Repo to Community [Proxmox]](dist/proxmox/linux_manage_proxmox_repo_community.sh)  | ![proxmox](.supplemental/images/icons/proxmox.svg "Proxmox") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Check Defender Status [Windows]](dist/defender/windows_check_defender_status.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Allow IP/Port [Linux]](dist/firewall/linux_util_firewall_allow.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Firewall - Allow IP/Port [Windows]](dist/firewall/windows_util_firewall_allow.ps1)  |  |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Block Bad IPs [Linux]](dist/firewall/linux_util_firewall_badips.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Security / Firewall - Block Bad IPs [Windows]](dist/firewall/windows_util_firewall_badips.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows") |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Security / Firewall - Check Status [Linux]](dist/firewall/linux_check_firewall.sh)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
@@ -47,7 +48,6 @@ List of scripts available within this collection.
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Updates / Check if Reboot Required [Windows]](dist/updates/windows_check_reboot_required.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Authorize SSH Key [Linux]](dist/ssh/linux_util_ssh_authorize.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Get SSH Public Key [Linux]](dist/ssh/linux_util_ssh_get_key.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Uncategorized / src/firewall/windows_util_firewall_allow.ps1](dist/firewall/windows_util_firewall_allow.ps1)  |  |
 
 
 

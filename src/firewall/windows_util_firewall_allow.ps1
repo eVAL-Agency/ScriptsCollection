@@ -1,9 +1,12 @@
 <#
-.SYNOPSIS
+.TITLE
     Firewall - Allow IP/Port [Windows]
 
-.DESCRIPTION
+.SYNOPSIS
     Allows a service and/or source in the Windows Defender Firewall.
+
+.CATEGORY
+	Security
 
 .EXAMPLE
     .\windows_util_firewall_allow.ps1 -Port "80,443"

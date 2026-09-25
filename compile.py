@@ -259,7 +259,7 @@ class Script:
 				os.path.exists(os.path.join(os.path.dirname(self.file), '__init__.py'))
 			)
 
-		with open(self.file, 'r', encoding='utf-8') as f:
+		with (open(self.file, 'r', encoding='utf-8') as f):
 			for line in f:
 				line_number += 1
 				write = True
@@ -320,16 +320,21 @@ class Script:
 						in_header = False
 
 				if in_header:
-					att_start = '\t' if multiline_header else '#  '
+
+					line_lower = line.strip().lower()
+					if multiline_header:
+						line_not_empty = line_lower != ''
+					else:
+						line_not_empty = line_lower != '#'
 
 					# Process header tags
-					if self.title is None and self.type == 'python' and multiline_header and line.strip() != '':
+					if self.title is None and self.type == 'python' and multiline_header and line_lower != '':
 						if line.startswith('"""'):
 							t = line[3:].strip()
 							self.title =  t if len(t) > 0 else None
 						else:
 							self.title = line.strip()
-					elif self.title is None and line.strip() != '#' and not multiline_header and line_number > 1:
+					elif self.title is None and line_not_empty and not multiline_header and line_number > 1:
 						self.title = line[1:].strip()
 					elif '@AUTHOR' in line:
 						parse_description = False
@@ -355,48 +360,54 @@ class Script:
 					elif '@WARLOCK-THUMBNAIL' in line:
 						parse_description = False
 						self.warlock_thumbnail = line[20:].strip()
-					elif re.match(r'^(# |\.|)trmm arguments(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)trmm arguments(:|)$', line_lower):
 						parse_description = False
 						header_section = 'trmm_args'
-					elif re.match(r'^(# |\.|)trmm environment(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)trmm environment(:|)$', line_lower):
 						parse_description = False
 						header_section = 'trmm_env'
-					elif re.match(r'^(# |\.|)syntax(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)syntax(:|)$', line_lower):
 						parse_description = False
 						header_section = 'syntax'
-					elif re.match(r'^(# |\.|)supports(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)supports(:|)$', line_lower):
 						parse_description = False
 						header_section = 'supports'
-					elif re.match(r'^(# |\.|)category(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)category(:|)$', line_lower):
 						parse_description = False
 						header_section = 'category'
-					elif re.match(r'^(# |\.|)title(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)title(:|)$', line_lower):
 						parse_description = False
 						header_section = 'title'
-					elif re.match(r'^(# |\.|)draft(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)draft(:|)$', line_lower):
 						parse_description = False
 						header_section = 'draft'
-					elif re.match(r'^(# |\.|)author(:|)$', line.lower().strip()):
+					elif re.match(r'^(# |\.|)author(:|)$', line_lower):
 						parse_description = False
 						header_section = 'author'
-					elif line[0:len(att_start)] == att_start and header_section == 'trmm_args':
+					elif re.match(r'^(# |\.|)changelog(:|)$', line_lower):
+						parse_description = False
+						header_section = None  # Not used here
+					elif re.match(r'^(# |\.|)license(:|)$', line_lower):
+						parse_description = False
+						header_section = None  # Not used here
+					elif line_not_empty and header_section == 'trmm_args':
 						self._parse_arg(line)
-					elif line[0:len(att_start)] == att_start and header_section == 'trmm_env':
+					elif line_not_empty and header_section == 'trmm_env':
 						self._parse_env(line)
-					elif line[0:len(att_start)] == att_start and header_section == 'syntax':
+					elif line_not_empty and header_section == 'syntax':
 						line = self._parse_syntax(line)
-					elif line[0:len(att_start)] == att_start and header_section == 'supports':
+					elif line_not_empty and header_section == 'supports':
 						self._parse_supports(line)
-					elif line[0:len(att_start)] == att_start and header_section == 'category':
+					elif line_not_empty and header_section == 'category':
 						self.category = line[1:].strip()
-					elif line[0:len(att_start)] == att_start and header_section == 'title':
+					elif line_not_empty and header_section == 'title':
 						self.title = line[1:].strip()
-					elif line[0:len(att_start)] == att_start and header_section == 'draft':
+					elif line_not_empty and header_section == 'draft':
 						val = line[1:].strip().lower()
 						self.draft = (val == '1' or val == 'true' or val == 'yes')
-					elif line[0:len(att_start)] == att_start and header_section == 'author':
+					elif line_not_empty and header_section == 'author':
 						self._parse_author(line[1:].strip())
-					elif line.lower().startswith('# category: '):
+					elif line_lower.startswith('# category: '):
 						parse_description = False
 						header_section = None
 						self.category = line[12:].strip()
