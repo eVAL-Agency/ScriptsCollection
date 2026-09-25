@@ -444,6 +444,21 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "ea1109a1-189b-efad-1d41-8790f0011f19",
+        "_guid_str": "src/firewall/windows_util_firewall_allow.ps1",
+        "filename": "firewall/windows_util_firewall_allow.ps1",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": "Firewall - Allow IP/Port [Windows]",
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "powershell",
+        "supported_platforms": [],
+        "category": "Security"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
         "guid": "f07c538d-6ed5-a24c-11ec-0ea38f874900",
         "_guid_str": "src/firewall/linux_util_firewall_badips.sh",
         "filename": "firewall/linux_util_firewall_badips.sh",
@@ -764,20 +779,5 @@
             "linux"
         ],
         "category": "User Management"
-    },
-    {
-        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ea1109a1-189b-efad-1d41-8790f0011f19",
-        "_guid_str": "src/firewall/windows_util_firewall_allow.ps1",
-        "filename": "firewall/windows_util_firewall_allow.ps1",
-        "args": [],
-        "env": [],
-        "submittedBy": "",
-        "name": null,
-        "syntax": [],
-        "default_timeout": "60",
-        "shell": "powershell",
-        "supported_platforms": [],
-        "category": null
     }
 ]
