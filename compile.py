@@ -159,7 +159,7 @@ class Scriptlet:
 
 		elif self.type == 'powershell':
 			# PowerShell: Find function <name>, capture preceding <# ... #> or # comments
-			func_pattern = re.compile(r'(?:<#[\s\S]*?#>|(?:#.*\n)*)\s*function\s+(\w+)\s*\{', re.MULTILINE)
+			func_pattern = re.compile(r'^function\s+([a-zA-Z0-9_-]+)\s*\{', re.MULTILINE)
 			for match in func_pattern.finditer(content):
 				name = match.group(1)
 				# Extract preceding block comment or line comments

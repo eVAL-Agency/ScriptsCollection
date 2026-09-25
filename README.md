@@ -149,8 +149,8 @@ List of script snippets available within this collection.
 | ![Python](.supplemental/images/icons/python.svg "Python") [find](scriptlets/suitecrm/suitecrmsync.py) | from scriptlets.suitecrm.suitecrmsync import * |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [firewall_action_ufw](scriptlets/ufw/firewall_action_ufw.sh) | # scriptlet:ufw/firewall_action_ufw.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_ufw](scriptlets/ufw/install.sh) | # scriptlet:ufw/install.sh |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [N/A](scriptlets/windows/test_is_reboot_pending.ps1) | # scriptlet:windows/test_is_reboot_pending.ps1 |
-| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [N/A](scriptlets/windows/test_windows_feature_installed.ps1) | # scriptlet:windows/test_windows_feature_installed.ps1 |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Test-IsRebootPending](scriptlets/windows/test_is_reboot_pending.ps1) | # scriptlet:windows/test_is_reboot_pending.ps1 |
+| ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Test-WindowsFeatureInstalled](scriptlets/windows/test_windows_feature_installed.ps1) | # scriptlet:windows/test_windows_feature_installed.ps1 |
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [WindowsInstallFeature](scriptlets/windows/windows_install_feature.ps1) | # scriptlet:windows/windows_install_feature.ps1 |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [install_xvfb](scriptlets/xvfb/install.sh) | # scriptlet:xvfb/install.sh |
 | ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [yum_repo_excludepkg](scriptlets/yum/repo_excludepkg.sh) | # scriptlet:yum/repo_excludepkg.sh |
