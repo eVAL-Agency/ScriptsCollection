@@ -8,6 +8,9 @@
 .CATEGORY
 	Security
 
+.SUPPORTS
+	Windows
+
 .EXAMPLE
     .\windows_util_firewall_allow.ps1 -Port "80,443"
     Allow http/https

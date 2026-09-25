@@ -454,7 +454,9 @@
         "syntax": [],
         "default_timeout": "60",
         "shell": "powershell",
-        "supported_platforms": [],
+        "supported_platforms": [
+            "windows"
+        ],
         "category": "Security"
     },
     {
