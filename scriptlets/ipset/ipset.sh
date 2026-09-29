@@ -7,6 +7,11 @@
 #
 # Will silently exit if the ipset already exists.
 #
+# CHANGELOG:
+#   2026.09.28 - Fix for UFW on reboots for persistent ipsets
+#   2026.09.15 - Minor fix for firewalld CLI syntax
+#   2026.09.13 - Initial version
+#
 function ipset_create() {
 	# Argument parsing
 	local NAME=""
@@ -57,6 +62,34 @@ function ipset_create() {
 				firewall-cmd --permanent --new-ipset="$NAME" --type="$TYPE"
 				firewall-cmd --reload
 			fi
+		fi
+	fi
+
+	if [ "$FIREWALL_AVAILABLE" == "ufw" ]; then
+		# UFW requires some additional attention to ensure that ipset is persistent across restarts.
+		if [ $IS_TEMP -eq 0 ]; then
+			ipset save > /etc/ipset.save
+		fi
+
+		if [ ! -e "/etc/systemd/system/ipset-persistent.service" ]; then
+			cat > "/etc/systemd/system/ipset-persistent.service" <<EOD
+[Unit]
+Description=Restore ipset rules
+Before=network-pre.target ufw.service
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/bin/sh -c '[ -f /etc/ipset.save ] && ipset restore < /etc/ipset.save || true'
+ExecStart=-/bin/true
+ExecStopPost=/sbin/ipset save > /etc/ipset.save
+
+[Install]
+WantedBy=multi-user.target
+EOD
+		systemctl daemon-reload
+		systemctl enable ipset-persistent.service
 		fi
 	fi
 }
