@@ -1,8 +1,8 @@
 [
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f83375c9-465f-6fee-837a-7e12412c64f2",
-        "_guid_str": "src/inventory/linux_inventory_device_to_grist.py",
+        "guid": "5e1983bf-c510-60bc-39cc-54371b9dd94d",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/inventory/linux_inventory_device_to_grist.py",
         "filename": "inventory/linux_inventory_device_to_grist.py",
         "args": [],
         "env": [
@@ -23,8 +23,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "50f2a9fe-f035-af39-011e-379e0499ae9a",
-        "_guid_str": "src/inventory/windows_inventory_device_to_grist.ps1",
+        "guid": "f647c2a4-1a30-88ad-b18c-84ab8f21b72e",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/inventory/windows_inventory_device_to_grist.ps1",
         "filename": "inventory/windows_inventory_device_to_grist.ps1",
         "args": [],
         "env": [
@@ -43,8 +43,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "b88b9ed7-7c4e-b9d7-fae7-5024dd492272",
-        "_guid_str": "src/inventory/linux_inventory_device_to_suitecrm.py",
+        "guid": "ef11dc2a-f3e0-fb84-1926-79841b3ac1cc",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/inventory/linux_inventory_device_to_suitecrm.py",
         "filename": "inventory/linux_inventory_device_to_suitecrm.py",
         "args": [],
         "env": [
@@ -66,8 +66,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "85c431a3-7692-6ae5-bd7e-f844075deb04",
-        "_guid_str": "src/inventory/windows_inventory_device_to_suitecrm.ps1",
+        "guid": "52a974ac-7dc8-fac3-947f-8389d29b7da6",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/inventory/windows_inventory_device_to_suitecrm.ps1",
         "filename": "inventory/windows_inventory_device_to_suitecrm.ps1",
         "args": [],
         "env": [
@@ -87,8 +87,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ef099fce-f70d-51bf-de55-0d9d849ada77",
-        "_guid_str": "src/nextcloud/linux_nextcloud_backup.sh",
+        "guid": "f37506b1-987c-5e2e-f029-010c24f7019d",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/nextcloud/linux_nextcloud_backup.sh",
         "filename": "nextcloud/linux_nextcloud_backup.sh",
         "args": [],
         "env": [],
@@ -119,8 +119,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "b582e11c-b487-2310-598a-846cf35d236b",
-        "_guid_str": "src/disk/linux_check_disk_health.sh",
+        "guid": "cef9441c-a50f-0b78-962c-606c421d6c20",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/disk/linux_check_disk_health.sh",
         "filename": "disk/linux_check_disk_health.sh",
         "args": [],
         "env": [],
@@ -136,8 +136,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "fc8ff5c3-4f19-9823-0847-d1984d5ec58f",
-        "_guid_str": "src/disk/windows_check_disk_health.ps1",
+        "guid": "1d67caac-6140-4946-8b83-c41074219820",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/disk/windows_check_disk_health.ps1",
         "filename": "disk/windows_check_disk_health.ps1",
         "args": [],
         "env": [],
@@ -153,8 +153,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "2da7444c-2b50-e03e-7d14-51f7ca0b1d4d",
-        "_guid_str": "src/disk/linux_check_disk_space.py",
+        "guid": "f28311a7-7cbd-045a-dc3e-6037f2a3dd51",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/disk/linux_check_disk_space.py",
         "filename": "disk/linux_check_disk_space.py",
         "args": [
             "--threshold 20"
@@ -174,8 +174,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "440bbbcf-25b8-7c21-1ecd-f05d67becb5e",
-        "_guid_str": "src/disk/windows_check_disk_space.ps1",
+        "guid": "d94786d2-57b0-276f-d3fe-891c4ac07c1e",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/disk/windows_check_disk_space.ps1",
         "filename": "disk/windows_check_disk_space.ps1",
         "args": [
             "-threshold 20"
@@ -195,8 +195,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3d2c3dbd-7430-11a8-3fbf-f59117527bb8",
-        "_guid_str": "src/windows/windows_inventory_get_windows_license.ps1",
+        "guid": "7a9705ec-fbdb-b002-4ce7-8ea3d0392469",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/windows/windows_inventory_get_windows_license.ps1",
         "filename": "windows/windows_inventory_get_windows_license.ps1",
         "args": [],
         "env": [],
@@ -212,8 +212,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ee0a7718-5663-89a6-d964-a3371d9e0d95",
-        "_guid_str": "src/memory/linux_check_memory_usage.sh",
+        "guid": "ee849c4b-3180-914b-7dfe-45657a6b89a3",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/memory/linux_check_memory_usage.sh",
         "filename": "memory/linux_check_memory_usage.sh",
         "args": [],
         "env": [],
@@ -231,8 +231,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3ac5cc65-d710-1cb0-2537-bf230001c660",
-        "_guid_str": "src/memory/windows_check_memory_usage.ps1",
+        "guid": "40272475-bb63-4085-a950-63791a8fc98a",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/memory/windows_check_memory_usage.ps1",
         "filename": "memory/windows_check_memory_usage.ps1",
         "args": [],
         "env": [],
@@ -250,8 +250,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "613e7c8e-0ce8-c920-41ef-173a6eac269b",
-        "_guid_str": "src/glpi/linux_install_glpi_agent.sh",
+        "guid": "fc69adae-5e9e-82ab-42e8-fadd9a7d1231",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/glpi/linux_install_glpi_agent.sh",
         "filename": "glpi/linux_install_glpi_agent.sh",
         "args": [
             "--server={{client.glpi_hostname}}"
@@ -273,8 +273,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "155ee1a0-4bed-c483-01d2-19c7f88cc4b0",
-        "_guid_str": "src/glpi/windows_install_glpi_agent.ps1",
+        "guid": "16f212db-0c6f-4867-167e-43de77d67561",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/glpi/windows_install_glpi_agent.ps1",
         "filename": "glpi/windows_install_glpi_agent.ps1",
         "args": [],
         "env": [],
@@ -290,8 +290,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "9f10cfd7-5997-8018-9701-991c87aff751",
-        "_guid_str": "src/graylog/linux_install_graylog_sidecar.sh",
+        "guid": "12d30b25-109b-a79c-c0aa-ee32cb6ce4f8",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/graylog/linux_install_graylog_sidecar.sh",
         "filename": "graylog/linux_install_graylog_sidecar.sh",
         "args": [
             "--server={{client.graylog_server}}"
@@ -314,8 +314,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "482795ac-2622-ec80-f0cf-59fd42db5d50",
-        "_guid_str": "src/zabbix/linux_install_zabbix_agent2.sh",
+        "guid": "0bc0be4e-fe3d-d874-b7b2-2bc069a0995b",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/zabbix/linux_install_zabbix_agent2.sh",
         "filename": "zabbix/linux_install_zabbix_agent2.sh",
         "args": [
             "--noninteractive",
@@ -341,8 +341,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "45e5980e-d8dc-bfc4-88ad-cea3f4d4bf61",
-        "_guid_str": "src/zabbix/linux_install_zabbix_proxy.sh",
+        "guid": "a39d33f5-af37-3a86-4605-fb4b04c670a2",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/zabbix/linux_install_zabbix_proxy.sh",
         "filename": "zabbix/linux_install_zabbix_proxy.sh",
         "args": [
             "--noninteractive",
@@ -368,8 +368,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "9e3d582b-e00d-e7b9-e4bb-07bccd0f51ad",
-        "_guid_str": "src/net-diag/linux_install_net_diag.sh",
+        "guid": "f9db00d0-e1f1-d463-2d31-27780416e7b6",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/net-diag/linux_install_net_diag.sh",
         "filename": "net-diag/linux_install_net_diag.sh",
         "args": [],
         "env": [],
@@ -385,8 +385,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "5c39ff46-fa69-52c0-d995-6135da7f41fc",
-        "_guid_str": "src/proxmox/linux_manage_proxmox_repo_community.sh",
+        "guid": "cebfec3b-f016-1b0f-8ba8-cf8a3ad5776d",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/proxmox/linux_manage_proxmox_repo_community.sh",
         "filename": "proxmox/linux_manage_proxmox_repo_community.sh",
         "args": [],
         "env": [],
@@ -400,8 +400,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c682e175-acf5-b885-1855-a597ef6dc15b",
-        "_guid_str": "src/defender/windows_check_defender_status.ps1",
+        "guid": "6d5209bd-07bc-01ce-1562-7358f1fc9ec7",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/defender/windows_check_defender_status.ps1",
         "filename": "defender/windows_check_defender_status.ps1",
         "args": [],
         "env": [],
@@ -422,8 +422,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "eb5a88c9-f02d-47d9-202e-578f3d2b8564",
-        "_guid_str": "src/firewall/linux_util_firewall_allow.sh",
+        "guid": "3b1ebce0-f88d-ff88-5ae6-1edd33acf4b3",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/linux_util_firewall_allow.sh",
         "filename": "firewall/linux_util_firewall_allow.sh",
         "args": [],
         "env": [],
@@ -444,8 +444,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "ea1109a1-189b-efad-1d41-8790f0011f19",
-        "_guid_str": "src/firewall/windows_util_firewall_allow.ps1",
+        "guid": "9812fa98-79ed-ce63-0bac-28fc8970538e",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/windows_util_firewall_allow.ps1",
         "filename": "firewall/windows_util_firewall_allow.ps1",
         "args": [],
         "env": [],
@@ -461,8 +461,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f07c538d-6ed5-a24c-11ec-0ea38f874900",
-        "_guid_str": "src/firewall/linux_util_firewall_badips.sh",
+        "guid": "c61023ba-8dea-257a-5f08-eaa0b1535027",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/linux_util_firewall_badips.sh",
         "filename": "firewall/linux_util_firewall_badips.sh",
         "args": [],
         "env": [],
@@ -478,8 +478,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "124cef8c-e5f4-f016-37c9-10459f0a4757",
-        "_guid_str": "src/firewall/windows_util_firewall_badips.ps1",
+        "guid": "b29a834d-28f6-f6a1-612b-816f2afcd658",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/windows_util_firewall_badips.ps1",
         "filename": "firewall/windows_util_firewall_badips.ps1",
         "args": [],
         "env": [],
@@ -495,8 +495,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "faf71ba3-80a8-a55d-d557-621430c7f5be",
-        "_guid_str": "src/firewall/linux_check_firewall.sh",
+        "guid": "90d2f788-20b9-51cf-dba1-9af20e3eee6d",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/linux_check_firewall.sh",
         "filename": "firewall/linux_check_firewall.sh",
         "args": [],
         "env": [],
@@ -512,8 +512,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "3c5be003-a408-576d-e91f-787a95372d71",
-        "_guid_str": "src/firewall/windows_check_firewall.ps1",
+        "guid": "fe3f718e-a919-b127-3d7b-4241d0f1074b",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/windows_check_firewall.ps1",
         "filename": "firewall/windows_check_firewall.ps1",
         "args": [],
         "env": [],
@@ -529,8 +529,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0fa0896f-0d61-eba0-bdea-8049576d970a",
-        "_guid_str": "src/ufw/linux_install_ufw.sh",
+        "guid": "b8be8ca8-8365-47fc-b069-7d0c8dd87ca9",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/ufw/linux_install_ufw.sh",
         "filename": "ufw/linux_install_ufw.sh",
         "args": [],
         "env": [],
@@ -546,8 +546,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "db0676ff-ba28-9f2e-9793-6e2c09e1c3d4",
-        "_guid_str": "src/firewall/linux_install_firewall.sh",
+        "guid": "acb36740-1dc3-478b-6afa-444cdf309f2b",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/firewall/linux_install_firewall.sh",
         "filename": "firewall/linux_install_firewall.sh",
         "args": [],
         "env": [],
@@ -563,8 +563,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "8c4ae983-50b4-a777-bb6a-d30d570dedf4",
-        "_guid_str": "src/virtualmin/renew-all-letsencrypt-certs.sh",
+        "guid": "363c4616-e0f8-9c3f-db29-7b6695bb8db9",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/virtualmin/renew-all-letsencrypt-certs.sh",
         "filename": "virtualmin/renew-all-letsencrypt-certs.sh",
         "args": [],
         "env": [],
@@ -580,8 +580,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "548142e6-7722-3c38-7941-d9330505c8ca",
-        "_guid_str": "src/gitlab/linux_install_gitlab_runner.sh",
+        "guid": "94313e85-c067-42ef-c30c-d9f9baa0e912",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/gitlab/linux_install_gitlab_runner.sh",
         "filename": "gitlab/linux_install_gitlab_runner.sh",
         "args": [
             "--server={{client.gitlab_server}}"
@@ -604,8 +604,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "f1c2e543-8a03-5dc7-faf5-0de2e995a5ae",
-        "_guid_str": "src/gitlab/windows_install_gitlab_runner.ps1",
+        "guid": "75c780ea-7281-55f9-125d-059ffbd8c0a7",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/gitlab/windows_install_gitlab_runner.ps1",
         "filename": "gitlab/windows_install_gitlab_runner.ps1",
         "args": [],
         "env": [],
@@ -624,8 +624,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "fb1a15dc-8524-0c10-858b-3ffc4913ccc1",
-        "_guid_str": "src/7zip/linux_install_7zip.sh",
+        "guid": "5a1ea78b-51bd-c047-ca12-6290641f9c77",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/7zip/linux_install_7zip.sh",
         "filename": "7zip/linux_install_7zip.sh",
         "args": [],
         "env": [],
@@ -641,8 +641,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "2f33a567-d6f6-dab3-6df2-b3b4bd4b151a",
-        "_guid_str": "src/rar/linux_install_rar.sh",
+        "guid": "68c6bf13-ea43-c50b-d0fc-9804566e6cbc",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/rar/linux_install_rar.sh",
         "filename": "rar/linux_install_rar.sh",
         "args": [],
         "env": [],
@@ -658,8 +658,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "e0875944-9fef-001f-ebdd-3bcaf0e364e1",
-        "_guid_str": "src/rar/linux_install_unrar.sh",
+        "guid": "c070a359-f88d-5967-af7f-a6f87dea9086",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/rar/linux_install_unrar.sh",
         "filename": "rar/linux_install_unrar.sh",
         "args": [],
         "env": [],
@@ -675,8 +675,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "0c926ed3-64d9-2403-db0d-758ad34ea227",
-        "_guid_str": "src/zip/linux_install_unzip.sh",
+        "guid": "b0a0dc19-dbf8-96ad-db89-bb8743d4b46a",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/zip/linux_install_unzip.sh",
         "filename": "zip/linux_install_unzip.sh",
         "args": [],
         "env": [],
@@ -692,8 +692,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "cfb1e10f-8999-b96b-edb2-c8a2e6e74b01",
-        "_guid_str": "src/zip/linux_install_zip.sh",
+        "guid": "e886d401-13e0-fbf2-707b-d5ac08114b74",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/zip/linux_install_zip.sh",
         "filename": "zip/linux_install_zip.sh",
         "args": [],
         "env": [],
@@ -709,8 +709,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "09061f78-668f-6981-4341-86fd4deeb2ef",
-        "_guid_str": "src/updates/linux_check_reboot_required.sh",
+        "guid": "f8659a14-4c51-8f69-7891-b58ba90d175c",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/updates/linux_check_reboot_required.sh",
         "filename": "updates/linux_check_reboot_required.sh",
         "args": [],
         "env": [],
@@ -726,8 +726,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "26a782bd-be97-6c2e-365e-906e992d9a00",
-        "_guid_str": "src/updates/windows_check_reboot_required.ps1",
+        "guid": "b12f0377-2219-4a4b-7586-14a0039f5270",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/updates/windows_check_reboot_required.ps1",
         "filename": "updates/windows_check_reboot_required.ps1",
         "args": [],
         "env": [],
@@ -743,8 +743,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "6b4b5647-2e43-682f-aa87-fd717d00108e",
-        "_guid_str": "src/ssh/linux_util_ssh_authorize.py",
+        "guid": "1ff7bd21-2fb2-f79a-4cf5-d496bcd8b03f",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/ssh/linux_util_ssh_authorize.py",
         "filename": "ssh/linux_util_ssh_authorize.py",
         "args": [],
         "env": [],
@@ -764,8 +764,8 @@
     },
     {
         "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
-        "guid": "c9e46511-4ea2-7c03-39c3-1689587be6c5",
-        "_guid_str": "src/ssh/linux_util_ssh_get_key.py",
+        "guid": "94b485d9-2437-8aac-787c-81fc14f67916",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/ssh/linux_util_ssh_get_key.py",
         "filename": "ssh/linux_util_ssh_get_key.py",
         "args": [],
         "env": [],

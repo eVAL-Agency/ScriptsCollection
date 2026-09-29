@@ -950,6 +950,7 @@ for file in glob('scriptlets/**/*.ps1', recursive=True):
 def process_source_files(extension, file_type):
 	for file in glob(f'src/**/*.{extension}', recursive=True):
 		script = Script(file, file_type)
+		script.repo = repo_url
 		dest_file = 'dist/' + file[4:]
 
 		# Determine if we need to rebuild
