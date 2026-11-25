@@ -48,6 +48,7 @@ List of scripts available within this collection.
 | ![PowerShell](.supplemental/images/icons/powershell.svg "PowerShell") [Updates / Check if Reboot Required [Windows]](dist/updates/windows_check_reboot_required.ps1)  | ![windows](.supplemental/images/icons/windows.svg "Windows 10, 11") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Authorize SSH Key [Linux]](dist/ssh/linux_util_ssh_authorize.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
 | ![Python](.supplemental/images/icons/python.svg "Python") [User Management / Get SSH Public Key [Linux]](dist/ssh/linux_util_ssh_get_key.py)  | ![tux](.supplemental/images/icons/tux.svg "Linux-All") |
+| ![Bash/Shell](.supplemental/images/icons/bash.svg "Bash/Shell") [Uncategorized / src/multimedia/extract_audio_tracks.sh](dist/multimedia/extract_audio_tracks.sh)  |  |
 
 
 

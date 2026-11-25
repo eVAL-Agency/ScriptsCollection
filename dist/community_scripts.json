@@ -781,5 +781,20 @@
             "linux"
         ],
         "category": "User Management"
+    },
+    {
+        "$schema": "https://raw.githubusercontent.com/amidaware/community-scripts/main/community_scripts.schema.json",
+        "guid": "62b037c4-7fde-90f2-33cd-14a2d8c0007a",
+        "_guid_str": "git@github.com:eVAL-Agency/ScriptsCollection.git/src/multimedia/extract_audio_tracks.sh",
+        "filename": "multimedia/extract_audio_tracks.sh",
+        "args": [],
+        "env": [],
+        "submittedBy": "",
+        "name": null,
+        "syntax": [],
+        "default_timeout": "60",
+        "shell": "shell",
+        "supported_platforms": [],
+        "category": null
     }
 ]
