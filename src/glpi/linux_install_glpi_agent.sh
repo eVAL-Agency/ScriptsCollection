@@ -38,6 +38,7 @@
 # @TRMM-TIMEOUT 120
 #
 # Changelog:
+#   2026.11.25 - Ensure curl is available
 #   2026.09.13 - Switch to using log_* functions
 #   2026.07.01 - Initial release
 
@@ -45,6 +46,7 @@
 # scriptlet:_common/os_like.sh
 # scriptlet:_common/download.sh
 # scriptlet:bz_eval_log/log.sh
+# scriptlet:_common/package_install.sh
 
 # compile:usage
 # compile:argparse
@@ -53,6 +55,9 @@ if os_like_debian -q; then
 	# Debian should ensure that apt is up to date, as IP addresses or hostnames may change.
 	apt update;
 fi
+
+# curl is required
+package_install_if curl
 
 if [ "$VERSION" == "latest" ]; then
 	# Use curl to check the latest version.
